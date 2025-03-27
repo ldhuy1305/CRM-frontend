@@ -1,47 +1,54 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
+<!-- src/App.vue -->
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <div id="app">
+    <div v-if="isLoading" class="loading-overlay">Đang tải...</div>
+    <router-view />
+  </div>
 </template>
 
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useAuthStore } from '@/stores/modules/auth';
+
+export default defineComponent({
+  name: 'App',
+  setup() {
+    const authStore = useAuthStore();
+
+    const token = localStorage.getItem('token');
+    if (token && !authStore.isAuthenticated) {
+      authStore.isAuthenticated = true;
+    }
+
+    const isLoading = false;
+
+    return {
+      isAuthenticated: authStore.isAuthenticated,
+      isLoading,
+    };
+  },
+});
+</script>
+
 <style scoped>
-header {
-  line-height: 1.5;
+#app {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  position: relative;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 </style>

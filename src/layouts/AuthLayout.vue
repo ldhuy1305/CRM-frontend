@@ -1,11 +1,10 @@
-<!-- src/layouts/AuthLayout.vue -->
 <template>
   <div class="auth-layout">
     <header class="auth-header">
-      <h2>CRM - Đăng nhập</h2>
+      <h2>{{ title }}</h2>
     </header>
     <main class="auth-content">
-      <slot /> <!-- Nội dung của trang đăng nhập/đăng ký -->
+      <router-view />
     </main>
   </div>
 </template>
@@ -15,6 +14,12 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'AuthLayout',
+  props: {
+    title: {
+      type: String,
+      default: 'CRM System',
+    },
+  },
 });
 </script>
 
@@ -37,5 +42,7 @@ export default defineComponent({
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 </style>

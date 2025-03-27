@@ -1,4 +1,3 @@
-<!-- src/App.vue -->
 <template>
   <div id="app">
     <div v-if="isLoading" class="loading-overlay">Đang tải...</div>
@@ -30,7 +29,14 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
+html,
+body {
+  margin: 0 ;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
 #app {
   height: 100vh;
   width: 100vw;

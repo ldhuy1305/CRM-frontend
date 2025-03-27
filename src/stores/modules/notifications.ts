@@ -2,9 +2,9 @@
 import { defineStore } from 'pinia';
 
 interface Notification {
-  id: number;
-  title: string;
+  id: string;
   message: string;
+  createdAt: string;
   read: boolean;
 }
 
@@ -14,26 +14,36 @@ interface NotificationState {
 
 export const useNotificationStore = defineStore('notifications', {
   state: (): NotificationState => ({
-    notifications: [
-      // Dữ liệu giả lập
-      { id: 1, title: 'New Lead', message: 'A new lead has been assigned to you.', read: false },
-      { id: 2, title: 'Meeting Reminder', message: 'Meeting with HUY LE at 04:33 PM.', read: false },
-      { id: 3, title: 'Task Due', message: 'Task "Gặp mặt" is due today.', read: false },
-    ],
+    notifications: [],
   }),
 
   getters: {
     unreadNotifications(state): number {
-      return state.notifications.filter((notif) => !notif.read).length;
+      return state.notifications.filter((n) => !n.read).length;
+    },
+    allNotifications(state): Notification[] {
+      return state.notifications;
     },
   },
 
   actions: {
-    markAsRead(id: number) {
-      const notif = this.notifications.find((n) => n.id === id);
-      if (notif) {
-        notif.read = true;
+    addNotification(notification: Notification) {
+      this.notifications.unshift(notification); // Thêm thông báo mới vào đầu danh sách
+    },
+
+    markAsRead(notificationId: string) {
+      const notification = this.notifications.find((n) => n.id === notificationId);
+      if (notification) {
+        notification.read = true;
       }
+    },
+
+    markAllAsRead() {
+      this.notifications.forEach((n) => (n.read = true));
+    },
+
+    clearNotifications() {
+      this.notifications = [];
     },
   },
 });

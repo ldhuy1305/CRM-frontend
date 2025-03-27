@@ -1,8 +1,10 @@
+// src/stores/modules/auth.ts
 import { defineStore } from 'pinia';
-import { authService} from '@/services/repositories/auth.ts';
-import { useRouter } from 'vue-router';
-import type {LoginPayload, User }from '@/types/auth/auth.ts' ;
+import { authService } from '@/services/repositories/auth.ts';
 import { useToast } from 'vue-toastification';
+import type { LoginPayload, User } from '@/types/auth/auth.ts';
+import { webSocketService } from '@/services/websocket'; // Import WebSocketService
+
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -30,13 +32,17 @@ export const useAuthStore = defineStore('auth', {
         toast.error(this.error, {
           icon: '✅',
         });
+        throw new Error(this.error);
       }
     },
 
-    async logout() {
+    logout() {
+      const toast = useToast();
       this.user = null;
       this.isAuthenticated = false;
       localStorage.removeItem('token');
+      webSocketService.disconnect();
+      toast.info('Đã đăng xuất!');
     },
   },
 });

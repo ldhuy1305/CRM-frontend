@@ -3,17 +3,36 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '@/views/Login.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
-
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import Home from '@/views/Home.vue'
 const routes = [
   {
-    path: '',
+    path: '/',
+    component: DefaultLayout,
+    children: [
+      { path: '', name: 'Home', component: Home},
+      // { path: 'leads', name: 'Leads', component: () => import('@/views/Leads.vue') },
+      // { path: 'contacts', name: 'Contacts', component: () => import('@/views/Contacts.vue') },
+      // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
+      // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
+      // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
+      // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },
+      // { path: 'campaigns', name: 'Campaigns', component: () => import('@/views/Campaigns.vue') },
+      // { path: 'documents', name: 'Documents', component: () => import('@/views/Documents.vue') },
+      // { path: 'visits', name: 'Visits', component: () => import('@/views/Visits.vue') },
+      // { path: 'projects', name: 'Projects', component: () => import('@/views/Projects.vue') },
+    ],
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/',
     component: AuthLayout,
     children: [
       {
         path: '/login',
         name: 'Login',
         component: Login,
-        meta: { title: 'Đăng nhập CRM' },
+        meta: { title: 'Đăng nhập UNIBEAM' },
       },
     ]
   },

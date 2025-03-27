@@ -33,20 +33,25 @@
 
 <script lang="ts">
 import { defineComponent, reactive } from 'vue';
-import { useAuthStore } from '@/stores/modules/auth.ts';
+import { useAuthStore } from '@/stores/modules/auth.ts';import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'Login',
   setup() {
     const authStore = useAuthStore();
-
+    const router = useRouter();
     const form = reactive({
-      email: '',
-      password: '',
+      email: "ldhuydn1305@gmail.com",
+      password: "Ldhuy1305!"
     });
 
     const handleLogin = async () => {
-      await authStore.login(form);
+      try {
+        await authStore.login(form);
+        router.push('/');
+      } catch (error) {
+        console.error('Login failed:', error);
+      }
     };
 
     return {

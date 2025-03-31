@@ -6,33 +6,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useAuthStore } from '@/stores/modules/auth';
-
+import { defineComponent, onMounted, onUnmounted } from 'vue'
+import { useAuthStore } from '@/stores/modules/auth'
+import { WebSocketClient } from '@/plugins/websocket'
 export default defineComponent({
   name: 'App',
   setup() {
-    const authStore = useAuthStore();
+    const authStore = useAuthStore()
+    const ws = new WebSocketClient()
 
-    const token = localStorage.getItem('token');
+    onMounted(() => {
+      ws.connect()
+    })
+
+    onUnmounted(() => {
+      ws.disconnect()
+    })
+    const token = localStorage.getItem('token')
     if (token && !authStore.isAuthenticated) {
-      authStore.isAuthenticated = true;
+      authStore.isAuthenticated = true
     }
-
-    const isLoading = false;
+    const isLoading = false
 
     return {
       isAuthenticated: authStore.isAuthenticated,
       isLoading,
-    };
+    }
   },
-});
+})
 </script>
 
 <style>
 html,
 body {
-  margin: 0 ;
+  margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;

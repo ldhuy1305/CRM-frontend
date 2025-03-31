@@ -1,8 +1,8 @@
 <template>
   <header class="app-header">
     <div class="logo">
-      <img src="@/assets/logo.png" alt="UNIBEAM Logo" />
-      <span>UNIBEAM</span>
+      <img src="@/assets/unibeam-logo.png" alt="UNIBEAM Logo" />
+      <!-- <span>UNIBEAM</span> -->
 
       <nav class="menu">
         <router-link
@@ -20,13 +20,11 @@
     <div class="header-right">
       <div class="notification" @click="showNotifications">
         <i class="fas fa-bell"></i>
-        <span v-if="unreadNotifications > 0" class="badge">{{
-            unreadNotifications
-          }}</span>
+        <span v-if="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
       </div>
 
       <div class="user-avatar" @click="toggleDropdown">
-        <img src="@/assets/user-avatar.png" alt="User Avatar" />
+        <img src="@/assets/default_avatar.png" alt="User Avatar" />
         <div v-if="showDropdown" class="dropdown">
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
           <router-link to="/settings" class="dropdown-item">Settings</router-link>
@@ -38,42 +36,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useNotificationStore } from '@/stores/modules/notifications';
-import { useAuthStore } from '@/stores/modules/auth';
+import { useAuthStore } from '@/stores/modules/auth'
+import { useNotificationStore } from '@/stores/modules/notifications'
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'Header',
   setup() {
-    const router = useRouter();
-    const notificationStore = useNotificationStore();
-    const authStore = useAuthStore();
+    const router = useRouter()
+    const notificationStore = useNotificationStore()
+    const authStore = useAuthStore()
 
-    const showDropdown = ref(false);
+    const showDropdown = ref(false)
 
     const toggleDropdown = () => {
-      showDropdown.value = !showDropdown.value;
-    };
+      showDropdown.value = !showDropdown.value
+    }
 
     const showNotifications = () => {
-      console.log('Show notifications');
-    };
+      console.log('Show notifications')
+    }
     const handleLogout = async () => {
       try {
-        await authStore.logout();
-        showDropdown.value = false;
-        router.push('/login');
+        await authStore.logout()
+        showDropdown.value = false
+        router.push('/login')
       } catch (error) {
-        console.error('Logout failed:', error);
+        console.error('Logout failed:', error)
       }
-    };
+    }
     return {
       notificationStore,
       showNotifications,
       showDropdown,
       toggleDropdown,
       handleLogout,
-    };
+    }
   },
   data() {
     return {
@@ -89,14 +87,14 @@ export default defineComponent({
         { label: 'Reports', path: '/reports' },
         { label: 'Campaigns', path: '/campaigns' },
       ],
-    };
+    }
   },
   computed: {
     unreadNotifications(): number {
-      return this.notificationStore.unreadNotifications;
+      return this.notificationStore.unreadNotifications
     },
   },
-});
+})
 </script>
 
 <style scoped>
@@ -104,7 +102,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #1a2526;
+  background-color: #0b192c;
   padding: 10px 20px;
   color: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -114,12 +112,12 @@ export default defineComponent({
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 30px;
 }
 
 .logo img {
-  width: 30px;
-  height: 30px;
+  width: 100px;
+  height: 25px;
 }
 
 .logo span {
@@ -147,13 +145,13 @@ export default defineComponent({
 }
 
 .menu-item:hover {
-  color: #3498db;
+  color: #ff6500;
 }
 
 .menu-item.active {
-  color: #3498db;
+  color: #ff6500;
   font-weight: bold;
-  border-bottom: 2px solid #3498db;
+  border-bottom: 2px solid #ff6500;
 }
 
 .notification {
@@ -208,5 +206,4 @@ export default defineComponent({
 .dropdown-item:hover {
   background-color: #f5f5f5;
 }
-
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div class="auth-layout">
     <header class="auth-header">
-      <h2>{{ title }}</h2>
+      <!-- <h2>{{ title }}</h2> -->
+      <img src="@/assets/unibeam-logo.png" alt="UNIBEAM" class="auth-logo" />
     </header>
     <main class="auth-content">
       <router-view />
@@ -10,17 +11,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'AuthLayout',
-  props: {
-    title: {
-      type: String,
-      default: 'UNIBEAM System',
-    },
-  },
-});
+})
 </script>
 
 <style scoped>
@@ -35,6 +30,12 @@ export default defineComponent({
 
 .auth-header {
   margin-bottom: 2rem;
+}
+
+.auth-logo {
+  width: 200px;
+  height: 50px;
+  object-fit: contain;
 }
 
 .auth-content {

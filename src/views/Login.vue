@@ -3,13 +3,7 @@
     <form @submit.prevent="handleLogin" class="login-form">
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          v-model="form.email"
-          type="text"
-          id="email"
-          placeholder="Nhập email"
-          required
-        />
+        <input v-model="form.email" type="text" id="email" placeholder="Nhập email" required />
       </div>
       <div class="form-group">
         <label for="password">Mật khẩu</label>
@@ -24,43 +18,44 @@
       <p v-if="error" class="error">{{ error }}</p>
       <button type="submit" :disabled="loading">Đăng nhập</button>
       <p>
-        Chưa có tài khoản?
-<!--        <router-link to="/email">Đăng ký</router-link>-->
+        Quên mật khẩu?
+        <!--        <router-link to="/email">Đăng ký</router-link>-->
       </p>
     </form>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue';
-import { useAuthStore } from '@/stores/modules/auth.ts';import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/modules/auth.ts'
+import { defineComponent, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Login',
   setup() {
-    const authStore = useAuthStore();
-    const router = useRouter();
+    const authStore = useAuthStore()
+    const router = useRouter()
     const form = reactive({
-      email: "ldhuydn1305@gmail.com",
-      password: "Ldhuy1305!"
-    });
+      email: 'Admin001@gmail.com',
+      password: 'Admin001@',
+    })
 
     const handleLogin = async () => {
       try {
-        await authStore.login(form);
-        router.push('/');
+        await authStore.login(form)
+        router.push('/')
       } catch (error) {
-        console.error('Login failed:', error);
+        console.error('Login failed:', error)
       }
-    };
+    }
 
     return {
       form,
       handleLogin,
       error: authStore.error,
-    };
+    }
   },
-});
+})
 </script>
 
 <style scoped>
@@ -78,6 +73,7 @@ export default defineComponent({
 label {
   font-weight: bold;
   margin-bottom: 0.5rem;
+  color: #1e3e62;
 }
 
 input {
@@ -88,11 +84,12 @@ input {
 
 button {
   padding: 0.75rem;
-  background-color: #2c3e50;
+  background-color: #ff6500;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 button:disabled {

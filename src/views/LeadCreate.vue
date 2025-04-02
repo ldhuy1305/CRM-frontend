@@ -14,7 +14,7 @@
         <h2>Information</h2>
         <div class="avatar-section">
           <div class="avatar-placeholder">
-            <img src="@/assets/user-avatar.png" alt="Lead Avatar" />
+            <img src="@/assets/default_avatar.png" alt="Lead Avatar" />
           </div>
           <span class="edit-avatar">Edit avatar</span>
         </div>
@@ -36,8 +36,8 @@
             <label>Lead Owner</label>
             <select v-model="form.leadOwner">
               <option value="">Select Owner</option>
-              <option value="sally">Sally Trần</option>
-              <option value="brown">Brown Trần</option>
+              <option value="sally">Sally Tran</option>
+              <option value="brown">Brown Tran</option>
             </select>
           </div>
           <div class="form-group">

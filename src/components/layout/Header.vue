@@ -10,7 +10,7 @@
           :key="item.path"
           :to="item.path"
           class="menu-item"
-          :class="{ active: currentPath === item.path }"
+          :class="{ active: isActiveRoute(item.path) }"
         >
           {{ item.label }}
         </router-link>
@@ -67,6 +67,13 @@ export default defineComponent({
         console.error('Logout failed:', error)
       }
     }
+    const isActiveRoute = (path: string) => {
+      if (path === '/leads') {
+        return route.path === '/leads' || route.path === '/leads/create'
+      }
+      return route.path === path
+    }
+
     return {
       notificationStore,
       showNotifications,
@@ -74,6 +81,7 @@ export default defineComponent({
       toggleDropdown,
       handleLogout,
       currentPath,
+      isActiveRoute,
     }
   },
   data() {

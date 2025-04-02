@@ -2,8 +2,10 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
+
 import Lead from '@/views/Lead.vue'
 import LeadCreate from '@/views/LeadCreate.vue'
+
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [

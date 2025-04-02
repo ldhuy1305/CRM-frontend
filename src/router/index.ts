@@ -1,17 +1,24 @@
-
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '@/views/Login.vue';
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import { useAuthStore } from '@/stores/modules/auth.ts'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
+import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
+import Lead from '@/views/Lead.vue'
+import LeadCreate from '@/views/LeadCreate.vue'
+import Login from '@/views/Login.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
     component: DefaultLayout,
     children: [
-      { path: '', name: 'Home', component: Home},
-      // { path: 'leads', name: 'Leads', component: () => import('@/views/Leads.vue') },
+      { path: '', name: 'Home', component: Home },
+      { path: 'leads', name: 'Leads', component: Lead },
+      {
+        path: '/leads/create',
+        name: 'CreateLead',
+        component: LeadCreate,
+        meta: { requiresAuth: true },
+      },
       // { path: 'contacts', name: 'Contacts', component: () => import('@/views/Contacts.vue') },
       // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
@@ -34,24 +41,24 @@ const routes = [
         component: Login,
         meta: { title: 'Đăng nhập UNIBEAM' },
       },
-    ]
+    ],
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const authStore = useAuthStore()
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
 
   if (requiresAuth && !authStore.isAuthenticated) {
-    next('/login');
+    next('/login')
   } else {
-    next();
+    next()
   }
-});
+})
 
-export default router;
+export default router

@@ -10,7 +10,7 @@
           :key="item.path"
           :to="item.path"
           class="menu-item"
-          active-class="active"
+          :class="{ active: currentPath === item.path }"
         >
           {{ item.label }}
         </router-link>
@@ -20,9 +20,7 @@
     <div class="header-right">
       <div class="notification" @click="showNotifications">
         <i class="fas fa-bell"></i>
-        <span v-if="unreadNotifications > 0" class="badge">{{
-            unreadNotifications
-          }}</span>
+        <span v-if="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
       </div>
 
       <div class="user-avatar" @click="toggleDropdown">
@@ -38,42 +36,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useNotificationStore } from '@/stores/modules/notifications';
-import { useAuthStore } from '@/stores/modules/auth';
+import { useAuthStore } from '@/stores/modules/auth'
+import { useNotificationStore } from '@/stores/modules/notifications'
+import { computed, defineComponent, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
   name: 'Header',
   setup() {
-    const router = useRouter();
-    const notificationStore = useNotificationStore();
-    const authStore = useAuthStore();
-
-    const showDropdown = ref(false);
+    const router = useRouter()
+    const route = useRoute()
+    const notificationStore = useNotificationStore()
+    const authStore = useAuthStore()
+    const currentPath = computed(() => route.path)
+    const showDropdown = ref(false)
 
     const toggleDropdown = () => {
-      showDropdown.value = !showDropdown.value;
-    };
+      showDropdown.value = !showDropdown.value
+    }
 
     const showNotifications = () => {
-      console.log('Show notifications');
-    };
+      console.log('Show notifications')
+    }
     const handleLogout = async () => {
       try {
-        await authStore.logout();
-        showDropdown.value = false;
-        router.push('/login');
+        await authStore.logout()
+        showDropdown.value = false
+        router.push('/login')
       } catch (error) {
-        console.error('Logout failed:', error);
+        console.error('Logout failed:', error)
       }
-    };
+    }
     return {
       notificationStore,
       showNotifications,
       showDropdown,
       toggleDropdown,
       handleLogout,
-    };
+      currentPath,
+    }
   },
   data() {
     return {
@@ -89,14 +89,14 @@ export default defineComponent({
         { label: 'Reports', path: '/reports' },
         { label: 'Campaigns', path: '/campaigns' },
       ],
-    };
+    }
   },
   computed: {
     unreadNotifications(): number {
-      return this.notificationStore.unreadNotifications;
+      return this.notificationStore.unreadNotifications
     },
   },
-});
+})
 </script>
 
 <style scoped>
@@ -208,5 +208,4 @@ export default defineComponent({
 .dropdown-item:hover {
   background-color: #f5f5f5;
 }
-
 </style>

@@ -60,9 +60,8 @@ export default defineComponent({
     }
     const handleLogout = async () => {
       try {
-        await authStore.logout()
+        await authStore.logout(router)
         showDropdown.value = false
-        router.push('/login')
       } catch (error) {
         console.error('Logout failed:', error)
       }

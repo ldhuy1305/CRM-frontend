@@ -8,7 +8,7 @@ export class WebSocketClient {
   }
   connect() {
     this.socket = new WebSocket(
-      `${import.meta.env.VITE_API_BASE_URL}/ws/notifications/${this.userId}/`,
+      `${import.meta.env.VITE_WS_BASE_URL}/ws/notifications/${this.userId}/`,
     )
 
     this.socket.onopen = () => {

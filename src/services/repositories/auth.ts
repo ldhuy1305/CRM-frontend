@@ -1,12 +1,31 @@
 import axios from '@/services/api.ts'
 
 export interface User {
-  id: number
-  email: string
+  is_send_code: false
+  message: string
   refresh: string
   access: string
 }
 
+export interface UserInfo {
+  id: number
+  first_name: string
+  last_name: string
+  address: string
+  phone: string
+  permission: Array<Permission>[]
+}
+
+export interface Permission {
+  id: number
+  name: string
+  content_type: ContentType
+}
+export interface ContentType {
+  id: number
+  app_label: string
+  model: string
+}
 export interface LoginPayload {
   email: string
   password: string

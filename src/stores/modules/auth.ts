@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
 
         const userData = await getCurrentUser()
-        this.user = { ...user, ...userData }
+        this.user = { ...userData }
 
         router.push('/')
         toast.success('Đăng nhập thành công!', { icon: '✅' })

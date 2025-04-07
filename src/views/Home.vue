@@ -83,6 +83,7 @@ import { useAuthStore } from '@/stores/modules/auth' // Import the auth store
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Home',
   setup() {
     const authStore = useAuthStore()

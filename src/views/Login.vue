@@ -27,8 +27,8 @@
 
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth.ts'
-import { defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { defineComponent, reactive } from 'vue'
 
 export default defineComponent({
   name: 'Login',
@@ -42,8 +42,7 @@ export default defineComponent({
 
     const handleLogin = async () => {
       try {
-        await authStore.login(form)
-        router.push('/')
+        await authStore.login(form, router)
       } catch (error) {
         console.error('Login failed:', error)
       }

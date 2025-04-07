@@ -10,7 +10,7 @@
           :key="item.path"
           :to="item.path"
           class="menu-item"
-          active-class="active"
+          :class="{ active: isActiveRoute(item.path) }"
         >
           {{ item.label }}
         </router-link>
@@ -38,15 +38,17 @@
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth'
 import { useNotificationStore } from '@/stores/modules/notifications'
-import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
 export default defineComponent({
   name: 'Header',
   setup() {
     const router = useRouter()
+    const route = useRoute()
     const notificationStore = useNotificationStore()
     const authStore = useAuthStore()
-
+    const currentPath = computed(() => route.path)
     const showDropdown = ref(false)
 
     const toggleDropdown = () => {
@@ -58,19 +60,27 @@ export default defineComponent({
     }
     const handleLogout = async () => {
       try {
-        await authStore.logout()
+        await authStore.logout(router)
         showDropdown.value = false
-        router.push('/login')
       } catch (error) {
         console.error('Logout failed:', error)
       }
     }
+    const isActiveRoute = (path: string) => {
+      if (path === '/leads') {
+        return route.path === '/leads' || route.path === '/leads/create'
+      }
+      return route.path === path
+    }
+
     return {
       notificationStore,
       showNotifications,
       showDropdown,
       toggleDropdown,
       handleLogout,
+      currentPath,
+      isActiveRoute,
     }
   },
   data() {

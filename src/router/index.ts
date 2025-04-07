@@ -2,6 +2,10 @@ import AuthLayout from '@/layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
+
+import Lead from '@/views/Lead.vue'
+import LeadCreate from '@/views/LeadCreate.vue'
+
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
@@ -10,7 +14,13 @@ const routes = [
     component: DefaultLayout,
     children: [
       { path: '', name: 'Home', component: Home },
-      // { path: 'leads', name: 'Leads', component: () => import('@/views/Leads.vue') },
+      { path: 'leads', name: 'Leads', component: Lead },
+      {
+        path: '/leads/create',
+        name: 'CreateLead',
+        component: LeadCreate,
+        meta: { requiresAuth: true },
+      },
       // { path: 'contacts', name: 'Contacts', component: () => import('@/views/Contacts.vue') },
       // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },

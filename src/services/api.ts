@@ -1,6 +1,6 @@
 // src/services/api.ts
-import axios from 'axios'
 import type { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL as string,
@@ -9,8 +9,13 @@ const api: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 })
-
-// Thêm interceptor để xử lý lỗi hoặc token nếu cần
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -18,5 +23,9 @@ api.interceptors.response.use(
     return Promise.reject(error)
   },
 )
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const getCurrentUser = async (): Promise<any> => {
+  const response = await api.get('/auth/me')
+  return response.data
+}
 export default api

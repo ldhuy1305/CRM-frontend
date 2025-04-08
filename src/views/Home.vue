@@ -88,7 +88,7 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore()
     return {
-      userName: authStore.user?.email || 'User', // Use email from auth store with fallback
+      userName: authStore.user?.user.first_name + ' ' + authStore.user?.user.last_name,
     }
   },
 })

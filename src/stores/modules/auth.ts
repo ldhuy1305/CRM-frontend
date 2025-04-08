@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { defineStore } from 'pinia'
+import { getCurrentUser } from '@/services/api'
 import { authService } from '@/services/repositories/auth'
 import type { LoginPayload, User } from '@/types/auth/auth'
-import { useToast } from 'vue-toastification'
+import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
-import { getCurrentUser } from '@/services/api'
+import { POSITION, useToast } from 'vue-toastification'
 
 interface AuthState {
   user: User | null
@@ -32,13 +32,17 @@ export const useAuthStore = defineStore('auth', {
         this.user = { ...userData }
 
         router.push('/')
-        toast.success('Đăng nhập thành công!', { icon: '✅' })
+        toast.success('Đăng nhập thành công!', {
+          icon: '✅',
+          position: POSITION.BOTTOM_RIGHT,
+        })
       } catch (error: any) {
         this.error = error.message || 'Đăng nhập thất bại'
         console.log(this.error)
 
         toast.error(this.error, {
           icon: '❌',
+          position: POSITION.BOTTOM_RIGHT,
         })
       }
     },
@@ -54,6 +58,7 @@ export const useAuthStore = defineStore('auth', {
         this.error = error.message || 'Không thể lấy thông tin user'
         toast.error(this.error, {
           icon: '❌',
+          position: POSITION.BOTTOM_RIGHT,
         })
         this.isAuthenticated = false
         this.user = null

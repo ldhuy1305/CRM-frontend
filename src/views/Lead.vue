@@ -62,92 +62,84 @@
 </template>
 
 <script lang="ts">
-import { useLeadStore } from '@/stores/modules/lead'
-import { storeToRefs } from 'pinia'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
-
 export default defineComponent({
   name: 'Lead',
   setup() {
     const router = useRouter()
-    const leadStore = useLeadStore()
-    const { leads, loading } = storeToRefs(leadStore)
+
     const navigateToCreateLead = () => {
       router.push('/leads/create')
     }
-    onMounted(async () => {
-      await leadStore.fetchLeads()
-    })
+
     return {
-      leads,
-      loading,
       navigateToCreateLead,
     }
   },
-  // data() {
-  //   return {
-  //     rowsPerPage: 10,
-  //     leads: [
-  //       {
-  //         name: 'Le Tran Huong Giang',
-  //         company: 'Unitech Dach',
-  //         email: 'hgiang140302@gmail.com',
-  //         phone: '0913283313',
-  //         source: 'Zalo',
-  //         owner: 'Sally Tran',
-  //       },
-  //       {
-  //         name: 'Tran Thanh Nhan',
-  //         company: 'ABeam Consulting Vietnam',
-  //         email: 'thanhnhan@gmail.com',
-  //         phone: '0987654321',
-  //         source: 'Facebook',
-  //         owner: 'Brown Tran',
-  //       },
-  //       {
-  //         name: 'Nguyen Thuc Nhi',
-  //         company: 'TaiChung',
-  //         email: 'ntnhi@gmail.com',
-  //         phone: '0732648338',
-  //         source: 'Wedsite',
-  //         owner: 'Brown Tran',
-  //       },
-  //       {
-  //         name: 'Le Duc Huy',
-  //         company: 'Picon Technology',
-  //         email: 'huyld@gmail.com',
-  //         phone: '0912345678',
-  //         source: 'LinkedIn',
-  //         owner: 'John Smith',
-  //       },
-  //       {
-  //         name: 'Pham Minh Tuan',
-  //         company: 'TechVision Corp',
-  //         email: 'tuanpm@techvision.vn',
-  //         phone: '0934567890',
-  //         source: 'Twitter',
-  //         owner: 'Sarah Wilson',
-  //       },
-  //       {
-  //         name: 'Nguyen Thi Mai Anh',
-  //         company: 'Digital Solutions JSC',
-  //         email: 'maianh.nguyen@digital.com',
-  //         phone: '0978123456',
-  //         source: 'Trade Show',
-  //         owner: 'Mike Johnson',
-  //       },
-  //       {
-  //         name: 'Tran Van Minh',
-  //         company: 'SmartTech Vietnam',
-  //         email: 'minhtr@smarttech.vn',
-  //         phone: '0912876543',
-  //         source: 'Email Campaign',
-  //         owner: 'Emily Davis',
-  //       },
-  //     ],
-  //   }
-  // },
+  data() {
+    return {
+      rowsPerPage: 10,
+      leads: [
+        {
+          name: 'Le Tran Huong Giang',
+          company: 'Unitech Dach',
+          email: 'hgiang140302@gmail.com',
+          phone: '0913283313',
+          source: 'Zalo',
+          owner: 'Sally Tran',
+        },
+        {
+          name: 'Tran Thanh Nhan',
+          company: 'ABeam Consulting Vietnam',
+          email: 'thanhnhan@gmail.com',
+          phone: '0987654321',
+          source: 'Facebook',
+          owner: 'Brown Tran',
+        },
+        {
+          name: 'Nguyen Thuc Nhi',
+          company: 'TaiChung',
+          email: 'ntnhi@gmail.com',
+          phone: '0732648338',
+          source: 'Wedsite',
+          owner: 'Brown Tran',
+        },
+        {
+          name: 'Le Duc Huy',
+          company: 'Picon Technology',
+          email: 'huyld@gmail.com',
+          phone: '0912345678',
+          source: 'LinkedIn',
+          owner: 'John Smith',
+        },
+        {
+          name: 'Pham Minh Tuan',
+          company: 'TechVision Corp',
+          email: 'tuanpm@techvision.vn',
+          phone: '0934567890',
+          source: 'Twitter',
+          owner: 'Sarah Wilson',
+        },
+        {
+          name: 'Nguyen Thi Mai Anh',
+          company: 'Digital Solutions JSC',
+          email: 'maianh.nguyen@digital.com',
+          phone: '0978123456',
+          source: 'Trade Show',
+          owner: 'Mike Johnson',
+        },
+        {
+          name: 'Tran Van Minh',
+          company: 'SmartTech Vietnam',
+          email: 'minhtr@smarttech.vn',
+          phone: '0912876543',
+          source: 'Email Campaign',
+          owner: 'Emily Davis',
+        },
+      ],
+    }
+  },
 })
 </script>
 

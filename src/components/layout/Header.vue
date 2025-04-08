@@ -91,11 +91,11 @@ export default defineComponent({
         { label: 'Contacts', path: '/contacts' },
         { label: 'Accounts', path: '/accounts' },
         { label: 'Deals', path: '/deals' },
+        { label: 'Campaigns', path: '/campaigns' },
         { label: 'Tasks', path: '/tasks' },
         { label: 'Meetings', path: '/meetings' },
         { label: 'Calls', path: '/calls' },
         { label: 'Reports', path: '/reports' },
-        { label: 'Campaigns', path: '/campaigns' },
       ],
     }
   },

@@ -72,13 +72,13 @@ project
 ├── .vscode/                      # VSCode settings (extensions, preferences, etc.)
 ├── .gitignore                    # Git ignore configuration
 ├── .editorconfig                 # Code formatting rules
-├── .env                           # Environment variables
-├── .env.example                   # An example of .env file
-├── utils                          # Utility functions
-├── tsconfig.json                  # Typescript config
+├── .env                          # Environment variables
+├── .env.example                  # An example of .env file
+├── utils                         # Utility functions
+├── tsconfig.json                 # Typescript config
 ├── package.json                  # Dependency management
 ├── vite.config.js                # Vite configuration (or vue.config.js if using Vue CLI)
-├── tailwind.config.js          # TailwindCSS configuration (if used)
+├── tailwind.config.js            # TailwindCSS configuration (if used)
 └── ...
 ```
 

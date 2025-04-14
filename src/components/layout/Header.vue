@@ -18,7 +18,7 @@
     </div>
 
     <div class="header-right">
-      <div class="notification" @click="showNotifications">
+      <div class="notification" @click="toggleNotifications">
         <i class="fas fa-bell"></i>
         <span v-if="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
       </div>
@@ -32,10 +32,13 @@
         </div>
       </div>
     </div>
+
+    <NotificationsPanel v-if="showNotificationsPanel" @close="showNotificationsPanel = false" />
   </header>
 </template>
 
 <script lang="ts">
+import NotificationsPanel from '@/components/ui/NotificationsPanel.vue'
 import { useAuthStore } from '@/stores/modules/auth'
 import { useNotificationStore } from '@/stores/modules/notifications'
 import { computed, defineComponent, ref } from 'vue'
@@ -43,6 +46,9 @@ import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'Header',
+  components: {
+    NotificationsPanel,
+  },
   setup() {
     const router = useRouter()
     const route = useRoute()
@@ -50,14 +56,19 @@ export default defineComponent({
     const authStore = useAuthStore()
     const currentPath = computed(() => route.path)
     const showDropdown = ref(false)
+    const showNotificationsPanel = ref(false)
 
     const toggleDropdown = () => {
       showDropdown.value = !showDropdown.value
     }
 
-    const showNotifications = () => {
-      console.log('Show notifications')
+    const toggleNotifications = () => {
+      showNotificationsPanel.value = !showNotificationsPanel.value
+      if (showNotificationsPanel.value) {
+        showDropdown.value = false
+      }
     }
+
     const handleLogout = async () => {
       try {
         await authStore.logout(router)
@@ -66,6 +77,7 @@ export default defineComponent({
         console.error('Logout failed:', error)
       }
     }
+
     const isActiveRoute = (path: string) => {
       if (path === '/leads') {
         return route.path === '/leads' || route.path === '/leads/create'
@@ -75,7 +87,8 @@ export default defineComponent({
 
     return {
       notificationStore,
-      showNotifications,
+      showNotificationsPanel,
+      toggleNotifications,
       showDropdown,
       toggleDropdown,
       handleLogout,

@@ -15,9 +15,10 @@
       <table>
         <thead>
           <tr>
-            <th class="checkbox-column">
-              <input type="checkbox" />
-              <span class="sort-icon">▼</span>
+            <!-- <th class="checkbox-column"> -->
+            <th>
+              <!-- <input type="checkbox" />
+              <span class="sort-icon">▼</span> -->
               <span>Lead name</span>
             </th>
             <th>Company</th>
@@ -27,17 +28,23 @@
             <th>Lead Owner</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="lead in leads" :key="lead.email">
-            <td class="checkbox-column">
-              <input type="checkbox" />
-              <span>{{ lead.name }}</span>
+        <tbody v-if="leads.length != 0">
+          <tr v-for="lead in leads" :key="lead.id">
+            <!-- <td class="checkbox-column"> -->
+            <td>
+              <!-- <input type="checkbox" /> -->
+              <span>{{ lead.first_name }} {{ lead.last_name }}</span>
             </td>
-            <td>{{ lead.company }}</td>
+            <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
-            <td>{{ lead.source }}</td>
-            <td>{{ lead.owner }}</td>
+            <td>{{ lead.lead_source?.name || 'N/A' }}</td>
+            <td>{{ lead.lead_owner?.first_name }} {{ lead.lead_owner?.last_name }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="6" style="text-align: center">No leads found.</td>
           </tr>
         </tbody>
       </table>
@@ -62,82 +69,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { leadRepository } from '@/services'
+import type { Lead } from '@/types/leads/lead'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
 export default defineComponent({
   name: 'Lead',
   setup() {
     const router = useRouter()
+    const leads = ref<Lead[]>([])
+    const rowsPerPage = ref(10)
+
+    const fetchLeads = async () => {
+      try {
+        const res = await leadRepository.show({ limit: rowsPerPage.value })
+        console.log('✅ API Response:', res)
+        console.log('📦 Fetched leads:', res.results)
+        leads.value = res.results
+      } catch (error) {
+        console.error('❌ Error fetching leads:', error)
+      }
+    }
 
     const navigateToCreateLead = () => {
       router.push('/leads/create')
     }
 
+    onMounted(() => {
+      fetchLeads()
+    })
+
+    watch(rowsPerPage, () => {
+      fetchLeads()
+    })
+
     return {
+      leads,
+      rowsPerPage,
       navigateToCreateLead,
-    }
-  },
-  data() {
-    return {
-      rowsPerPage: 10,
-      leads: [
-        {
-          name: 'Le Tran Huong Giang',
-          company: 'Unitech Dach',
-          email: 'hgiang140302@gmail.com',
-          phone: '0913283313',
-          source: 'Zalo',
-          owner: 'Sally Tran',
-        },
-        {
-          name: 'Tran Thanh Nhan',
-          company: 'ABeam Consulting Vietnam',
-          email: 'thanhnhan@gmail.com',
-          phone: '0987654321',
-          source: 'Facebook',
-          owner: 'Brown Tran',
-        },
-        {
-          name: 'Nguyen Thuc Nhi',
-          company: 'TaiChung',
-          email: 'ntnhi@gmail.com',
-          phone: '0732648338',
-          source: 'Wedsite',
-          owner: 'Brown Tran',
-        },
-        {
-          name: 'Le Duc Huy',
-          company: 'Picon Technology',
-          email: 'huyld@gmail.com',
-          phone: '0912345678',
-          source: 'LinkedIn',
-          owner: 'John Smith',
-        },
-        {
-          name: 'Pham Minh Tuan',
-          company: 'TechVision Corp',
-          email: 'tuanpm@techvision.vn',
-          phone: '0934567890',
-          source: 'Twitter',
-          owner: 'Sarah Wilson',
-        },
-        {
-          name: 'Nguyen Thi Mai Anh',
-          company: 'Digital Solutions JSC',
-          email: 'maianh.nguyen@digital.com',
-          phone: '0978123456',
-          source: 'Trade Show',
-          owner: 'Mike Johnson',
-        },
-        {
-          name: 'Tran Van Minh',
-          company: 'SmartTech Vietnam',
-          email: 'minhtr@smarttech.vn',
-          phone: '0912876543',
-          source: 'Email Campaign',
-          owner: 'Emily Davis',
-        },
-      ],
     }
   },
 })

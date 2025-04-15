@@ -83,11 +83,12 @@ import { useAuthStore } from '@/stores/modules/auth' // Import the auth store
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Home',
   setup() {
     const authStore = useAuthStore()
     return {
-      userName: authStore.user?.email || 'User', // Use email from auth store with fallback
+      userName: authStore.user?.user.first_name + ' ' + authStore.user?.user.last_name,
     }
   },
 })

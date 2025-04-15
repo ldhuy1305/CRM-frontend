@@ -6,33 +6,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useAuthStore } from '@/stores/modules/auth';
-
+import { defineComponent } from 'vue'
 export default defineComponent({
   name: 'App',
-  setup() {
-    const authStore = useAuthStore();
-
-    const token = localStorage.getItem('token');
-    if (token && !authStore.isAuthenticated) {
-      authStore.isAuthenticated = true;
-    }
-
-    const isLoading = false;
-
-    return {
-      isAuthenticated: authStore.isAuthenticated,
-      isLoading,
-    };
-  },
-});
+  setup() {},
+})
 </script>
 
 <style>
 html,
 body {
-  margin: 0 ;
+  margin: 0;
   padding: 0;
   height: 100vh;
   overflow: hidden;

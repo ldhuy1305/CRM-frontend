@@ -1,14 +1,8 @@
-interface NamedObject {
+import type { UserInfo } from '@/services/repositories/auth'
+
+export interface NamedObject {
   id: number
   name: string
-}
-
-interface UserReference {
-  id: number
-  first_name: string
-  last_name: string
-  address?: string
-  phone?: string
 }
 
 export interface Lead {
@@ -30,12 +24,12 @@ export interface Lead {
   state_province: string
   postal_code: string
   description: string
-  lead_owner: UserReference
+  lead_owner: UserInfo
   lead_source: NamedObject
   lead_status: NamedObject
   industry: NamedObject
-  created_by: UserReference
-  updated_by: UserReference | null
+  created_by: UserInfo
+  updated_by: UserInfo | null
   created_at: string
   updated_at: string
   is_deleted: boolean
@@ -46,3 +40,29 @@ export type LeadRequest = Omit<
   Lead,
   'id' | 'created_at' | 'updated_at' | 'created_by' | 'updated_by' | 'is_deleted' | 'deleted_at'
 >
+
+export type LeadCreateEditPayload = Omit<
+  Lead,
+  | 'id'
+  | 'created_at'
+  | 'updated_at'
+  | 'created_by'
+  | 'updated_by'
+  | 'is_deleted'
+  | 'deleted_at'
+  | 'avatar'
+  | 'lead_owner'
+  | 'lead_source'
+  | 'lead_status'
+  | 'industry'
+> & {
+  lead_owner: number | null
+  lead_source: number | null
+  lead_status: number | null
+  industry: number | null
+}
+
+export interface LeadConvertPayload {
+  account_owner: number
+  is_create_deal: boolean
+}

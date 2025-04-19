@@ -21,11 +21,15 @@ export class BaseRepository<T = any, R = any> {
     params: ApiRequestParams = {},
     pathParams: string = '',
   ): Promise<ApiResponseList<T>> {
-    return this.$axios.get(`/${this.resource}/${id}/${pathParams}`, { params })
+    const response: AxiosResponse<ApiResponseList<T>> = await this.$axios.get(
+      `/${this.resource}/${id}/${pathParams}`,
+      { params },
+    )
+    return response.data
   }
 
   async create(
-    payload: Record<string, Partial<R>> | FormData | null,
+    payload: R | FormData | null,
     { visibleFields = [] }: { visibleFields?: string[] } = {},
   ): Promise<T> {
     try {

@@ -45,6 +45,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names, vue/no-reserved-component-names
   name: 'Header',
   components: {
     NotificationsPanel,
@@ -80,7 +81,13 @@ export default defineComponent({
 
     const isActiveRoute = (path: string) => {
       if (path === '/leads') {
-        return route.path === '/leads' || route.path === '/leads/create'
+        return (
+          route.path === '/leads' ||
+          route.path === '/leads/create' ||
+          route.path.match(/^\/leads\/\d+$/) || // /leads/{id}
+          route.path.match(/^\/leads\/\d+\/convert$/) || // /leads/{id}/convert
+          route.path.match(/^\/leads\/\d+\/edit$/) // /leads/{id}/edit
+        )
       }
       return route.path === path
     }

@@ -7,15 +7,6 @@ export interface User {
   access: string
 }
 
-export interface UserInfo {
-  id: number
-  first_name: string
-  last_name: string
-  address: string
-  phone: string
-  permission: Array<Permission>[]
-}
-
 export interface Permission {
   id: number
   name: string

@@ -1,5 +1,5 @@
 <template>
-  <div class="leads-container">
+  <div class="page-container">
     <div class="leads-header">
       <h1>Leads</h1>
       <div class="header-actions">
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div class="table-header">
+    <div class="table-pagination">
       <div class="rows-per-page">
         Records per page:
         <select v-model="rowsPerPage">
@@ -87,6 +87,8 @@
 
 <script setup lang="ts">
 import { leadRepository } from '@/services'
+import '@/styles/lead/index.css'
+import '@/styles/main.css'
 import type { Lead } from '@/types/leads/lead'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
@@ -151,181 +153,3 @@ watch(rowsPerPage, () => {
   fetchLeads()
 })
 </script>
-
-<style scoped>
-.leads-container {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
-    'Helvetica Neue', sans-serif;
-  padding: 24px;
-  background-color: #f8f9fc;
-  min-height: 100vh;
-}
-
-.leads-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.create-lead-btn {
-  background-color: #ff4d00;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-}
-
-.actions-btn {
-  background-color: #ff4d00;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.leads-table {
-  position: relative;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: visible;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px 16px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-th {
-  background-color: #f8f9fc;
-  font-weight: 500;
-  color: #1a3353;
-}
-
-.checkbox-column {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sort-icon {
-  color: #666;
-  font-size: 12px;
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: white;
-  border-top: 1px solid #eee;
-}
-
-.rows-per-page {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.rows-per-page select {
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.nav-btn {
-  padding: 4px 8px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.current-page {
-  background-color: #1a3353;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.lead-row {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.lead-row:hover {
-  background-color: #f8f9fc;
-}
-
-.lead-name-cell {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.more-options {
-  position: relative;
-}
-
-.more-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px 8px;
-  font-size: 16px;
-  color: #666;
-}
-
-.more-btn:hover {
-  background-color: #f0f0f0;
-  border-radius: 4px;
-}
-
-.options-dropdown {
-  position: absolute;
-  right: 10;
-  top: 100%;
-  margin-bottom: 5px;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  min-width: 150px;
-}
-
-.options-dropdown div {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.options-dropdown div:hover {
-  background-color: #f8f9fc;
-}
-</style>

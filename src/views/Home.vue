@@ -1,5 +1,5 @@
 <template>
-  <div class="home-container">
+  <div class="page-container">
     <div class="welcome-header">
       <h2>
         Welcome <span class="user-name">{{ userName }}</span>
@@ -80,6 +80,8 @@
 
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth' // Import the auth store
+import '@/styles/home/style.css'
+import '@/styles/main.css'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -93,70 +95,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped>
-.home-container {
-  padding: 20px;
-}
-
-.welcome-header {
-  margin-bottom: 50px;
-}
-
-.grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.table-section {
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.table-section h3 {
-  margin-bottom: 16px;
-  color: #333;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-th {
-  font-weight: 400;
-  color: #666;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-}
-
-.empty-state img {
-  width: 120px;
-  margin-bottom: 16px;
-}
-
-.empty-state p {
-  color: #666;
-}
-
-.user-name {
-  font-weight: bold;
-  color: #ff6500;
-}
-</style>

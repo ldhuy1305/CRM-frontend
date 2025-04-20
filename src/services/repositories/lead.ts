@@ -1,8 +1,13 @@
-import type { Lead, LeadConvertPayload, LeadCreatePayload, NamedObject } from '@/types/leads/lead'
+import type {
+  Lead,
+  LeadConvertPayload,
+  LeadCreateEditPayload,
+  NamedObject,
+} from '@/types/leads/lead'
 import api from '../api'
 import { BaseRepository } from '../base'
 
-class LeadRepository extends BaseRepository<Lead, LeadCreatePayload> {
+class LeadRepository extends BaseRepository<Lead, LeadCreateEditPayload> {
   constructor() {
     super(api, 'leads')
   }

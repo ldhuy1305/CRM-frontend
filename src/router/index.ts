@@ -3,11 +3,11 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
 
-import Lead from '@/views/lead/Lead.vue'
 import LeadConvert from '@/views/lead/LeadConvert.vue'
 import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
+import Lead from '@/views/lead/LeadIndex.vue'
 
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'

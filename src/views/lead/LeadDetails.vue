@@ -1,18 +1,18 @@
 <template>
   <div class="page-container">
-    <div class="lead-header">
-      <div class="back-button">
+    <div class="module-header">
+      <div class="btn-back">
         <button class="icon-button" @click="handleBack">
           <i class="arrow-left"></i>
         </button>
       </div>
-      <div class="lead-profile">
+      <div class="module-profile">
         <div class="profile-image">
           <div class="avatar-placeholder">
             <img src="@/assets/default_avatar.png" alt="Lead Avatar" />
           </div>
         </div>
-        <div class="lead-title">
+        <div class="module-title">
           <h1>
             {{ lead.first_name }} {{ lead.last_name }} -
             <span class="company-name">{{ lead.company_name }}</span>
@@ -21,9 +21,9 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="send-mail-btn">Send mail</button>
-        <button class="convert-btn" @click="navigateToConvertLead(lead.id)">Convert</button>
-        <button class="edit-btn" @click="navigateToEditLead(lead.id)">Edit</button>
+        <button class="btn-primary">Send mail</button>
+        <button class="btn-tertiary" @click="navigateToConvertLead(lead.id)">Convert</button>
+        <button class="btn-secondary" @click="navigateToEditLead(lead.id)">Edit</button>
       </div>
     </div>
 
@@ -51,7 +51,7 @@
 
       <div class="details-section">
         <div class="section-header">
-          <h3>Lead Information</h3>
+          <h3>Details Information</h3>
         </div>
 
         <div class="section-content">
@@ -162,7 +162,7 @@
       <div class="email-section">
         <div class="section-header">
           <h3>Email</h3>
-          <button class="btn btn-primary email-btn">Send mail</button>
+          <button class="btn-primary">Send mail</button>
         </div>
         <div class="email-table">
           <table>
@@ -196,7 +196,7 @@
       <div class="campaigns-section">
         <div class="section-header">
           <h3>Campaigns</h3>
-          <button class="btn btn-primary">Add campaign</button>
+          <button class="btn-primary">Add campaign</button>
         </div>
         <div class="campaigns-table">
           <table>
@@ -233,8 +233,7 @@
 
 <script setup lang="ts">
 import { leadRepository } from '@/services/repositories/lead'
-import '@/styles/lead/details.css'
-import '@/styles/main.css'
+import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'

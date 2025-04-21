@@ -54,7 +54,6 @@
         </div>
       </div>
 
-      <!-- My Deals Closing This Month -->
       <div class="table-section">
         <h3>My Deals Closing This Month</h3>
         <table>

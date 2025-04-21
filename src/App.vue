@@ -6,12 +6,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
+
 export default defineComponent({
   name: 'App',
-  setup() {},
+  setup() {
+    const isLoading = ref(false) 
+
+    return {
+      isLoading,
+    }
+  },
 })
 </script>
+
 
 <style>
 html,

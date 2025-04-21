@@ -10,12 +10,12 @@
       <div class="convert-form">
         <div class="form-row">
           <label>Create New Account</label>
-          <div class="tag">{{ lead.company_name }}</div>
+          <div class="convert-tag">{{ lead.company_name }}</div>
         </div>
 
         <div class="form-row">
           <label>Create New Contact</label>
-          <div class="tag">{{ lead.last_name }} {{ lead.first_name }}</div>
+          <div class="convert-tag">{{ lead.last_name }} {{ lead.first_name }}</div>
         </div>
 
         <div class="form-row checkbox-row">
@@ -40,8 +40,8 @@
         </div>
 
         <div class="form-actions">
-          <button class="convert-btn" @click="handleConvert">Convert</button>
-          <button class="cancel-btn" @click="handleCancel">Cancel</button>
+          <button class="btn-primary" @click="handleConvert">Convert</button>
+          <button class="btn-secondary" @click="handleCancel">Cancel</button>
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { leadRepository, userRepository } from '@/services'
 import '@/styles/lead/convert.css'
-import '@/styles/main.css'
+import '@/styles/shared/index.css'
 import type { Lead, LeadConvertPayload } from '@/types/leads/lead'
 import type { UserOption } from '@/types/users/user'
 import { onMounted, ref } from 'vue'

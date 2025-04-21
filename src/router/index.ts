@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
 
+import Contact from '@/views/contact/ContactIndex.vue'
 import LeadConvert from '@/views/lead/LeadConvert.vue'
 import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
@@ -43,7 +44,7 @@ const routes = [
         meta: { requiresAuth: true },
       },
 
-      // { path: 'contacts', name: 'Contacts', component: () => import('@/views/Contacts.vue') },
+      { path: 'contacts', name: 'Contacts', component: Contact },
       // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },

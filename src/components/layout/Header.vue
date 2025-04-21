@@ -1,7 +1,7 @@
 <template>
   <header class="app-header">
     <div class="logo">
-      <img src="@/assets/unibeam-logo.png" alt="UNIBEAM Logo" />
+      <img src="@/assets/unibeam-logo.png" alt="UNIBEAM Logo" @click="navigateToHome()" />
       <!-- <span>UNIBEAM</span> -->
 
       <nav class="menu">
@@ -80,6 +80,10 @@ export default defineComponent({
       }
     }
 
+    const navigateToHome = () => {
+      router.push('/')
+    }
+
     const isActiveRoute = (path: string) => {
       if (path === '/leads') {
         return (
@@ -88,6 +92,14 @@ export default defineComponent({
           route.path.match(/^\/leads\/\d+$/) || // /leads/{id}
           route.path.match(/^\/leads\/\d+\/convert$/) || // /leads/{id}/convert
           route.path.match(/^\/leads\/\d+\/edit$/) // /leads/{id}/edit
+        )
+      }
+      if (path === '/contacts') {
+        return (
+          route.path === '/contacts' ||
+          route.path === '/contacts/create' ||
+          route.path.match(/^\/contacts\/\d+$/) || // /contacts/{id}
+          route.path.match(/^\/contacts\/\d+\/edit$/) // /contacts/{id}/edit
         )
       }
       return route.path === path
@@ -102,6 +114,7 @@ export default defineComponent({
       handleLogout,
       currentPath,
       isActiveRoute,
+      navigateToHome,
     }
   },
   data() {

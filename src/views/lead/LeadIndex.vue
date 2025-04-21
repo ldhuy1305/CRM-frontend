@@ -1,9 +1,9 @@
 <template>
   <div class="page-container">
-    <div class="leads-header">
+    <div class="module-header">
       <h1>Leads</h1>
       <div class="header-actions">
-        <button class="create-lead-btn" @click="navigateToCreateLead">Create Lead</button>
+        <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
         <!-- <button class="actions-btn">
           Actions
           <span class="dropdown-arrow">▼</span>
@@ -27,7 +27,7 @@
       </div>
     </div>
 
-    <div class="leads-table">
+    <div class="module-table">
       <table>
         <thead>
           <tr>
@@ -46,9 +46,9 @@
           </tr>
         </thead>
         <tbody v-if="leads.length != 0">
-          <tr v-for="lead in leads" :key="lead.id" class="lead-row">
+          <tr v-for="lead in leads" :key="lead.id" class="data-row">
             <td>
-              <div class="lead-name-cell">
+              <div class="data-name-cell">
                 <div class="more-options">
                   <button class="more-btn" @click.stop="toggleMoreOptions(lead.id)">⋮</button>
                   <div v-if="activeMoreOptions === lead.id" class="options-dropdown">
@@ -87,8 +87,7 @@
 
 <script setup lang="ts">
 import { leadRepository } from '@/services'
-import '@/styles/lead/index.css'
-import '@/styles/main.css'
+import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'

@@ -1,10 +1,10 @@
 <template>
   <div class="page-container">
-    <div class="create-lead-header">
+    <div class="module-header">
       <h1>Edit Lead</h1>
       <div class="header-actions">
-        <button class="cancel-btn" @click="handleCancel">Cancel</button>
-        <button class="save-btn" @click="handleSave">Save</button>
+        <button class="btn-secondary" @click="handleCancel">Cancel</button>
+        <button class="btn-primary" @click="handleSave">Save</button>
       </div>
     </div>
 
@@ -163,8 +163,7 @@ import {
   leadStatusRepository,
   userRepository,
 } from '@/services'
-import '@/styles/lead/create-edit.css'
-import '@/styles/main.css'
+import '@/styles/shared/index.css'
 import type { SelectOption } from '@/types/common/common_types'
 import type { Lead, LeadCreateEditPayload } from '@/types/leads/lead'
 import type { UserOption } from '@/types/users/user'

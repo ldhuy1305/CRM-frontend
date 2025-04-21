@@ -81,7 +81,6 @@
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth' // Import the auth store
 import '@/styles/home/style.css'
-import '@/styles/main.css'
 import { defineComponent } from 'vue'
 
 export default defineComponent({

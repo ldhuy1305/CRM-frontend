@@ -19,7 +19,7 @@
       <button type="submit" :disabled="loading">Đăng nhập</button>
       <p>
         Quên mật khẩu?
-        <!--        <router-link to="/email">Đăng ký</router-link>-->
+               <!-- <router-link to="/email">Đăng ký</router-link> -->
       </p>
     </form>
   </div>

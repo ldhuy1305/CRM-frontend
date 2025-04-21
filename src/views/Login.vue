@@ -27,10 +27,12 @@
 
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth.ts'
-import { useRouter } from 'vue-router'
+import '@/styles/login/style.css'
 import { defineComponent, reactive } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
+  // eslint-disable-next-line vue/multi-word-component-names
   name: 'Login',
   setup() {
     const authStore = useAuthStore()
@@ -56,53 +58,3 @@ export default defineComponent({
   },
 })
 </script>
-
-<style scoped>
-.login-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #1e3e62;
-}
-
-input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 0.75rem;
-  background-color: #ff6500;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:disabled {
-  background-color: #95a5a6;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  margin: 0.5rem 0;
-}
-
-a {
-  color: #3498db;
-  text-decoration: none;
-}
-</style>

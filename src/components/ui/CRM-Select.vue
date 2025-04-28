@@ -1,122 +1,169 @@
-<!-- <template>
-  <div class="select-container">
-    <label>{{ label }}</label>
-    <select :value="modelValue" @change="handleChange">
-      <option v-for="option in options" :key="getValue?.(option)" :value="getValue?.(option)">
-        {{ getLabel?.(option) }} 
-      </option>
-    </select>
-    <div v-if="error" class="error-message">{{ error }}</div>
+<template>
+  <div class="crm-select">
+    <label v-if="label" class="select-label">{{ label }}</label>
+    <div class="select-wrapper">
+      <input
+        v-model="searchText"
+        class="search-input"
+        type="text"
+        :placeholder="placeholder"
+        @focus="openDropdown = true"
+        @click.stop
+      />
+      <span class="dropdown-icon" @click="toggleDropdown">▼</span>
+
+      <div v-if="openDropdown" class="dropdown">
+        <div class="dropdown-list">
+          <div
+            v-if="filteredOptions.length"
+            v-for="option in filteredOptions"
+            :key="option.value"
+            class="dropdown-item"
+            @click="selectOption(option)"
+          >
+            {{ option.label }}
+          </div>
+          <div v-else class="no-options">Sorry, no matching options.</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from 'vue'
+
 const props = defineProps({
-  label: String,
-  modelValue: [String, Number, null],
-  options: Array,
-  getLabel: Function,  
-  getValue: Function,  
-  error: String,
+  modelValue: [String, Number],
+  options: {
+    type: Array as () => { label: string; value: string }[],
+    default: () => [],
+  },
+  label: {
+    type: String,
+    default: '',
+  },
+  placeholder: {
+    type: String,
+    default: 'Select...',
+  },
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'change'])
 
-function handleChange(event: Event) {
-  const value = (event.target as HTMLSelectElement).value
-  emit('update:modelValue', value)
+const openDropdown = ref(false)
+const searchText = ref('')
+const selectedLabel = ref('')
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    const selected = props.options.find((opt) => opt.value === newVal)
+    if (selected) {
+      searchText.value = selected.label
+      selectedLabel.value = selected.label
+    } else {
+      searchText.value = ''
+      selectedLabel.value = ''
+    }
+  },
+  { immediate: true },
+)
+
+const filteredOptions = computed(() => {
+  if (!searchText.value) return props.options
+  return props.options.filter((option) =>
+    option.label.toLowerCase().includes(searchText.value.toLowerCase()),
+  )
+})
+
+function toggleDropdown(event: Event) {
+  event.stopPropagation()
+  openDropdown.value = !openDropdown.value
+}
+
+function selectOption(option: { label: string; value: string }) {
+  emit('update:modelValue', option.value)
+  emit('change', option.value)
+  searchText.value = option.label
+  selectedLabel.value = option.label
+  openDropdown.value = false
 }
 </script>
 
 <style scoped>
-.select-container {
+.crm-select {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  position: relative;
+  padding: 10px 0px;
 }
 
-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.select-label {
   font-size: 14px;
-  color: #333;
+  margin-bottom: 4px;
+  color: #1a3353;
+  font-weight: 600;
 }
 
-select:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.error-message {
-  color: red;
-  font-size: 12px;
-}
-</style> -->
-
-<template>
-  <div class="select-wrapper">
-    <label>{{ label }}</label>
-    <select :value="modelValue" @change="handleChange">
-      <option v-for="option in options" :key="getOptionValue(option)" :value="getOptionValue(option)">
-        {{ getOptionLabel(option) }}
-      </option>
-    </select>
-    <div v-if="error" class="error">{{ error }}</div>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-
-const props = defineProps<{
-  label: string
-  modelValue: string | number
-  options: Array<Record<string, any>>
-  error?: string
-}>()
-
-const emit = defineEmits(['update:modelValue'])
-
-
-function getOptionLabel(option: any) {
-  return option.label ?? option.name ?? option.value ?? 'N/A'
-}
-
-
-function getOptionValue(option: any) {
-  return option.value ?? option.id ?? option.name
-}
-
-
-function handleChange(event: Event) {
-  const target = event.target as HTMLSelectElement
-  emit('update:modelValue', target.value)
-}
-</script>
-
-<style scoped>
 .select-wrapper {
-  margin-bottom: 16px;
+  position: relative;
   display: flex;
-  flex-direction: column;
-}
-
-select {
-  padding: 8px;
-  font-size: 16px;
-  width: 100%;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 0;
   border-radius: 6px;
+  background-color: #fff;
 }
 
-label {
-  font-weight: bold;
-  margin-bottom: 8px;
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 8px 12px;
+  font-size: 14px;
 }
 
-.error {
-  color: red;
+.dropdown-icon {
+  padding: 0 12px;
   font-size: 12px;
-  margin-top: 4px;
+  color: #888;
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-top: none;
+  z-index: 1000;
+  max-height: 220px;
+  overflow-y: auto;
+  border-radius: 0 0 6px 6px;
+  width: 100%;
+}
+
+.dropdown-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  padding: 10px 12px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f5f5f5;
+}
+
+.no-options {
+  padding: 12px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
 }
 </style>

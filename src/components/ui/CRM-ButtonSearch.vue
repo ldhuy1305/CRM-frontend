@@ -28,7 +28,6 @@ export default defineComponent({
 </script>
 
 <style>
-
 @import '/src/assets/main.css';
 .button-group {
   margin-top: 24px;

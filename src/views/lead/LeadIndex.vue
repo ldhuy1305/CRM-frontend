@@ -4,13 +4,11 @@
       <h1>Leads</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
-        <!-- <button class="actions-btn">
-          Actions
-          <span class="dropdown-arrow">▼</span>
-        </button> -->
       </div>
     </div>
-    <LeadSearchForm></LeadSearchForm>
+
+    <LeadSearchForm @search="handleSearch" @clear="handleClear" />
+
     <div class="table-pagination">
       <div class="rows-per-page">
         Records per page:
@@ -21,9 +19,9 @@
         </select>
       </div>
       <div class="pagination">
-        <button class="nav-btn">&lt;</button>
-        <span class="current-page">1</span>
-        <button class="nav-btn">&gt;</button>
+        <button class="nav-btn" @click="previousPage">&lt;</button>
+        <span class="current-page">{{ currentPage }}</span>
+        <button class="nav-btn" @click="nextPage">&gt;</button>
       </div>
     </div>
 
@@ -32,12 +30,7 @@
         <thead>
           <tr>
             <th></th>
-            <!-- <th class="checkbox-column"></th> -->
-            <th>
-              <!-- <input type="checkbox" />
-              <span class="sort-icon">▼</span> -->
-              <span>Lead name</span>
-            </th>
+            <th>Lead name</th>
             <th>Company</th>
             <th>Email</th>
             <th>Phone</th>
@@ -61,12 +54,8 @@
                 </div>
               </div>
             </td>
-            <!-- <td class="checkbox-column"> -->
-            <td>
-              <!-- <input type="checkbox" /> -->
-              <span @click="navigateToLeadDetails(lead.id)"
-                >{{ lead.last_name }} {{ lead.first_name }}</span
-              >
+            <td @click="navigateToLeadDetails(lead.id)">
+              {{ lead.last_name }} {{ lead.first_name }}
             </td>
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
@@ -77,7 +66,7 @@
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="6" style="text-align: center">No leads found.</td>
+            <td colspan="7" style="text-align: center">No leads found.</td>
           </tr>
         </tbody>
       </table>
@@ -86,27 +75,43 @@
 </template>
 
 <script setup lang="ts">
-import { leadRepository } from '@/services'
-import '@/styles/shared/index.css'
-import type { Lead } from '@/types/leads/lead'
-import { onMounted, ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { leadRepository } from '@/services'
 import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
+import type { Lead } from '@/types/leads/lead'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
+const searchFilters = ref<any>({})
+const currentPage = ref(1)
 
 const fetchLeads = async () => {
   try {
-    const res = await leadRepository.show({ limit: rowsPerPage.value })
-    console.log('✅ API Response:', res)
-    console.log('📦 Fetched leads:', res.results)
+    const params = {
+      limit: rowsPerPage.value,
+      page: currentPage.value,
+      ...searchFilters.value,
+    }
+    const res = await leadRepository.show(params)
     leads.value = res.results
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
   }
+}
+
+const handleSearch = (filters: any) => {
+  searchFilters.value = { ...filters }
+  // currentPage.value = 1
+  // fetchLeads()
+}
+
+const handleClear = () => {
+  searchFilters.value = {}
+  // currentPage.value = 1
+  // fetchLeads()
 }
 
 const navigateToCreateLead = () => {
@@ -117,12 +122,12 @@ const navigateToLeadDetails = (leadId: number) => {
   router.push(`/leads/${leadId}`)
 }
 
-const navigateToConvertLead = (leadId: number) => {
-  router.push(`/leads/${leadId}/convert`)
-}
-
 const navigateToEditLead = (leadId: number) => {
   router.push(`/leads/${leadId}/edit`)
+}
+
+const navigateToConvertLead = (leadId: number) => {
+  router.push(`/leads/${leadId}/convert`)
 }
 
 const toggleMoreOptions = (leadId: number) => {
@@ -130,19 +135,27 @@ const toggleMoreOptions = (leadId: number) => {
 }
 
 const deleteLead = async (leadId: number) => {
-  if (!confirm('Confirm to delete this lead?')) {
-    return
-  }
-
+  if (!confirm('Confirm to delete this lead?')) return
   try {
     await leadRepository.destroy(leadId)
-    console.log('✅ Lead deleted successfully:', leadId)
     await fetchLeads()
     activeMoreOptions.value = null
   } catch (error) {
     console.error('❌ Error deleting lead:', error)
     alert('Failed to delete lead. Please try again.')
   }
+}
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+    fetchLeads()
+  }
+}
+
+const nextPage = () => {
+  currentPage.value++
+  fetchLeads()
 }
 
 onMounted(() => {
@@ -153,3 +166,5 @@ watch(rowsPerPage, () => {
   fetchLeads()
 })
 </script>
+
+<style scoped></style>

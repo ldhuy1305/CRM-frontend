@@ -1,5 +1,10 @@
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  --btn: #222425;
+  --btn-search-bg: #0355b3;
+  --btn-text-color: white;
+  --btn-border-radius: 4px;
+
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;

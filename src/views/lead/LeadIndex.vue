@@ -10,7 +10,7 @@
         </button> -->
       </div>
     </div>
-
+    <LeadSearchForm></LeadSearchForm>
     <div class="table-pagination">
       <div class="rows-per-page">
         Records per page:
@@ -91,6 +91,7 @@ import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])

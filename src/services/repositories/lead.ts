@@ -1,9 +1,5 @@
-import type {
-  Lead,
-  LeadConvertPayload,
-  LeadCreateEditPayload,
-  NamedObject,
-} from '@/types/leads/lead'
+import type { NamedObject } from '@/types/common/common_types'
+import type { Lead, LeadConvertPayload, LeadCreateEditPayload } from '@/types/leads/lead'
 import api from '../api'
 import { BaseRepository } from '../base'
 
@@ -22,18 +18,26 @@ class LeadRepository extends BaseRepository<Lead, LeadCreateEditPayload> {
     }
   }
 }
+
 class LeadSourceRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {
   constructor() {
-    super(api, 'lead-sources')
+    super(api, 'leads/sources')
   }
 }
 
 class LeadStatusRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {
   constructor() {
-    super(api, 'lead-statuses')
+    super(api, 'leads/statuses')
+  }
+}
+
+class IndustryRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {
+  constructor() {
+    super(api, 'leads/industries')
   }
 }
 
 export const leadRepository = new LeadRepository()
 export const leadSourceRepository = new LeadSourceRepository()
 export const leadStatusRepository = new LeadStatusRepository()
+export const industryRepository = new IndustryRepository()

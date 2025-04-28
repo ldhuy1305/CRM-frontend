@@ -3,6 +3,12 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
 
+import AccountCreate from '@/views/account/AccountCreate.vue'
+import AccountDetails from '@/views/account/AccountDetails.vue'
+import Account from '@/views/account/AccountIndex.vue'
+import ContactCreate from '@/views/contact/ContactCreate.vue'
+import ContactDetails from '@/views/contact/ContactDetails.vue'
+import ContactEdit from '@/views/contact/ContactEdit.vue'
 import Contact from '@/views/contact/ContactIndex.vue'
 import LeadConvert from '@/views/lead/LeadConvert.vue'
 import LeadCreate from '@/views/lead/LeadCreate.vue'
@@ -10,6 +16,7 @@ import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
 
+import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
@@ -45,6 +52,45 @@ const routes = [
       },
 
       { path: 'contacts', name: 'Contacts', component: Contact },
+      {
+        path: '/contacts/create',
+        name: 'CreateContact',
+        component: ContactCreate,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/contacts/:id',
+        name: 'ContactDetails',
+        component: ContactDetails,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/contacts/:id/edit',
+        name: 'ContactEdit',
+        component: ContactEdit,
+        meta: { requiresAuth: true },
+      },
+      { path: 'accounts', name: 'Accounts', component: Account },
+      {
+        path: '/accounts/:id',
+        name: 'AccountDetails',
+        component: AccountDetails,
+        meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/accounts/create',
+        name: 'CreateAccount',
+        component: AccountCreate,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/accounts/:id/edit',
+        name: 'EditAccount',
+        component: AccountEdit,
+        meta: { requiresAuth: true },
+      },
+
       // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },

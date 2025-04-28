@@ -1,5 +1,6 @@
 import type { NamedObject } from '@/types/common/common_types'
 import type { UserInfo } from '@/types/users/user'
+import type { Account } from '../accounts/account'
 
 export interface Contact {
   id: number
@@ -10,7 +11,7 @@ export interface Contact {
   website: string
   fax: string
   department: string
-  birthday: Date
+  birthday: string
   assistant_name: string
   assistant_phone: string
   avatar: string
@@ -22,7 +23,7 @@ export interface Contact {
   state_province: string
   postal_code: string
   description: string
-  account: number
+  account: Account
   contact_owner: UserInfo
   lead_source: NamedObject
   created_by: UserInfo
@@ -47,10 +48,11 @@ export type ContactCreateEditPayload = Omit<
   | 'updated_by'
   | 'is_deleted'
   | 'deleted_at'
-  | 'avatar'
   | 'contact_owner'
   | 'lead_source'
+  | 'account'
 > & {
+  account: number
   contact_owner: number | null
   lead_source: number | null
 }

@@ -1,34 +1,28 @@
 <template>
   <div class="button-group">
-    <button class="btn-clear" @click="onClear">Clear</button>
-    <button class="btn-search" @click="onSearch">Search</button>
+    <CRMButton customClass="btn-clear" @click="onClear">Clear</CRMButton>
+    <CRMButton customClass="btn-search" @click="onSearch">Search</CRMButton>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, defineEmits } from 'vue'
 
-export default defineComponent({
-  name: 'CRMButtonSearch',
-  emits: ['clear', 'search'],
-  setup(_, { emit }) {
-    function onClear() {
-      emit('clear')
-    }
+<script setup lang="ts">
+import CRMButton from './CRMButton.vue'
 
-    function onSearch() {
-      emit('search')
-    }
+const emit = defineEmits(['clear', 'search'])
 
-    return {
-      onClear,
-      onSearch,
-    }
-  },
-})
+function onClear() {
+  emit('clear')
+}
+
+function onSearch() {
+  emit('search')
+}
 </script>
+
 
 <style>
 @import '/src/assets/main.css';
+
 .button-group {
   margin-top: 24px;
   display: flex;

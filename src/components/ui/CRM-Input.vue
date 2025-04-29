@@ -9,6 +9,7 @@
       :class="inputClass"
       :type="type"
       :required="required"
+      :disabled="disabled"
     />
     <span v-if="error" class="error-message">{{ error }}</span>
   </div>
@@ -22,6 +23,7 @@ const props = defineProps<{
   modelValue: any
   type?: string
   required?: boolean
+  disabled?: boolean    
   error?: string
   inputClass?: string
 }>()
@@ -48,5 +50,4 @@ function onInput(event: Event) {
   color: red;
   font-size: 12px;
 }
-
 </style>

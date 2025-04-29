@@ -19,9 +19,9 @@
         </select>
       </div>
       <div class="pagination">
-        <button class="nav-btn" @click="previousPage">&lt;</button>
+        <button class="nav-btn">&lt;</button>
         <span class="current-page">{{ currentPage }}</span>
-        <button class="nav-btn" @click="nextPage">&gt;</button>
+        <button class="nav-btn" >&gt;</button>
       </div>
     </div>
 
@@ -146,17 +146,11 @@ const deleteLead = async (leadId: number) => {
   }
 }
 
-const previousPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--
-    fetchLeads()
-  }
-}
 
-const nextPage = () => {
-  currentPage.value++
-  fetchLeads()
-}
+// const nextPage = () => {
+//   currentPage.value++
+//   fetchLeads()
+// }
 
 onMounted(() => {
   fetchLeads()

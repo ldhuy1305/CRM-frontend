@@ -17,11 +17,11 @@
           <div
             v-if="filteredOptions.length"
             v-for="option in filteredOptions"
-            :key="option.value"
+            :key="option.id"
             class="dropdown-item"
             @click="selectOption(option)"
           >
-            {{ option.label }}
+            {{ option.name }}
           </div>
           <div v-else class="no-options">Rất tiếc, không có lựa chọn nào phù hợp.</div>
         </div>
@@ -36,7 +36,7 @@ import { ref, computed, watch } from 'vue'
 const props = defineProps({
   modelValue: [String, Number],
   options: {
-    type: Array as () => { label: string; value: string }[],
+    type: Array as () => { id: number; name: string }[],
     default: () => [],
   },
   label: {
@@ -58,10 +58,10 @@ const selectedLabel = ref('')
 watch(
   () => props.modelValue,
   (newVal) => {
-    const selected = props.options.find((opt) => opt.value === newVal)
+    const selected = props.options.find((opt) => opt.id === newVal)
     if (selected) {
-      searchText.value = selected.label
-      selectedLabel.value = selected.label
+      searchText.value = selected.name
+      selectedLabel.value = selected.name
     } else {
       searchText.value = ''
       selectedLabel.value = ''
@@ -73,7 +73,7 @@ watch(
 const filteredOptions = computed(() => {
   if (!searchText.value) return props.options
   return props.options.filter((option) =>
-    option.label.toLowerCase().includes(searchText.value.toLowerCase()),
+    option.name.toLowerCase().includes(searchText.value.toLowerCase()),
   )
 })
 
@@ -82,11 +82,11 @@ function toggleDropdown(event: Event) {
   openDropdown.value = !openDropdown.value
 }
 
-function selectOption(option: { label: string; value: string }) {
-  emit('update:modelValue', option.value)
-  emit('change', option.value)
-  searchText.value = option.label
-  selectedLabel.value = option.label
+function selectOption(option: { id: number; name: string }) {
+  emit('update:modelValue', option.id)
+  emit('change', option.id)
+  searchText.value = option.name
+  selectedLabel.value = option.name
   openDropdown.value = false
 }
 </script>

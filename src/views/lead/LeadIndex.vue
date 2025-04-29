@@ -4,6 +4,10 @@
       <h1>Leads</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
+        <!-- <button class="actions-btn">
+            Actions
+          <span class="dropdown-arrow">▼</span>
+        </button> -->
       </div>
     </div>
 
@@ -20,8 +24,8 @@
       </div>
       <div class="pagination">
         <button class="nav-btn">&lt;</button>
-        <span class="current-page">{{ currentPage }}</span>
-        <button class="nav-btn" >&gt;</button>
+        <span class="current-page">1</span>
+        <button class="nav-btn">&gt;</button>
       </div>
     </div>
 
@@ -30,7 +34,12 @@
         <thead>
           <tr>
             <th></th>
-            <th>Lead name</th>
+            <!-- <th class="checkbox-column"></th> -->
+            <th>
+              <!-- <input type="checkbox" />
+              <span class="sort-icon">▼</span> -->
+              <span>Lead name</span>
+            </th>
             <th>Company</th>
             <th>Email</th>
             <th>Phone</th>
@@ -54,9 +63,14 @@
                 </div>
               </div>
             </td>
-            <td @click="navigateToLeadDetails(lead.id)">
-              {{ lead.last_name }} {{ lead.first_name }}
+            <!-- <td class="checkbox-column"> -->
+            <td>
+              <!-- <input type="checkbox" /> -->
+              <span @click="navigateToLeadDetails(lead.id)"
+                >{{ lead.last_name }} {{ lead.first_name }}</span
+              >
             </td>
+
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
@@ -66,7 +80,7 @@
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="7" style="text-align: center">No leads found.</td>
+            <td colspan="6" style="text-align: center">No leads found.</td>
           </tr>
         </tbody>
       </table>
@@ -75,27 +89,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { leadRepository } from '@/services'
 import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import type { Lead } from '@/types/leads/lead'
+import '@/styles/shared/index.css'
+import { onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])
 const rowsPerPage = ref(10)
+const searchFilters = ref({})
 const activeMoreOptions = ref<number | null>(null)
-const searchFilters = ref<any>({})
-const currentPage = ref(1)
 
 const fetchLeads = async () => {
   try {
-    const params = {
-      limit: rowsPerPage.value,
-      page: currentPage.value,
-      ...searchFilters.value,
-    }
-    const res = await leadRepository.show(params)
+    const res = await leadRepository.show({ limit: rowsPerPage.value })
+    console.log('✅ API Response:', res)
+    console.log('📦 Fetched leads:', res.results)
     leads.value = res.results
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
@@ -138,6 +149,7 @@ const deleteLead = async (leadId: number) => {
   if (!confirm('Confirm to delete this lead?')) return
   try {
     await leadRepository.destroy(leadId)
+    console.log('✅ Lead deleted successfully:', leadId)
     await fetchLeads()
     activeMoreOptions.value = null
   } catch (error) {
@@ -145,12 +157,6 @@ const deleteLead = async (leadId: number) => {
     alert('Failed to delete lead. Please try again.')
   }
 }
-
-
-// const nextPage = () => {
-//   currentPage.value++
-//   fetchLeads()
-// }
 
 onMounted(() => {
   fetchLeads()

@@ -347,6 +347,11 @@
   color: #666;
 }
 
+.clickable {
+  cursor: pointer;
+  color: #1a3353;
+}
+
 .information-section,
 .address-section,
 .description-section {
@@ -412,16 +417,23 @@
   color: #666;
 }
 
+.website-link {
+  color: #1a3353;
+  text-decoration: none;
+}
+
 .tag {
   display: inline-block;
   margin-top: 5px;
-  color: #666;
+  color: #333;
 }
 
 .tag span {
   display: inline-block;
   padding: 2px 8px;
   font-size: 14px;
+  border-radius: 15%;
+  background-color: #c6c6c6;
 }
 
 .action-buttons {

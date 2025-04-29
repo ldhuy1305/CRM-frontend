@@ -38,7 +38,7 @@
                 <span class="sort-icon">▼</span> -->
               <span>Contact Name</span>
             </th>
-            <th>Account ID</th>
+            <th>Account Name</th>
             <th>Email</th>
             <th>Phone</th>
             <th>Contact Owner</th>
@@ -62,11 +62,15 @@
             <!-- <td class="checkbox-column"> -->
             <td>
               <!-- <input type="checkbox" /> -->
-              <span @click="navigateTocontactDetails(contact.id)"
+              <span @click="navigateToContactDetails(contact.id)"
                 >{{ contact.last_name }} {{ contact.first_name }}</span
               >
             </td>
-            <td>{{ contact.account }}</td>
+            <td>
+              <span @click="navigateToAccountDetails(contact.account)">{{
+                getAccountName(contact.account)
+              }}</span>
+            </td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
@@ -83,25 +87,33 @@
 </template>
 
 <script setup lang="ts">
-import { contactRepository } from '@/services'
+import { accountRepository, contactRepository } from '@/services'
 import '@/styles/shared/index.css'
+import type { Account } from '@/types/accounts/account'
 import type { Contact } from '@/types/contacts/contact'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const contacts = ref<Contact[]>([])
+const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
 
-const fetchContacts = async () => {
+const fetchData = async () => {
   try {
-    const res = await contactRepository.show()
-    console.log('✅ API Response:', res)
-    console.log('📦 Fetched contacts:', res.results)
-    contacts.value = res.results
+    const [contactsRes, accountsRes] = await Promise.all([
+      contactRepository.show(),
+      accountRepository.show(),
+    ])
+
+    contacts.value = contactsRes.results
+    accounts.value = accountsRes.results
+
+    console.log('📦 Fetched contacts:', contactsRes.results)
+    console.log('📦 Fetched accounts:', accountsRes.results)
   } catch (error) {
-    console.error('❌ Error fetching contacts:', error)
+    console.error('❌ Error fetching data:', error)
   }
 }
 
@@ -109,8 +121,12 @@ const navigateToCreateContact = () => {
   router.push('/contacts/create')
 }
 
-const navigateTocontactDetails = (contactId: number) => {
+const navigateToContactDetails = (contactId: number) => {
   router.push(`/contacts/${contactId}`)
+}
+
+const navigateToAccountDetails = (accountId: number) => {
+  router.push(`/accounts/${accountId}`)
 }
 
 const navigateToEditContact = (contactId: number) => {
@@ -128,8 +144,8 @@ const deleteContact = async (contactId: number) => {
 
   try {
     await contactRepository.destroy(contactId)
-    console.log('✅ contact deleted successfully:', contactId)
-    await fetchContacts()
+    console.log('✅ Contact deleted successfully:', contactId)
+    await fetchData()
     activeMoreOptions.value = null
   } catch (error) {
     console.error('❌ Error deleting contact:', error)
@@ -137,11 +153,16 @@ const deleteContact = async (contactId: number) => {
   }
 }
 
+const getAccountName = (accountId: number): string => {
+  const account = accounts.value.find((acc) => acc.id === accountId)
+  return account?.name || ''
+}
+
 onMounted(() => {
-  fetchContacts()
+  fetchData()
 })
 
 watch(rowsPerPage, () => {
-  fetchContacts()
+  fetchData()
 })
 </script>

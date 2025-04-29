@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Account</h1>
       <div class="header-actions">
@@ -72,6 +73,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository } from '@/services'
 import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
@@ -82,14 +84,18 @@ const router = useRouter()
 const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
+const isLoading = ref(false)
 
 const fetchAccounts = async () => {
   try {
+    isLoading.value = true
     const res = await accountRepository.show({ limit: rowsPerPage.value })
     console.log('📦 Fetched accounts:', res.results)
     accounts.value = res.results
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Edit Lead</h1>
       <div class="header-actions">
@@ -156,6 +157,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   industryRepository,
   leadRepository,
@@ -175,6 +177,7 @@ const router = useRouter()
 const route = useRoute()
 const lead = ref<Lead>({} as Lead)
 const toast = useToast()
+const isLoading = ref(false)
 
 const leadOwners = ref<UserOption[]>([])
 const leadSources = ref<SelectOption[]>([])
@@ -250,6 +253,7 @@ const fetchDropdownData = async () => {
 
 const fetchLeadDetails = async () => {
   try {
+    isLoading.value = true
     const response = await leadRepository.index(leadId)
     console.log('✅ API Response:', response)
     lead.value = response
@@ -280,6 +284,8 @@ const fetchLeadDetails = async () => {
     form.industryId = lead.value.industry?.id ?? null
   } catch (error) {
     console.error('Error fetching lead details:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -363,6 +369,7 @@ const handleSave = async () => {
     console.log('Prepared API Payload:', payload)
 
     try {
+      isLoading.value = true
       await leadRepository.update(leadId, payload)
       router.push(`/leads/${leadId}`)
     } catch (error) {
@@ -371,6 +378,8 @@ const handleSave = async () => {
         icon: '❌',
         position: POSITION.BOTTOM_RIGHT,
       })
+    } finally {
+      isLoading.value = false
     }
   } else {
     console.log('Validation failed.')

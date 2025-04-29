@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Create Contact</h1>
       <div class="header-actions">
@@ -13,7 +14,7 @@
         <h2>Information</h2>
         <div class="avatar-section">
           <div class="avatar-placeholder">
-            <img src="@/assets/company_avatar.svg" alt="Lead Avatar" />
+            <img src="@/assets/default_avatar.png" alt="Lead Avatar" />
           </div>
           <span class="edit-avatar">Edit avatar</span>
         </div>
@@ -161,6 +162,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   accountRepository,
   contactRepository,
@@ -184,6 +186,7 @@ const toast = useToast()
 const contactOwners = ref<UserOption[]>([])
 const accounts = ref<Account[]>([])
 const leadSources = ref<SelectOption[]>([])
+const isLoading = ref(false)
 
 const form = reactive({
   firstName: '',
@@ -223,6 +226,7 @@ const errors = reactive({
 const fetchDropdownData = async () => {
   console.log('Fetching dropdown data...') // Log start
   try {
+    isLoading.value = true
     const [ownersRes, sourcesRes, accountRes] = await Promise.all([
       userRepository.show(),
       leadSourceRepository.show({ limit: 20 }),
@@ -242,6 +246,8 @@ const fetchDropdownData = async () => {
       icon: '❌',
       position: POSITION.BOTTOM_RIGHT,
     })
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -323,6 +329,7 @@ const handleSave = async () => {
     }
     console.log('Prepared API Payload:', payload)
     try {
+      isLoading.value = true
       await contactRepository.create(payload)
       console.log('Contact created successfully!')
       router.push('/contacts')
@@ -332,6 +339,8 @@ const handleSave = async () => {
         icon: '❌',
         position: POSITION.BOTTOM_RIGHT,
       })
+    } finally {
+      isLoading.value = false
     }
   } else {
     console.log('Validation failed.')

@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <div class="btn-back">
         <button class="icon-button" @click="handleBack">
@@ -257,6 +258,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository } from '@/services/repositories/account'
 import { contactRepository } from '@/services/repositories/contact'
 import '@/styles/shared/index.css'
@@ -269,6 +271,7 @@ const router = useRouter()
 const route = useRoute()
 const contact = ref<Contact>({} as Contact)
 const account = ref<Account>({} as Account)
+const isLoading = ref(false)
 
 const handleBack = () => {
   if (window.history.length > 1) {
@@ -292,6 +295,7 @@ const formatOptOut = (value: boolean): string => {
 
 const fetchDetailsData = async () => {
   try {
+    isLoading.value = true
     const contactId = route.params.id as string
     const contactResponse = await contactRepository.index(contactId)
 
@@ -306,6 +310,8 @@ const fetchDetailsData = async () => {
     console.log('📦 Account:', account.value)
   } catch (error) {
     console.error('Error fetching details:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

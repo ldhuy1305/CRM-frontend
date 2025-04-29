@@ -1,16 +1,15 @@
 <template>
   <div id="app">
-    <div v-if="isLoading" class="loading-overlay">Đang tải...</div>
+    <CRMLoading :loading="loadingStore.isLoading" />
     <router-view />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-export default defineComponent({
-  name: 'App',
-  setup() {},
-})
+<script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
+import { useLoadingStore } from '@/stores/modules/loading'
+
+const loadingStore = useLoadingStore()
 </script>
 
 <style>

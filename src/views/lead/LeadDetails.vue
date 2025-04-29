@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <div class="btn-back">
         <button class="icon-button" @click="handleBack">
@@ -232,6 +233,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { leadRepository } from '@/services/repositories/lead'
 import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
@@ -241,6 +243,7 @@ import { useRoute, useRouter } from 'vue-router'
 const router = useRouter()
 const route = useRoute()
 const lead = ref<Lead>({} as Lead)
+const isLoading = ref(false)
 
 const handleBack = () => {
   // // Check if we can go back in history
@@ -262,12 +265,15 @@ const navigateToEditLead = (leadId: number) => {
 
 const fetchLeadDetails = async () => {
   try {
+    isLoading.value = true
     const leadId = route.params.id as string
     const response = await leadRepository.index(leadId)
     console.log('✅ API Response:', response)
     lead.value = response
   } catch (error) {
     console.error('Error fetching lead details:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

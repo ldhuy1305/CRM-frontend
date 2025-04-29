@@ -5,11 +5,13 @@
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
         <!-- <button class="actions-btn">
-          Actions
+            Actions
           <span class="dropdown-arrow">▼</span>
         </button> -->
       </div>
     </div>
+
+    <LeadSearchForm @search="handleSearch" @clear="handleClear" />
 
     <div class="table-pagination">
       <div class="rows-per-page">
@@ -68,6 +70,7 @@
                 >{{ lead.last_name }} {{ lead.first_name }}</span
               >
             </td>
+
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
@@ -87,14 +90,16 @@
 
 <script setup lang="ts">
 import { leadRepository } from '@/services'
-import '@/styles/shared/index.css'
+import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import type { Lead } from '@/types/leads/lead'
+import '@/styles/shared/index.css'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])
 const rowsPerPage = ref(10)
+const searchFilters = ref({})
 const activeMoreOptions = ref<number | null>(null)
 
 const fetchLeads = async () => {
@@ -108,6 +113,18 @@ const fetchLeads = async () => {
   }
 }
 
+const handleSearch = (filters: any) => {
+  searchFilters.value = { ...filters }
+  // currentPage.value = 1
+  // fetchLeads()
+}
+
+const handleClear = () => {
+  searchFilters.value = {}
+  // currentPage.value = 1
+  // fetchLeads()
+}
+
 const navigateToCreateLead = () => {
   router.push('/leads/create')
 }
@@ -116,12 +133,12 @@ const navigateToLeadDetails = (leadId: number) => {
   router.push(`/leads/${leadId}`)
 }
 
-const navigateToConvertLead = (leadId: number) => {
-  router.push(`/leads/${leadId}/convert`)
-}
-
 const navigateToEditLead = (leadId: number) => {
   router.push(`/leads/${leadId}/edit`)
+}
+
+const navigateToConvertLead = (leadId: number) => {
+  router.push(`/leads/${leadId}/convert`)
 }
 
 const toggleMoreOptions = (leadId: number) => {
@@ -129,10 +146,7 @@ const toggleMoreOptions = (leadId: number) => {
 }
 
 const deleteLead = async (leadId: number) => {
-  if (!confirm('Confirm to delete this lead?')) {
-    return
-  }
-
+  if (!confirm('Confirm to delete this lead?')) return
   try {
     await leadRepository.destroy(leadId)
     console.log('✅ Lead deleted successfully:', leadId)
@@ -152,3 +166,5 @@ watch(rowsPerPage, () => {
   fetchLeads()
 })
 </script>
+
+<style scoped></style>

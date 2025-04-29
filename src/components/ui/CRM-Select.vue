@@ -23,7 +23,7 @@
           >
             {{ option.label }}
           </div>
-          <div v-else class="no-options">Sorry, no matching options.</div>
+          <div v-else class="no-options">Rất tiếc, không có lựa chọn nào phù hợp.</div>
         </div>
       </div>
     </div>

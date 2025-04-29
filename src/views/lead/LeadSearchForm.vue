@@ -12,6 +12,8 @@
           placeholder="Select lead source"
           v-model="form.leadSource"
           :options="filteredLeadSourceOptions"
+          option-label="name"
+          option-value="id"
         >
           <template #default>
             <input
@@ -31,6 +33,8 @@
           placeholder="Select lead owner"
           v-model="form.leadOwner"
           :options="filteredLeadOwnerOptions"
+          option-label="fullName"
+          option-value="id"
         >
           <template #default>
             <input
@@ -39,7 +43,6 @@
               placeholder="Search Lead Owner"
               class="search-input"
             />
-            <div v-if="form.leadOwner === ''" class="no-options">No options</div>
           </template>
         </CRMSelect>
         <span v-if="form.leadOwner" class="clear-icon" @click="clearLeadOwner">X</span>
@@ -55,7 +58,8 @@ import { ref, computed } from 'vue'
 import CRMInput from '@/components/ui/CRM-Input.vue'
 import CRMSelect from '@/components/ui/CRM-Select.vue'
 import CRMButtonSearch from '@/components/ui/CRM-ButtonSearch.vue'
-const leadSourceSelectionCount = ref(0);
+
+const emit = defineEmits(['search', 'clear'])
 
 const form = ref({
   leadName: '',
@@ -67,35 +71,75 @@ const form = ref({
 })
 
 const leadSourceOptions = [
-  { label: 'Facebook', value: 'facebook' },
-  { label: 'Hội thảo đối tác', value: 'referral' },
-  { label: 'Giới thiệu từ nhân viên', value: 'staff' },
-  { label: 'Gọi điện', value: 'admin' },
+  { id: 16, name: 'Trò chuyện' },
+  { id: 15, name: 'Nghiên cứu trên Web' },
+  { id: 14, name: 'Tải về từ Web' },
+  { id: 13, name: 'Hội chợ' },
+  { id: 12, name: 'Hội thảo nội bộ' },
+  { id: 11, name: 'Hội thảo đối tác' },
+  { id: 10, name: 'Quan hệ đối ngoại' },
+  { id: 9, name: 'Quan hệ đối nội' },
+  { id: 8, name: 'Đối tác' },
+  { id: 7, name: 'Facebook' },
+  { id: 6, name: 'X (Twitter)' },
+  { id: 5, name: 'Cửa hàng trực tuyến' },
+  { id: 4, name: 'Giới thiệu từ bên ngoài' },
+  { id: 3, name: 'Giới thiệu từ nhân viên' },
+  { id: 2, name: 'Gọi điện' },
+  { id: 1, name: 'Quảng cáo' },
 ]
 
-const leadOwnerOptions = [
-  { label: 'Nhan Tran', value: 'Nhan Tran' },
-  { label: 'Tran Nhan', value: 'Tran Nhan' },
-  { label: 'Le Duc Huy', value: 'Le Duc Duy' },
-  { label: 'Admin', value: 'Admin' },
+const leadSourceOptionsMapped = leadSourceOptions.map((option) => ({
+  label: option.name,
+  value: option.id.toString(),
+}))
+
+const leadOwnerOptionsRaw = [
+  {
+    id: 3,
+    email: 'ttnhan2642@gmail.com',
+    first_name: 'Nhan',
+    last_name: 'Tran',
+    address: '54 Nguyen Luong Bang, Lien Chieu, Da Nang',
+    phone: '0935614863',
+  },
+  {
+    id: 2,
+    email: 'ldhuydn1305@gmail.com',
+    first_name: 'Huy',
+    last_name: 'Lê Đức',
+    address: null,
+    phone: null,
+  },
+  {
+    id: 1,
+    email: 'Admin001@gmail.com',
+    first_name: 'Admin',
+    last_name: '',
+    address: '',
+    phone: '',
+  },
 ]
+
+const leadOwnerOptionsMapped = leadOwnerOptionsRaw.map((owner) => ({
+  label: `${owner.first_name} ${owner.last_name}`.trim(),
+  value: owner.id.toString(),
+}))
 
 const searchQueryLeadSource = ref('')
 const searchQueryLeadOwner = ref('')
 
-const filteredLeadSourceOptions = computed(() => {
-  return leadSourceOptions.filter((option) =>
+const filteredLeadSourceOptions = computed(() =>
+  leadSourceOptionsMapped.filter((option) =>
     option.label.toLowerCase().includes(searchQueryLeadSource.value.toLowerCase()),
-  )
-})
+  ),
+)
 
-const filteredLeadOwnerOptions = computed(() => {
-  return leadOwnerOptions.filter((option) =>
+const filteredLeadOwnerOptions = computed(() =>
+  leadOwnerOptionsMapped.filter((option) =>
     option.label.toLowerCase().includes(searchQueryLeadOwner.value.toLowerCase()),
-  )
-})
-
-const emit = defineEmits(['search', 'clear'])
+  ),
+)
 
 function clearForm() {
   form.value = {
@@ -112,51 +156,17 @@ function clearForm() {
 function onSearch() {
   const data = { ...form.value }
 
-  
-  const output: { [key: string]: string | number } = {}
+  const output: { [key: string]: string } = {}
 
-  
-  if (data.leadName) {
-    output.lead_name = data.leadName
-  }
+  if (data.leadName) output.lead_name = data.leadName
+  if (data.company) output.company = data.company
+  if (data.email) output.email = data.email
+  if (data.phone) output.phone = data.phone
+  if (data.leadSource) output.lead_source = data.leadSource.toString()
+  if (data.leadOwner) output.lead_owner = data.leadOwner.toString()
 
-  if (data.company) {
-    output.company = data.company
-  }
-
-  if (data.email) {
-    output.email = data.email
-  }
-
-  if (data.phone) {
-    output.phone = data.phone
-  }
-
- 
-  if (data.leadSource) {
-    const selectedLeadSource = leadSourceOptions.find(opt => opt.value === data.leadSource)
-    if (selectedLeadSource) {
-      
-      if (selectedLeadSource.value === 'admin') {
-        leadSourceSelectionCount.value++
-      }
-      
-      output.lead_source = leadSourceSelectionCount.value === 0 ? selectedLeadSource.value : leadSourceSelectionCount.value
-    }
-  }
-
-  
-  if (data.leadOwner) {
-    const selectedLeadOwner = leadOwnerOptions.find(opt => opt.value === data.leadOwner)
-    if (selectedLeadOwner) {
-      output.lead_owner = selectedLeadOwner.value
-    }
-  }
-
-
-  console.log(JSON.stringify(output, null, 2)) 
-
-  emit('search', data)
+  console.log('Search Payload:', JSON.stringify(output, null, 2))
+  emit('search', output)
 }
 
 function clearLeadSource() {

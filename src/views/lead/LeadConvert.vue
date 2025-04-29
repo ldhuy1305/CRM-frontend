@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="content">
       <h1 class="page-title">
         Convert Lead
@@ -49,6 +50,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { leadRepository, userRepository } from '@/services'
 import '@/styles/lead/convert.css'
 import '@/styles/shared/index.css'
@@ -63,6 +65,7 @@ const route = useRoute()
 const lead = ref<Lead>({} as Lead)
 const newOwners = ref<UserOption[]>([])
 const toast = useToast()
+const isLoading = ref(false)
 
 const form = ref<LeadConvertPayload>({
   account_owner: 0,
@@ -80,6 +83,7 @@ const handleConvert = async () => {
   }
 
   try {
+    isLoading.value = true
     const leadId = Number(route.params.id)
     console.log('API payload:', payload)
 
@@ -96,6 +100,8 @@ const handleConvert = async () => {
       icon: '❌',
       position: POSITION.BOTTOM_RIGHT,
     })
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -113,6 +119,7 @@ const fetchDropdownData = async () => {
 
 const fetchLeadDetails = async () => {
   try {
+    isLoading.value = true
     const leadId = route.params.id as string
     const response = await leadRepository.index(leadId)
     console.log('✅ API Response:', response)
@@ -120,6 +127,8 @@ const fetchLeadDetails = async () => {
     form.value.account_owner = lead.value.lead_owner?.id
   } catch (error) {
     console.error('Error fetching lead details:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

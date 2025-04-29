@@ -1,5 +1,6 @@
 <template>
   <div>
+    <CRMLoading :loading="isLoading" />
     <form @submit.prevent="handleLogin" class="login-form">
       <div class="form-group">
         <label for="email">Email</label>
@@ -16,7 +17,7 @@
         />
       </div>
       <p v-if="error" class="error">{{ error }}</p>
-      <button type="submit" :disabled="loading">Đăng nhập</button>
+      <button type="submit" :disabled="isLoading">Đăng nhập</button>
       <p>
         Quên mật khẩu?
         <!--        <router-link to="/email">Đăng ký</router-link>-->
@@ -26,16 +27,21 @@
 </template>
 
 <script lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import '@/styles/login/style.css'
-import { defineComponent, reactive } from 'vue'
+import { defineComponent, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Login',
+  components: {
+    CRMLoading,
+  },
   setup() {
     const authStore = useAuthStore()
+    const isLoading = ref(false)
     const router = useRouter()
     const form = reactive({
       email: 'Admin001@gmail.com',
@@ -44,9 +50,12 @@ export default defineComponent({
 
     const handleLogin = async () => {
       try {
+        isLoading.value = true
         await authStore.login(form, router)
       } catch (error) {
         console.error('Login failed:', error)
+      } finally {
+        isLoading.value = false
       }
     }
 
@@ -54,6 +63,7 @@ export default defineComponent({
       form,
       handleLogin,
       error: authStore.error,
+      isLoading,
     }
   },
 })

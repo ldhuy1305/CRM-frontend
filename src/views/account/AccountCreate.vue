@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Create Account</h1>
       <div class="header-actions">
@@ -130,6 +131,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   accountRepository,
   accountTypeRepository,
@@ -148,7 +150,7 @@ import { POSITION, useToast } from 'vue-toastification'
 
 const router = useRouter()
 const toast = useToast()
-
+const isLoading = ref(false)
 const accountOwners = ref<UserOption[]>([])
 const accounts = ref<Account[]>([])
 const industries = ref<SelectOption[]>([])
@@ -187,6 +189,7 @@ const errors = reactive({
 const fetchDropdownData = async () => {
   console.log('Fetching dropdown data...') // Log start
   try {
+    isLoading.value = true
     const [ownersRes, industriesRes, accountTypeRes, ratingRes] = await Promise.all([
       userRepository.show(),
       industryRepository.show({ limit: 20 }),
@@ -209,6 +212,8 @@ const fetchDropdownData = async () => {
       icon: '❌',
       position: POSITION.BOTTOM_RIGHT,
     })
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -265,6 +270,7 @@ const handleSave = async () => {
     }
     console.log('Prepared API Payload:', payload)
     try {
+      isLoading.value = true
       await accountRepository.create(payload)
       console.log('Contact created successfully!')
       router.push('/accounts')
@@ -274,6 +280,8 @@ const handleSave = async () => {
         icon: '❌',
         position: POSITION.BOTTOM_RIGHT,
       })
+    } finally {
+      isLoading.value = false
     }
   } else {
     console.log('Validation failed.')

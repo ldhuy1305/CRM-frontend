@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Leads</h1>
       <div class="header-actions">
@@ -89,10 +90,11 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { leadRepository } from '@/services'
-import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
-import type { Lead } from '@/types/leads/lead'
 import '@/styles/shared/index.css'
+import type { Lead } from '@/types/leads/lead'
+import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -101,15 +103,19 @@ const leads = ref<Lead[]>([])
 const rowsPerPage = ref(10)
 const searchFilters = ref({})
 const activeMoreOptions = ref<number | null>(null)
+const isLoading = ref(false)
 
 const fetchLeads = async () => {
   try {
+    isLoading.value = true
     const res = await leadRepository.show({ limit: rowsPerPage.value })
     console.log('✅ API Response:', res)
     console.log('📦 Fetched leads:', res.results)
     leads.value = res.results
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

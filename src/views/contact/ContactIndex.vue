@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Contacts</h1>
       <div class="header-actions">
@@ -87,6 +88,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository, contactRepository } from '@/services'
 import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
@@ -99,9 +101,11 @@ const contacts = ref<Contact[]>([])
 const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
+const isLoading = ref(false)
 
 const fetchData = async () => {
   try {
+    isLoading.value = true
     const [contactsRes, accountsRes] = await Promise.all([
       contactRepository.show(),
       accountRepository.show(),
@@ -114,6 +118,8 @@ const fetchData = async () => {
     console.log('📦 Fetched accounts:', accountsRes.results)
   } catch (error) {
     console.error('❌ Error fetching data:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -143,6 +149,7 @@ const deleteContact = async (contactId: number) => {
   }
 
   try {
+    isLoading.value = true
     await contactRepository.destroy(contactId)
     console.log('✅ Contact deleted successfully:', contactId)
     await fetchData()
@@ -150,6 +157,8 @@ const deleteContact = async (contactId: number) => {
   } catch (error) {
     console.error('❌ Error deleting contact:', error)
     alert('Failed to delete contact. Please try again.')
+  } finally {
+    isLoading.value = false
   }
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Create Lead</h1>
       <div class="header-actions">
@@ -157,6 +158,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   industryRepository,
   leadRepository,
@@ -179,6 +181,7 @@ const leadOwners = ref<UserOption[]>([])
 const leadSources = ref<SelectOption[]>([])
 const leadStatuses = ref<SelectOption[]>([])
 const industries = ref<SelectOption[]>([])
+const isLoading = ref(false)
 
 const form = reactive({
   firstName: '',
@@ -216,6 +219,7 @@ const errors = reactive({
 const fetchDropdownData = async () => {
   console.log('Fetching dropdown data...') // Log start
   try {
+    isLoading.value = true
     const [ownersRes, sourcesRes, statusesRes, industriesRes] = await Promise.all([
       userRepository.show(),
       leadSourceRepository.show({ limit: 20 }),
@@ -238,6 +242,8 @@ const fetchDropdownData = async () => {
       icon: '❌',
       position: POSITION.BOTTOM_RIGHT,
     })
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -319,6 +325,7 @@ const handleSave = async () => {
     console.log('Prepared API Payload:', payload)
 
     try {
+      isLoading.value = true
       await leadRepository.create(payload)
       console.log('Lead created successfully!')
       router.push('/leads')
@@ -328,6 +335,8 @@ const handleSave = async () => {
         icon: '❌',
         position: POSITION.BOTTOM_RIGHT,
       })
+    } finally {
+      isLoading.value = false
     }
   } else {
     console.log('Validation failed.')

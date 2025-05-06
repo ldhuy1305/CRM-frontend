@@ -256,7 +256,7 @@ const fetchLeadDetails = async () => {
     isLoading.value = true
     const response = await leadRepository.index(leadId)
     console.log('✅ API Response:', response)
-    lead.value = response
+    lead.value = response.data
 
     console.log('✅ API Response:', lead.value)
     // Populate form fields

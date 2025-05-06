@@ -1,4 +1,4 @@
-import type { export NamedObject } from '@/types/common/common_types'
+import type { NamedObject } from '@/types/common/common_types'
 import type { UserInfo } from '@/types/users/user'
 
 export interface Lead {

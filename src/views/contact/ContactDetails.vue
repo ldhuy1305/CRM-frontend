@@ -299,10 +299,10 @@ const fetchDetailsData = async () => {
     const contactId = route.params.id as string
     const contactResponse = await contactRepository.index(contactId)
 
-    if (contactResponse.account) {
-      const accountResponse = await accountRepository.index(contactResponse.account)
-      contact.value = contactResponse
-      account.value = accountResponse
+    if (contactResponse.data.account.id) {
+      const accountResponse = await accountRepository.index(contactResponse.data.account.id)
+      contact.value = contactResponse.data
+      account.value = accountResponse.data
     }
 
     console.log('✅ Data loaded successfully')

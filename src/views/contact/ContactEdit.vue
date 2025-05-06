@@ -257,7 +257,7 @@ const fetchContactDetails = async () => {
   try {
     const response = await contactRepository.index(contactId)
     console.log('✅ API Response:', response)
-    contact.value = response
+    contact.value = response.data
 
     console.log('✅ API Response:', contact.value)
     // Populate form fields
@@ -282,7 +282,7 @@ const fetchContactDetails = async () => {
     // Dropdowns
     form.contactOwnerId = contact.value.contact_owner?.id ?? null
     form.leadSource = contact.value.lead_source?.id ?? null
-    form.account = contact.value.account
+    form.account = contact.value.account?.id ?? null
   } catch (error) {
     console.error('Error fetching lead details:', error)
   }

@@ -1,4 +1,9 @@
-import type { ApiRequestParams, ApiResponseError, ApiResponseList } from '@/types/api.ts'
+import type {
+  ApiRequestParams,
+  ApiResponseData,
+  ApiResponseError,
+  ApiResponseList
+} from '@/types/api.ts'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 
 export class BaseRepository<T = any, R = any> {
@@ -20,8 +25,8 @@ export class BaseRepository<T = any, R = any> {
     id: string | number,
     params: ApiRequestParams = {},
     pathParams: string = '',
-  ): Promise<ApiResponseList<T>> {
-    const response: AxiosResponse<ApiResponseList<T>> = await this.$axios.get(
+  ): Promise<ApiResponseData<T>> {
+    const response: AxiosResponse<ApiResponseData<T>> = await this.$axios.get(
       `/${this.resource}/${id}/${pathParams}`,
       { params },
     )

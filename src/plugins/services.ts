@@ -8,8 +8,8 @@ export default {
   },
 }
 
-declare module '@vue/runtime-core' {
-  interface ComponentCustomProperties {
-    $services: ServiceFactory
-  }
-}
+// declare module '@vue/runtime-core' {
+//   interface ComponentCustomProperties {
+//     $services: ServiceFactory
+//   }
+// }

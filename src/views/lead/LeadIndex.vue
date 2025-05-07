@@ -4,10 +4,6 @@
       <h1>Leads</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
-        <!-- <button class="actions-btn">
-            Actions
-          <span class="dropdown-arrow">▼</span>
-        </button> -->
       </div>
     </div>
 
@@ -34,20 +30,45 @@
         <thead>
           <tr>
             <th></th>
-            <!-- <th class="checkbox-column"></th> -->
-            <th>
-              <!-- <input type="checkbox" />
-              <span class="sort-icon">▼</span> -->
+            <th @click="toggleSort('last_name')">
               <span>Lead name</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'DESC' }"
+                  >▼</span
+                >
+              </span>
             </th>
-            <th>Company</th>
-            <th>Email</th>
-            <th>Phone</th>
+            <th @click="toggleSort('company_name')">
+              <span>Company</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'ASC' }"
+                  >▲</span
+                >
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'DESC' }"
+                  >▼</span
+                >
+              </span>
+            </th>
+            <th @click="toggleSort('email')">
+              <span>Email</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'email' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'email' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('phone')">
+              <span>Phone</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
             <th>Lead Source</th>
             <th>Lead Owner</th>
           </tr>
         </thead>
-        <tbody v-if="leads.length != 0">
+        <tbody v-if="leads.length !== 0">
           <tr v-for="lead in leads" :key="lead.id" class="data-row">
             <td>
               <div class="data-name-cell">
@@ -63,14 +84,9 @@
                 </div>
               </div>
             </td>
-            <!-- <td class="checkbox-column"> -->
-            <td>
-              <!-- <input type="checkbox" /> -->
-              <span @click="navigateToLeadDetails(lead.id)"
-                >{{ lead.last_name }} {{ lead.first_name }}</span
-              >
+            <td @click="navigateToLeadDetails(lead.id)">
+              {{ lead.last_name }} {{ lead.first_name }}
             </td>
-
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
@@ -80,7 +96,7 @@
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="6" style="text-align: center">No leads found.</td>
+            <td colspan="7" style="text-align: center">No leads found.</td>
           </tr>
         </tbody>
       </table>
@@ -92,7 +108,6 @@
 import { leadRepository } from '@/services'
 import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import type { Lead } from '@/types/leads/lead'
-import '@/styles/shared/index.css'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -102,54 +117,71 @@ const rowsPerPage = ref(10)
 const searchFilters = ref({})
 const activeMoreOptions = ref<number | null>(null)
 
+const sortField = ref<string>('')
+const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+
 const fetchLeads = async () => {
   try {
-    const res = await leadRepository.show({ limit: rowsPerPage.value })
-    console.log('✅ API Response:', res)
-    console.log('📦 Fetched leads:', res.results)
+    const payload = {
+      limit: rowsPerPage.value,
+      sort_Field: sortField.value,
+      sort_Order: sortOrder.value,
+      ...searchFilters.value,
+    }
+
+    console.log(' Payload :', payload)
+
+    const res = await leadRepository.show(payload)
     leads.value = res.results
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
   }
 }
 
+const toggleSort = (field: string) => {
+  if (sortField.value === field) {
+    sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortField.value = field
+    sortOrder.value = 'ASC'
+  }
+  fetchLeads()
+}
+
 const handleSearch = (filters: any) => {
   searchFilters.value = { ...filters }
-  // currentPage.value = 1
-  // fetchLeads()
+  console.log('Payload:', {
+    limit: rowsPerPage.value,
+    sort_Field: sortField.value,
+    sort_Order: sortOrder.value,
+    ...searchFilters.value,
+  })
 }
 
 const handleClear = () => {
   searchFilters.value = {}
-  // currentPage.value = 1
-  // fetchLeads()
+  fetchLeads()
 }
 
 const navigateToCreateLead = () => {
   router.push('/leads/create')
 }
-
 const navigateToLeadDetails = (leadId: number) => {
   router.push(`/leads/${leadId}`)
 }
-
 const navigateToEditLead = (leadId: number) => {
   router.push(`/leads/${leadId}/edit`)
 }
-
 const navigateToConvertLead = (leadId: number) => {
   router.push(`/leads/${leadId}/convert`)
 }
-
 const toggleMoreOptions = (leadId: number) => {
   activeMoreOptions.value = activeMoreOptions.value === leadId ? null : leadId
 }
-
 const deleteLead = async (leadId: number) => {
   if (!confirm('Confirm to delete this lead?')) return
   try {
     await leadRepository.destroy(leadId)
-    console.log('✅ Lead deleted successfully:', leadId)
     await fetchLeads()
     activeMoreOptions.value = null
   } catch (error) {
@@ -167,4 +199,58 @@ watch(rowsPerPage, () => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+thead {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+thead th:hover {
+  background-color: #f1f1f1;
+}
+
+.sort-icons {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  user-select: none;
+}
+
+.sort-icons span {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-bottom: -7px;
+}
+
+.sort-icons span.active {
+  font-weight: bold;
+  color: #333;
+}
+
+.sort-icons span:hover {
+  color: #000;
+}
+
+.sort-icons span:active {
+  color: #007bff;
+}
+
+.sort-icons span.active {
+  color: #007bff;
+}
+</style>

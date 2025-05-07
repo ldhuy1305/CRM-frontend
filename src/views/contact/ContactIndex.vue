@@ -1,16 +1,13 @@
 <template>
   <div class="page-container">
-    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Contacts</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateContact">Create Contact</button>
-        <!-- <button class="actions-btn">
-            Actions
-            <span class="dropdown-arrow">▼</span>
-          </button> -->
       </div>
     </div>
+
+    <ContactSearchForm @search="handleSearch" @clear="handleClear" />
 
     <div class="table-pagination">
       <div class="rows-per-page">
@@ -33,19 +30,38 @@
         <thead>
           <tr>
             <th></th>
-            <!-- <th class="checkbox-column"></th> -->
-            <th>
-              <!-- <input type="checkbox" />
-                <span class="sort-icon">▼</span> -->
+            <th @click="toggleSort('last_name')">
               <span>Contact Name</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'DESC' }">▼</span>
+              </span>
             </th>
-            <th>Account Name</th>
-            <th>Email</th>
-            <th>Phone</th>
+            <th @click="toggleSort('company_name')">
+              <span>Company</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('email')">
+              <span>Email</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'email' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'email' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('phone')">
+              <span>Phone</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
             <th>Contact Owner</th>
           </tr>
         </thead>
-        <tbody v-if="contacts.length != 0">
+        <tbody v-if="contacts.length !== 0">
           <tr v-for="contact in contacts" :key="contact.id" class="data-row">
             <td>
               <div class="data-name-cell">
@@ -60,18 +76,10 @@
                 </div>
               </div>
             </td>
-            <!-- <td class="checkbox-column"> -->
-            <td>
-              <!-- <input type="checkbox" /> -->
-              <span @click="navigateToContactDetails(contact.id)"
-                >{{ contact.last_name }} {{ contact.first_name }}</span
-              >
+            <td @click="navigateTocontactDetails(contact.id)">
+              {{ contact.last_name }} {{ contact.first_name }}
             </td>
-            <td>
-              <span @click="navigateToAccountDetails(contact.account.id)">{{
-                getAccountName(contact.account.id)
-              }}</span>
-            </td>
+            <td>{{ contact.company_name }}</td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
@@ -88,51 +96,66 @@
 </template>
 
 <script setup lang="ts">
-import CRMLoading from '@/components/ui/CRM-Loading.vue'
-import { accountRepository, contactRepository } from '@/services'
-import '@/styles/shared/index.css'
-import type { Account } from '@/types/accounts/account'
+import { contactRepository } from '@/services'
+import ContactSearchForm from './ContactSearchForm.vue'
 import type { Contact } from '@/types/contacts/contact'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const contacts = ref<Contact[]>([])
-const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
-const isLoading = ref(false)
 
-const fetchData = async () => {
+const sortField = ref<string>('')
+const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+const searchFilters = ref<Record<string, string>>({}) 
+
+
+const fetchContacts = async () => {
   try {
-    isLoading.value = true
-    const [contactsRes, accountsRes] = await Promise.all([
-      contactRepository.show(),
-      accountRepository.show(),
-    ])
+    const payload = {
+      limit: rowsPerPage.value,
+      sort_field: sortField.value,
+      sort_order: sortOrder.value,
+      ...searchFilters.value, 
+    }
 
-    contacts.value = contactsRes.results
-    accounts.value = accountsRes.results
+    console.log('Payload Contact:', payload)
 
-    console.log('📦 Fetched contacts:', contactsRes.results)
-    console.log('📦 Fetched accounts:', accountsRes.results)
+    const res = await contactRepository.show(payload)
+    contacts.value = res.results
   } catch (error) {
-    console.error('❌ Error fetching data:', error)
-  } finally {
-    isLoading.value = false
+    console.error('❌ Error fetching contacts:', error)
   }
+}
+
+const toggleSort = (field: string) => {
+  if (sortField.value === field) {
+    sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortField.value = field
+    sortOrder.value = 'ASC'
+  }
+  fetchContacts()
+}
+
+const handleSearch = async (filters: Record<string, string>) => {
+  searchFilters.value = filters
+  await fetchContacts()
+}
+
+const handleClear = async () => {
+  searchFilters.value = {} 
+  await fetchContacts()
 }
 
 const navigateToCreateContact = () => {
   router.push('/contacts/create')
 }
 
-const navigateToContactDetails = (contactId: number) => {
+const navigateTocontactDetails = (contactId: number) => {
   router.push(`/contacts/${contactId}`)
-}
-
-const navigateToAccountDetails = (accountId: number) => {
-  router.push(`/accounts/${accountId}`)
 }
 
 const navigateToEditContact = (contactId: number) => {
@@ -149,29 +172,78 @@ const deleteContact = async (contactId: number) => {
   }
 
   try {
-    isLoading.value = true
     await contactRepository.destroy(contactId)
-    console.log('✅ Contact deleted successfully:', contactId)
-    await fetchData()
+    console.log('✅ contact deleted successfully:', contactId)
+    await fetchContacts()
     activeMoreOptions.value = null
   } catch (error) {
     console.error('❌ Error deleting contact:', error)
     alert('Failed to delete contact. Please try again.')
-  } finally {
-    isLoading.value = false
   }
 }
 
-const getAccountName = (accountId: number): string => {
-  const account = accounts.value.find((acc) => acc.id === accountId)
-  return account?.name || ''
-}
-
 onMounted(() => {
-  fetchData()
+  fetchContacts()
 })
 
 watch(rowsPerPage, () => {
-  fetchData()
+  fetchContacts()
 })
 </script>
+
+
+<style scoped>
+thead {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+thead th:hover {
+  background-color: #f1f1f1;
+}
+
+.sort-icons {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  user-select: none;
+}
+
+.sort-icons span {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-bottom: -7px;
+}
+
+.sort-icons span.active {
+  font-weight: bold;
+  color: #333;
+}
+
+.sort-icons span:hover {
+  color: #000;
+}
+
+.sort-icons span:active {
+  color: #007bff;
+}
+
+.sort-icons span.active {
+  color: #007bff;
+}
+</style>

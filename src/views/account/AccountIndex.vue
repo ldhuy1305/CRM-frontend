@@ -125,7 +125,7 @@ const fetchAccounts = async () => {
     }
 
     console.log('Payload Account:', payload)
-    
+
     accounts.value = res.results
   } catch (error) {
     console.error('❌ Error fetching accounts:', error)

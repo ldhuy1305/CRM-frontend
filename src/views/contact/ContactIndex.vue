@@ -137,7 +137,7 @@ const isLoading = ref(false)
 const fetchData = async () => {
   try {
     isLoading.value = true
-    
+
     const payload = {
       limit: rowsPerPage.value,
       sort_field: sortField.value,

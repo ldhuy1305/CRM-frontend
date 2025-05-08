@@ -1,4 +1,5 @@
 export type ApiResponseList<T> = {
+  [x: string]: number;
   messages: string;
   results: Array<T>;
   count: number;

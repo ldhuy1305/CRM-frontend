@@ -2,7 +2,7 @@
   <div class="page-container">
     <CRMLoading :loading="isLoading" />
     <div class="module-header">
-      <h1>Accounts</h1>
+      <h1>Account</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateAccount">Create Account</button>
         <!-- <button class="actions-btn">
@@ -75,8 +75,8 @@
               </div>
             </td>
 
-            <td @click="navigateToAccountDetails(account.id)">
-              {{ account.name }}
+            <td>
+              <span @click="navigateToAccountDetails(account.id)">{{ account.name }}</span>
             </td>
             <td>{{ account.phone }}</td>
             <td>{{ account.website }}</td>
@@ -115,7 +115,8 @@ const isLoading = ref(false)
 const fetchAccounts = async () => {
   try {
     isLoading.value = true
-
+    const res = await accountRepository.show({ limit: rowsPerPage.value })
+    console.log('📦 Fetched accounts:', res.results)
     const payload = {
       limit: rowsPerPage.value,
       sort_field: sortField.value,
@@ -124,8 +125,7 @@ const fetchAccounts = async () => {
     }
 
     console.log('Payload Account:', payload)
-
-    const res = await accountRepository.show(payload)
+    
     accounts.value = res.results
   } catch (error) {
     console.error('❌ Error fetching accounts:', error)

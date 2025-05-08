@@ -24,12 +24,11 @@
         </select>
       </div>
 
-      <CRMPagination
-        :totalRecords="totalRecords"
-        :rowsPerPage="rowsPerPage"
-        :currentPage="currentPage"
-        @update:currentPage="handlePageChange"
-      />
+      <div class="pagination">
+        <button class="nav-btn">&lt;</button>
+        <span class="current-page">1</span>
+        <button class="nav-btn">&gt;</button>
+      </div>
     </div>
 
     <div class="module-table">
@@ -37,7 +36,10 @@
         <thead>
           <tr>
             <th></th>
+            <!-- <th class="checkbox-column"></th> -->
             <th @click="toggleSort('last_name')">
+              <!-- <input type="checkbox" />
+              <span class="sort-icon">▼</span> -->
               <span>Lead name</span>
               <span class="sort-icons">
                 <span :class="{ active: sortField === 'last_name' && sortOrder === 'ASC' }">▲</span>
@@ -91,19 +93,24 @@
                 </div>
               </div>
             </td>
-            <td @click="navigateToLeadDetails(lead.id)">
-              {{ lead.last_name }} {{ lead.first_name }}
+            <!-- <td class="checkbox-column"> -->
+            <td>
+              <!-- <input type="checkbox" /> -->
+              <span @click="navigateToLeadDetails(lead.id)"
+                >{{ lead.last_name }} {{ lead.first_name }}</span
+              >
             </td>
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
-            <td>{{ lead.lead_source?.name || 'N/A' }}</td>
-            <td>{{ lead.lead_owner?.last_name }} {{ lead.lead_owner?.first_name }}</td>
+            <td>{{ lead.lead_source.name }}</td>
+            <td>{{ lead.lead_owner.first_name }} {{ lead.lead_owner.last_name }}</td>
+
           </tr>
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="7" style="text-align: center">No leads found.</td>
+            <td colspan="6" style="text-align: center">No leads found.</td>
           </tr>
         </tbody>
       </table>
@@ -118,7 +125,6 @@ import type { Lead } from '@/types/leads/lead'
 import '@/styles/shared/index.css'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import CRMPagination from '@/components/ui/CRM-Pagination.vue'
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 
 const router = useRouter()
@@ -137,6 +143,7 @@ const isLoading = ref(false)
 const fetchLeads = async () => {
   try {
     isLoading.value = true
+    const res = await leadRepository.show({ limit: rowsPerPage.value })
     const payload = {
       limit: rowsPerPage.value,
       page: currentPage.value,
@@ -147,7 +154,8 @@ const fetchLeads = async () => {
 
     console.log('Payload Lead:', payload)
 
-    const res = await leadRepository.show(payload)
+    console.log('✅ API Response:', res)
+    console.log('📦 Fetched leads:', res.results)
     leads.value = res.results
     totalRecords.value = res.total
   } catch (error) {
@@ -155,11 +163,6 @@ const fetchLeads = async () => {
   } finally {
     isLoading.value = false
   }
-}
-
-const handlePageChange = (newPage: number) => {
-  currentPage.value = newPage
-  fetchLeads()
 }
 
 const toggleSort = (field: string) => {
@@ -174,6 +177,8 @@ const toggleSort = (field: string) => {
 
 const handleSearch = (filters: any) => {
   searchFilters.value = { ...filters }
+  // currentPage.value = 1
+  // fetchLeads()
   console.log('Payload:', {
     limit: rowsPerPage.value,
     sort_Field: sortField.value,
@@ -185,7 +190,8 @@ const handleSearch = (filters: any) => {
 
 const handleClear = () => {
   searchFilters.value = {}
-  fetchLeads()
+  // currentPage.value = 1
+  // fetchLeads()
 }
 
 watch(rowsPerPage, () => {
@@ -213,6 +219,7 @@ const deleteLead = async (leadId: number) => {
   if (!confirm('Confirm to delete this lead?')) return
   try {
     await leadRepository.destroy(leadId)
+    console.log('✅ Lead deleted successfully:', leadId)
     await fetchLeads()
     activeMoreOptions.value = null
   } catch (error) {
@@ -222,6 +229,10 @@ const deleteLead = async (leadId: number) => {
 }
 
 onMounted(() => {
+  fetchLeads()
+})
+
+watch(rowsPerPage, () => {
   fetchLeads()
 })
 </script>

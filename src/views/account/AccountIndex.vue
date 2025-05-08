@@ -1,9 +1,14 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Accounts</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateAccount">Create Account</button>
+        <!-- <button class="actions-btn">
+            Actions
+            <span class="dropdown-arrow">▼</span>
+          </button> -->
       </div>
     </div>
 
@@ -69,6 +74,7 @@
                 </div>
               </div>
             </td>
+
             <td @click="navigateToAccountDetails(account.id)">
               {{ account.name }}
             </td>
@@ -88,11 +94,13 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository } from '@/services'
 import AccountSearchForm from './AccountSearchForm.vue'
 import type { Account } from '@/types/accounts/account'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import '@/styles/shared/index.css'
 
 const router = useRouter()
 const accounts = ref<Account[]>([])
@@ -102,9 +110,12 @@ const activeMoreOptions = ref<number | null>(null)
 const sortField = ref<string>('name')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 const searchFilters = ref<Record<string, string>>({})
+const isLoading = ref(false)
 
 const fetchAccounts = async () => {
   try {
+    isLoading.value = true
+
     const payload = {
       limit: rowsPerPage.value,
       sort_field: sortField.value,
@@ -118,6 +129,8 @@ const fetchAccounts = async () => {
     accounts.value = res.results
   } catch (error) {
     console.error('❌ Error fetching accounts:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

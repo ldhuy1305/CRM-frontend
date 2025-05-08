@@ -1,9 +1,14 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Leads</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateLead">Create Lead</button>
+        <!-- <button class="actions-btn">
+            Actions
+          <span class="dropdown-arrow">▼</span>
+        </button> -->
       </div>
     </div>
 
@@ -110,9 +115,11 @@
 import { leadRepository } from '@/services'
 import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import type { Lead } from '@/types/leads/lead'
+import '@/styles/shared/index.css'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import CRMPagination from '@/components/ui/CRM-Pagination.vue'
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])
@@ -125,9 +132,11 @@ const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 
 const totalRecords = ref(0)
 const currentPage = ref(1)
+const isLoading = ref(false)
 
 const fetchLeads = async () => {
   try {
+    isLoading.value = true
     const payload = {
       limit: rowsPerPage.value,
       page: currentPage.value,
@@ -143,6 +152,8 @@ const fetchLeads = async () => {
     totalRecords.value = res.total
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

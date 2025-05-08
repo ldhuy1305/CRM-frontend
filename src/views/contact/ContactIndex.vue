@@ -1,9 +1,14 @@
 <template>
   <div class="page-container">
+    <CRMLoading :loading="isLoading" />
     <div class="module-header">
       <h1>Contacts</h1>
       <div class="header-actions">
         <button class="btn-primary" @click="navigateToCreateContact">Create Contact</button>
+         <!-- <button class="actions-btn">
+            Actions
+            <span class="dropdown-arrow">▼</span>
+          </button> -->
       </div>
     </div>
 
@@ -96,11 +101,13 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { contactRepository } from '@/services'
 import ContactSearchForm from './ContactSearchForm.vue'
 import type { Contact } from '@/types/contacts/contact'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import '@/styles/shared/index.css'
 
 const router = useRouter()
 const contacts = ref<Contact[]>([])
@@ -110,10 +117,12 @@ const activeMoreOptions = ref<number | null>(null)
 const sortField = ref<string>('')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 const searchFilters = ref<Record<string, string>>({}) 
+  const isLoading = ref(false)
 
 
 const fetchContacts = async () => {
   try {
+    isLoading.value = true
     const payload = {
       limit: rowsPerPage.value,
       sort_field: sortField.value,
@@ -127,6 +136,8 @@ const fetchContacts = async () => {
     contacts.value = res.results
   } catch (error) {
     console.error('❌ Error fetching contacts:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 

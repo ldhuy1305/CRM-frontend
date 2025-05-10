@@ -269,7 +269,7 @@ const fetchLeadDetails = async () => {
     const leadId = route.params.id as string
     const response = await leadRepository.index(leadId)
     console.log('✅ API Response:', response)
-    lead.value = response
+    lead.value = response.data
   } catch (error) {
     console.error('Error fetching lead details:', error)
   } finally {

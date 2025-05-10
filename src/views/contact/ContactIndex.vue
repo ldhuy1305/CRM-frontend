@@ -68,8 +68,8 @@
               >
             </td>
             <td>
-              <span @click="navigateToAccountDetails(contact.account)">{{
-                getAccountName(contact.account)
+              <span @click="navigateToAccountDetails(contact.account.id)">{{
+                getAccountName(contact.account.id)
               }}</span>
             </td>
             <td>{{ contact.email }}</td>

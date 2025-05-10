@@ -29,10 +29,10 @@ export default defineComponent({
         await authStore.fetchUser()
       }
 
-      if (!authStore.user?.user.id) {
+      if (!authStore.user?.id) {
         router.push('/login')
       } else {
-        wsClient = new WebSocketClient(authStore.user.user.id)
+        wsClient = new WebSocketClient(authStore.user.id.toString())
         wsClient.connect()
       }
     })

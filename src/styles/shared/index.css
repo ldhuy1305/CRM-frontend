@@ -311,6 +311,7 @@
 
 .section-content {
   padding: 20px;
+  overflow-x: auto;
 }
 
 .section-title {

@@ -1,0 +1,185 @@
+.module-header,
+.filter-section {
+  flex-shrink: 0;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  height: 100vh;
+}
+
+.kanban-column {
+  flex: 1;
+  min-width: 300px;
+  background: #f5f7f9;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.column-header {
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.stage-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 4px;
+}
+
+.stage-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  max-width: calc(100% - 50px);
+}
+
+.stage-percentage {
+  /* background: #e0e6ed; */
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 50px;
+}
+
+.stage-amount {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Deal cards container */
+.deal-cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.deal-card {
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #1a3353;
+}
+
+.card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.card-details > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.card-details i {
+  width: 16px;
+  color: #999;
+}
+
+.owner {
+  margin-bottom: 4px;
+}
+
+.card-details .amount {
+  color: #1a3353;
+  /* font-weight: 500; */
+}
+
+.card-details .close-date {
+  color: #ff6666;
+  /* font-weight: 500; */
+}
+
+.filter-section {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 16px;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.rows-filter select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* Header color variations */
+.column-header.red {
+  background-color: rgba(255, 0, 0, 0.1);
+  height: 100px !important; /* Force same height */
+}
+
+.column-header.red .stage-name,
+.column-header.red .stage-amount,
+.column-header.red .stage-percentage {
+  color: #dc3545;
+}
+
+.column-header.green {
+  background-color: #c9ffd6;
+  height: 100px !important;
+  padding: 16px;
+}
+
+.column-header.green .stage-name,
+.column-header.green .stage-amount,
+.column-header.green .stage-percentage {
+  color: #28a745;
+}
+
+.column-header.blue {
+  background-color: rgba(0, 123, 255, 0.1);
+  height: 100px !important;
+}
+
+.column-header.blue .stage-name,
+.column-header.blue .stage-amount,
+.column-header.blue .stage-percentage {
+  color: #0056b3;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px; /* Match deal-card padding */
+  color: #333;
+  font-style: italic;
+  /* background: #f0f0f0; */
+  border-radius: 6px;
+  margin: 8px 0;
+  min-height: 0px;
+}

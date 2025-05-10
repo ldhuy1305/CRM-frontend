@@ -10,6 +10,10 @@ import ContactCreate from '@/views/contact/ContactCreate.vue'
 import ContactDetails from '@/views/contact/ContactDetails.vue'
 import ContactEdit from '@/views/contact/ContactEdit.vue'
 import Contact from '@/views/contact/ContactIndex.vue'
+import DealCreate from '@/views/deal/DealCreate.vue'
+import DealDetails from '@/views/deal/DealDetails.vue'
+import DealEdit from '@/views/deal/DealEdit.vue'
+import Deals from '@/views/deal/DealIndex.vue'
 import LeadConvert from '@/views/lead/LeadConvert.vue'
 import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
@@ -90,8 +94,25 @@ const routes = [
         component: AccountEdit,
         meta: { requiresAuth: true },
       },
-
-      // { path: 'deals', name: 'Deals', component: () => import('@/views/Deals.vue') },
+      { path: 'deals', name: 'Deals', component: Deals },
+      {
+        path: '/deals/:id',
+        name: 'DealDetails',
+        component: DealDetails,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/deals/create',
+        name: 'CreateDeal',
+        component: DealCreate,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/deals/:id/edit',
+        name: 'EditDeal',
+        component: DealEdit,
+        meta: { requiresAuth: true },
+      },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

@@ -11,16 +11,25 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { createApp } from 'vue'
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
+import { useAuthStore } from './stores/modules/auth'
 library.add(fas, far)
-const app = createApp(App)
-app.use(router)
-app.use(pinia)
-app.use(servicesPlugin)
-app.component('fas-icon', FontAwesomeIcon)
-app.use(Toast, {
-  position: 'top-right',
-  timeout: 3000,
-  closeOnClick: true,
-  pauseOnHover: true,
-})
-app.mount('#app')
+const initialize = async () => {
+  const app = createApp(App)
+  app.use(router)
+  app.use(pinia)
+  app.use(servicesPlugin)
+  app.component('fas-icon', FontAwesomeIcon)
+  app.use(Toast, {
+    position: 'bottom-right',
+    timeout: 3000,
+    closeOnClick: true,
+    pauseOnHover: false,
+  })
+
+  const authStore = useAuthStore()
+  await authStore.initialize()
+
+  app.mount('#app')
+}
+
+initialize()

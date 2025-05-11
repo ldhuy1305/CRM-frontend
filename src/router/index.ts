@@ -142,9 +142,14 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+
+  // Wait for auth to be initialized
+  if (!authStore.isInitialized) {
+    await authStore.initialize()
+  }
 
   if (requiresAuth && !authStore.isAuthenticated) {
     next('/login')

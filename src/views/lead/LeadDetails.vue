@@ -103,7 +103,9 @@
             </div>
             <div class="info-row">
               <div class="info-label">Annual Revenue</div>
-              <div class="info-value">{{ Number(lead.annual_revenue) }}đ</div>
+              <div class="info-value">
+                {{ formatVNDCurrency(parseFloat(lead.annual_revenue)) }}
+              </div>
             </div>
             <div class="info-row">
               <div class="info-label">Lead Status</div>
@@ -237,6 +239,7 @@ import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { leadRepository } from '@/services/repositories/lead'
 import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
+import { formatVNDCurrency } from '@/utils/formatter'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

@@ -43,7 +43,9 @@
         </div>
         <div class="info-row">
           <div class="info-label">Annual Revenue</div>
-          <div class="info-value">{{ Number(account.annual_revenue) || '-' }} đ</div>
+          <div class="info-value">
+            {{ formatVNDCurrency(parseFloat(account.annual_revenue)) || '-' }}
+          </div>
         </div>
         <div class="info-row">
           <div class="info-label">Phone</div>
@@ -109,7 +111,9 @@
             </div>
             <div class="info-row">
               <div class="info-label">Annual Revenue</div>
-              <div class="info-value">{{ Number(account.annual_revenue) || '-' }} đ</div>
+              <div class="info-value">
+                {{ formatVNDCurrency(parseFloat(account.annual_revenue)) || '-' }}
+              </div>
             </div>
             <div class="info-row">
               <div class="info-label">Created By</div>
@@ -286,6 +290,7 @@
 import { accountRepository } from '@/services/repositories/account'
 import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
+import { formatVNDCurrency } from '@/utils/formatter'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 

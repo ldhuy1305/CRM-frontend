@@ -10,13 +10,15 @@ interface AuthState {
   user: User | null
   isAuthenticated: boolean
   error: string | null
+  isInitialized: boolean
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
-    user: null,
+    user: null as User | null,
     isAuthenticated: false,
-    error: null,
+    error: null as string | null,
+    isInitialized: false,
   }),
 
   actions: {
@@ -47,6 +49,20 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async initialize() {
+      const token = localStorage.getItem('access')
+      if (token) {
+        try {
+          await this.fetchUser()
+        } catch (error) {
+          localStorage.removeItem('access')
+          this.isAuthenticated = false
+          this.user = null
+        }
+      }
+      this.isInitialized = true
+    },
+
     async fetchUser() {
       const toast = useToast()
       try {
@@ -68,7 +84,8 @@ export const useAuthStore = defineStore('auth', {
     async logout(router: Router) {
       this.user = null
       this.isAuthenticated = false
-      localStorage.removeItem('token')
+      // this.isInitialized = false
+      localStorage.removeItem('access')
       router.push('/login')
     },
   },

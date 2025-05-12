@@ -12,6 +12,8 @@
       </div>
     </div>
 
+    <ContactSearchForm @search="handleSearch" @clear="handleClear" />
+
     <div class="table-pagination">
       <div class="rows-per-page">
         Records per page:
@@ -34,18 +36,46 @@
           <tr>
             <th></th>
             <!-- <th class="checkbox-column"></th> -->
-            <th>
+            <th @click="toggleSort('last_name')">
               <!-- <input type="checkbox" />
                 <span class="sort-icon">▼</span> -->
               <span>Contact Name</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'last_name' && sortOrder === 'DESC' }"
+                  >▼</span
+                >
+              </span>
             </th>
-            <th>Account Name</th>
-            <th>Email</th>
-            <th>Phone</th>
+            <th @click="toggleSort('company_name')">
+              <span>Company</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'ASC' }"
+                  >▲</span
+                >
+                <span :class="{ active: sortField === 'company_name' && sortOrder === 'DESC' }"
+                  >▼</span
+                >
+              </span>
+            </th>
+            <th @click="toggleSort('email')">
+              <span>Email</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'email' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'email' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('phone')">
+              <span>Phone</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
             <th>Contact Owner</th>
           </tr>
         </thead>
-        <tbody v-if="contacts.length != 0">
+        <tbody v-if="contacts.length !== 0">
           <tr v-for="contact in contacts" :key="contact.id" class="data-row">
             <td>
               <div class="data-name-cell">
@@ -60,21 +90,17 @@
                 </div>
               </div>
             </td>
-            <!-- <td class="checkbox-column"> -->
-            <td>
-              <!-- <input type="checkbox" /> -->
-              <span @click="navigateToContactDetails(contact.id)"
-                >{{ contact.last_name }} {{ contact.first_name }}</span
-              >
+            <td @click="navigateTocontactDetails(contact.id)">
+              {{ contact.last_name }} {{ contact.first_name }}
             </td>
-            <td>
-              <span @click="navigateToAccountDetails(contact.account.id)">{{
-                getAccountName(contact.account.id)
-              }}</span>
-            </td>
+            <td>{{ contact.company }}</td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
+
+            <span v-if="contact.account" @click="navigateTocontactDetails(contact.account.id)">
+              {{ getAccountName(contact.account.id) }}
+            </span>
           </tr>
         </tbody>
         <tbody v-else>
@@ -89,23 +115,38 @@
 
 <script setup lang="ts">
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
-import { accountRepository, contactRepository } from '@/services'
-import '@/styles/shared/index.css'
-import type { Account } from '@/types/accounts/account'
+import { contactRepository, accountRepository } from '@/services'
+import ContactSearchForm from './ContactSearchForm.vue'
 import type { Contact } from '@/types/contacts/contact'
+import type { Account } from '@/types/accounts/account'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import '@/styles/shared/index.css'
 
 const router = useRouter()
 const contacts = ref<Contact[]>([])
 const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
+
+const sortField = ref<string>('')
+const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+const searchFilters = ref<Record<string, string>>({})
 const isLoading = ref(false)
 
 const fetchData = async () => {
   try {
     isLoading.value = true
+
+    const payload = {
+      limit: rowsPerPage.value,
+      sort_field: sortField.value,
+      sort_order: sortOrder.value,
+      ...searchFilters.value,
+    }
+
+    console.log('Payload Contact:', payload)
+
     const [contactsRes, accountsRes] = await Promise.all([
       contactRepository.show(),
       accountRepository.show(),
@@ -113,21 +154,40 @@ const fetchData = async () => {
 
     contacts.value = contactsRes.results
     accounts.value = accountsRes.results
-
     console.log('📦 Fetched contacts:', contactsRes.results)
     console.log('📦 Fetched accounts:', accountsRes.results)
   } catch (error) {
-    console.error('❌ Error fetching data:', error)
+    console.error('❌ Error fetching contacts:', error)
   } finally {
     isLoading.value = false
   }
+}
+
+const toggleSort = (field: string) => {
+  if (sortField.value === field) {
+    sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortField.value = field
+    sortOrder.value = 'ASC'
+  }
+  fetchData()
+}
+
+const handleSearch = async (filters: Record<string, string>) => {
+  searchFilters.value = filters
+  await fetchData()
+}
+
+const handleClear = async () => {
+  searchFilters.value = {}
+  await fetchData()
 }
 
 const navigateToCreateContact = () => {
   router.push('/contacts/create')
 }
 
-const navigateToContactDetails = (contactId: number) => {
+const navigateTocontactDetails = (contactId: number) => {
   router.push(`/contacts/${contactId}`)
 }
 
@@ -175,3 +235,59 @@ watch(rowsPerPage, () => {
   fetchData()
 })
 </script>
+
+<style scoped>
+thead {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+thead th:hover {
+  background-color: #f1f1f1;
+}
+
+.sort-icons {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  user-select: none;
+}
+
+.sort-icons span {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-bottom: -7px;
+}
+
+.sort-icons span.active {
+  font-weight: bold;
+  color: #333;
+}
+
+.sort-icons span:hover {
+  color: #000;
+}
+
+.sort-icons span:active {
+  color: #007bff;
+}
+
+.sort-icons span.active {
+  color: #007bff;
+}
+</style>

@@ -298,9 +298,10 @@ const fetchDetailsData = async () => {
     isLoading.value = true
     const contactId = route.params.id as string
     const contactResponse = await contactRepository.index(contactId)
+    const accountId = contactResponse.data.account
 
-    if (contactResponse.data.account.id) {
-      const accountResponse = await accountRepository.index(contactResponse.data.account.id)
+    if (accountId) {
+      const accountResponse = await accountRepository.index(accountId)
       contact.value = contactResponse.data
       account.value = accountResponse.data
     }

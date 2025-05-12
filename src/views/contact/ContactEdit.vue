@@ -282,7 +282,7 @@ const fetchContactDetails = async () => {
     // Dropdowns
     form.contactOwnerId = contact.value.contact_owner?.id ?? null
     form.leadSource = contact.value.lead_source?.id ?? null
-    form.account = contact.value.account?.id ?? null
+    form.account = contact.value.account ?? null
   } catch (error) {
     console.error('Error fetching lead details:', error)
   }
@@ -366,7 +366,7 @@ const handleSave = async () => {
       isLoading.value = true
       await contactRepository.update(contactId, payload)
       console.log('Contact created successfully!')
-      router.push('/contacts')
+      router.push(`/contacts/${contactId}`)
     } catch (error) {
       console.error('Error saving contact:', error)
       toast.error(error, {

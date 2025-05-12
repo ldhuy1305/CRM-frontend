@@ -8,10 +8,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, onUnmounted } from 'vue'
 import Header from '@/components/layout/Header.vue'
 import { WebSocketClient } from '@/plugins/websocket'
 import { useAuthStore } from '@/stores/modules/auth'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'DefaultLayout',

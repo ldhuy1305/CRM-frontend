@@ -30,7 +30,7 @@ export class BaseRepository<T = any, R = any> {
       `/${this.resource}/${id}/${pathParams}`,
       { params },
     )
-    return response.data
+    return response
   }
 
   async create(

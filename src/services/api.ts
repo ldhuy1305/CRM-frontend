@@ -25,7 +25,7 @@ api.interceptors.response.use(
 )
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getCurrentUser = async (): Promise<any> => {
-  const response = await api.get('/auth/me/)
+  const response = await api.get('/auth/me/')
   return response.data
 }
 export default api

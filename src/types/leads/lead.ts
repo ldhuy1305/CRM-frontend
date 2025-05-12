@@ -30,6 +30,7 @@ export interface Lead {
   updated_at: string
   is_deleted: boolean
   deleted_at: string | null
+  // owner_name: string
 }
 
 export type LeadRequest = Omit<

@@ -257,7 +257,7 @@ const fetchContactDetails = async () => {
   try {
     const response = await contactRepository.index(contactId)
     console.log('✅ API Response:', response)
-    contact.value = response
+    contact.value = response.data
 
     console.log('✅ API Response:', contact.value)
     // Populate form fields
@@ -359,6 +359,7 @@ const handleSave = async () => {
       contact_owner: form.contactOwnerId,
       lead_source: form.leadSource,
       account: form.account as number,
+      company: '',
     }
     console.log('Prepared API Payload:', payload)
     try {

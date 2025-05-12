@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { defineStore } from 'pinia'
 import { useToast } from 'vue-toastification'
 
-interface Notification {
+export interface Notification {
   id: number
   title: string
   message: string
@@ -14,7 +14,7 @@ interface Notification {
   relatedUrl?: string
 }
 
-interface NotificationState {
+export interface NotificationState {
   notifications: Notification[]
   loading: boolean
   error: string | null

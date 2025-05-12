@@ -29,16 +29,16 @@ export default defineComponent({
         await authStore.fetchUser()
       }
 
-      if (!authStore.user?.user.id) {
-        router.push('/login')
-      } else {
-        wsClient = new WebSocketClient(authStore.user.user.id)
-        wsClient.connect()
-      }
+      // if (!authStore.user?.id) {
+      //   router.push('/login')
+      // } else {
+      //   wsClient = new WebSocketClient(authStore.user.id.toString())
+      //   wsClient.connect()
+      // }
     })
 
     onUnmounted(() => {
-      wsClient?.disconnect()
+      // wsClient?.disconnect()
     })
 
     return {}

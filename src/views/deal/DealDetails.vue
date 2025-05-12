@@ -11,7 +11,8 @@
         <div class="module-title">
           <h1>{{ deal?.name }}</h1>
           <div class="tag">
-            <span>{{ formatCurrency(deal?.amount) }}</span>
+            <span>{{ formatCurrency(deal?.amount.toString()) }}</span>
+
           </div>
         </div>
       </div>
@@ -83,7 +84,8 @@
           <div class="info-row">
             <div class="info-label">Expected Revenue</div>
             <div class="info-label">:</div>
-            <div class="info-value">{{ formatCurrency(deal?.expected_revenue) }}</div>
+            <div class="info-value">{{ formatCurrency(deal?.expected_revenue.toString()) }}</div>
+
           </div>
         </div>
       </div>
@@ -130,9 +132,8 @@
             <tbody>
               <tr v-for="history in deal?.stage_histories" :key="history.id">
                 <td>{{ getStageNameById(history.stage) }}</td>
-                <td>{{ formatCurrency(history.amount) }}</td>
                 <td>{{ history.probability * 100 }}%</td>
-                <td>{{ formatCurrency(history.expected_revenue) }}</td>
+                <td>{{ formatCurrency(history.expected_revenue.toString()) }}</td>
                 <td>{{ history.stage_duration }} days</td>
                 <td>{{ formatDateTime(history.updated_at) }}</td>
                 <!-- <td>{{ getModifiedByName(history) }}</td> -->

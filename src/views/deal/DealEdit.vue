@@ -159,6 +159,7 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
 
+const amount = ref<number | null>(null)
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
@@ -202,7 +203,10 @@ const validateForm = (): boolean => {
   let isValid = true
 
   // Clear previous errors
-  Object.keys(errors).forEach((key) => (errors[key] = ''))
+  // Object.keys(errors).forEach((key) => (errors[key] = ''))
+  Object.keys(errors).forEach((key) => {
+    errors[key as keyof typeof errors] = ''
+  })
 
   if (!form.name.trim()) {
     errors.name = 'Deal Name is required.'

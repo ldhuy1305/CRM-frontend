@@ -48,7 +48,7 @@
               </span>
             </th>
             <th @click="toggleSort('company_name')">
-              <span>Account Name</span>
+              <span>Account</span>
               <span class="sort-icons">
                 <span :class="{ active: sortField === 'company_name' && sortOrder === 'ASC' }"
                   >▲</span

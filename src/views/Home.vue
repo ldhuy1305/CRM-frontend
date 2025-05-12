@@ -81,15 +81,22 @@
 <script lang="ts">
 import { useAuthStore } from '@/stores/modules/auth' // Import the auth store
 import '@/styles/home/style.css'
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 
 export default defineComponent({
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Home',
   setup() {
     const authStore = useAuthStore()
+    const userName = computed(() => {
+      if (authStore.user) {
+        console.log('User:', authStore.user)
+        return `${authStore?.user.user.first_name} ${authStore?.user.user.last_name}`.trim()
+      }
+      return 'Guest'
+    })
     return {
-      userName: authStore.user?.user.first_name + ' ' + authStore.user?.user.last_name,
+      userName,
     }
   },
 })

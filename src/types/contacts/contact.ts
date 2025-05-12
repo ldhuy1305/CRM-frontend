@@ -1,6 +1,5 @@
 import type { NamedObject } from '@/types/common/common_types'
 import type { UserInfo } from '@/types/users/user'
-import type { Account } from '../accounts/account'
 
 export interface Contact {
   id: number
@@ -24,7 +23,7 @@ export interface Contact {
   state_province: string
   postal_code: string
   description: string
-  account: Account
+  account: number
   contact_owner: UserInfo
   lead_source: NamedObject
   created_by: UserInfo

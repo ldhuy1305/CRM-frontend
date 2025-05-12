@@ -48,7 +48,7 @@
               </span>
             </th>
             <th @click="toggleSort('company_name')">
-              <span>Company</span>
+              <span>Account Name</span>
               <span class="sort-icons">
                 <span :class="{ active: sortField === 'company_name' && sortOrder === 'ASC' }"
                   >▲</span
@@ -90,16 +90,20 @@
                 </div>
               </div>
             </td>
-            <td @click="navigateTocontactDetails(contact.id)">
+            <td @click="navigateToContactDetails(contact.id)">
               {{ contact.last_name }} {{ contact.first_name }}
             </td>
-            <td>{{ contact.company }}</td>
+            <td>
+              <span @click="navigateToAccountDetails(contact.account)">{{
+                getAccountName(contact.account)
+              }}</span>
+            </td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
 
-            <span v-if="contact.account" @click="navigateTocontactDetails(contact.account.id)">
-              {{ getAccountName(contact.account.id) }}
+            <span v-if="contact.account" @click="navigateToContactDetails(contact.account)">
+              {{ getAccountName(contact.account) }}
             </span>
           </tr>
         </tbody>
@@ -115,13 +119,13 @@
 
 <script setup lang="ts">
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
-import { contactRepository, accountRepository } from '@/services'
-import ContactSearchForm from './ContactSearchForm.vue'
-import type { Contact } from '@/types/contacts/contact'
+import { accountRepository, contactRepository } from '@/services'
+import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
+import type { Contact } from '@/types/contacts/contact'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import '@/styles/shared/index.css'
+import ContactSearchForm from './ContactSearchForm.vue'
 
 const router = useRouter()
 const contacts = ref<Contact[]>([])
@@ -187,7 +191,7 @@ const navigateToCreateContact = () => {
   router.push('/contacts/create')
 }
 
-const navigateTocontactDetails = (contactId: number) => {
+const navigateToContactDetails = (contactId: number) => {
   router.push(`/contacts/${contactId}`)
 }
 

@@ -12,7 +12,6 @@
           <h1>{{ deal?.name }}</h1>
           <div class="tag">
             <span>{{ formatCurrency(deal?.amount.toString()) }}</span>
-
           </div>
         </div>
       </div>
@@ -85,7 +84,6 @@
             <div class="info-label">Expected Revenue</div>
             <div class="info-label">:</div>
             <div class="info-value">{{ formatCurrency(deal?.expected_revenue.toString()) }}</div>
-
           </div>
         </div>
       </div>
@@ -251,7 +249,7 @@ const fetchDealDetails = async () => {
   try {
     isLoading.value = true
     const dealRes = await dealsRepository.index(dealId)
-    deal.value = dealRes.data
+    deal.value = dealRes.data || dealRes
   } catch (error) {
     toast.error(error, {
       position: POSITION.BOTTOM_RIGHT,

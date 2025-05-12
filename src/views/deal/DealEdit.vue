@@ -275,7 +275,7 @@ const fetchDropdownData = async () => {
 const fetchDealDetails = async () => {
   try {
     const dealRes = await dealsRepository.index(dealId)
-    deal.value = dealRes.data
+    deal.value = dealRes.data || dealRes
 
     console.log('✅ API Response:', deal.value)
     // Populate form with deal data

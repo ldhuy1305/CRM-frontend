@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCurrentUser } from '@/services/api'
 import { authService } from '@/services/repositories/auth'
-import type { LoginPayload, User } from '@/types/auth/auth'
+import type { AuthUser, LoginPayload } from '@/types/auth/auth'
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
 
 interface AuthState {
-  user: User | null
+  user: AuthUser | null
   isAuthenticated: boolean
   error: string | null
   isInitialized: boolean
@@ -15,7 +15,7 @@ interface AuthState {
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
-    user: null as User | null,
+    user: null as AuthUser | null,
     isAuthenticated: false,
     error: null as string | null,
     isInitialized: false,

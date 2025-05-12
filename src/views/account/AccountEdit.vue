@@ -223,7 +223,7 @@ const fetchAccountDetails = async () => {
     isLoading.value = true
     const response = await accountRepository.index(accountId)
     console.log('✅ API Response:', response)
-    account.value = response.data || null
+    account.value = response.data || response
 
     console.log('✅ API Response:', account.value)
     // Populate form fields

@@ -2,7 +2,7 @@ import type {
   ApiRequestParams,
   ApiResponseData,
   ApiResponseError,
-  ApiResponseList
+  ApiResponseList,
 } from '@/types/api.ts'
 import type { AxiosInstance, AxiosResponse } from 'axios'
 
@@ -30,7 +30,7 @@ export class BaseRepository<T = any, R = any> {
       `/${this.resource}/${id}/${pathParams}`,
       { params },
     )
-    return response
+    return response.data
   }
 
   async create(

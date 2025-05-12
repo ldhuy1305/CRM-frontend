@@ -298,12 +298,13 @@ const fetchDetailsData = async () => {
     isLoading.value = true
     const contactId = route.params.id as string
     const contactResponse = await contactRepository.index(contactId)
-    const accountId = contactResponse.data.account
+    contact.value = contactResponse.data || contactResponse
+
+    const accountId = contact.value.account
 
     if (accountId) {
       const accountResponse = await accountRepository.index(accountId)
-      contact.value = contactResponse.data
-      account.value = accountResponse.data
+      account.value = accountResponse.data || accountResponse
     }
 
     console.log('✅ Data loaded successfully')

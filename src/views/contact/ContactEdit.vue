@@ -257,7 +257,7 @@ const fetchContactDetails = async () => {
   try {
     const response = await contactRepository.index(contactId)
     console.log('✅ API Response:', response)
-    contact.value = response.data
+    contact.value = response.data || response
 
     console.log('✅ API Response:', contact.value)
     // Populate form fields

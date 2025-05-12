@@ -322,7 +322,7 @@ const fetchDetailsData = async () => {
     isLoading.value = true
     const accountId = route.params.id as string
     const accountResponse = await accountRepository.index(accountId)
-    account.value = accountResponse.data
+    account.value = accountResponse.data || accountResponse
 
     console.log('✅ Data loaded successfully')
     console.log('📦 Account:', account.value)

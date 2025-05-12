@@ -4,13 +4,15 @@
     <div class="module-header">
       <h1>Account</h1>
       <div class="header-actions">
-        <button class="btn-primary" @click="navigateToCreateAccount()">Create Account</button>
+        <button class="btn-primary" @click="navigateToCreateAccount">Create Account</button>
         <!-- <button class="actions-btn">
             Actions
             <span class="dropdown-arrow">▼</span>
           </button> -->
       </div>
     </div>
+
+    <AccountSearchForm @search="handleSearch" @clear="handleClear" />
 
     <div class="table-pagination">
       <div class="rows-per-page">
@@ -33,13 +35,31 @@
         <thead>
           <tr>
             <th></th>
-            <th>Account Name</th>
-            <th>Phone</th>
-            <th>Website</th>
+            <th @click="toggleSort('name')">
+              <span>Account Name</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'name' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'name' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('phone')">
+              <span>Phone</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'phone' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
+            <th @click="toggleSort('website')">
+              <span>Website</span>
+              <span class="sort-icons">
+                <span :class="{ active: sortField === 'website' && sortOrder === 'ASC' }">▲</span>
+                <span :class="{ active: sortField === 'website' && sortOrder === 'DESC' }">▼</span>
+              </span>
+            </th>
             <th>Account Owner</th>
           </tr>
         </thead>
-        <tbody v-if="accounts.length != 0">
+        <tbody v-if="accounts.length !== 0">
           <tr v-for="account in accounts" :key="account.id" class="data-row">
             <td>
               <div class="data-name-cell">
@@ -54,6 +74,7 @@
                 </div>
               </div>
             </td>
+
             <td>
               <span @click="navigateToAccountDetails(account.id)">{{ account.name }}</span>
             </td>
@@ -64,7 +85,7 @@
         </tbody>
         <tbody v-else>
           <tr>
-            <td colspan="6" style="text-align: center">No contacts found.</td>
+            <td colspan="6" style="text-align: center">No accounts found.</td>
           </tr>
         </tbody>
       </table>
@@ -75,15 +96,20 @@
 <script setup lang="ts">
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository } from '@/services'
-import '@/styles/shared/index.css'
+import AccountSearchForm from './AccountSearchForm.vue'
 import type { Account } from '@/types/accounts/account'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import '@/styles/shared/index.css'
 
 const router = useRouter()
 const accounts = ref<Account[]>([])
 const rowsPerPage = ref(10)
 const activeMoreOptions = ref<number | null>(null)
+
+const sortField = ref<string>('name')
+const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+const searchFilters = ref<Record<string, string>>({})
 const isLoading = ref(false)
 
 const fetchAccounts = async () => {
@@ -91,12 +117,41 @@ const fetchAccounts = async () => {
     isLoading.value = true
     const res = await accountRepository.show({ limit: rowsPerPage.value })
     console.log('📦 Fetched accounts:', res.results)
+    const payload = {
+      limit: rowsPerPage.value,
+      sort_field: sortField.value,
+      sort_order: sortOrder.value,
+      ...searchFilters.value,
+    }
+
+    console.log('Payload Account:', payload)
+
     accounts.value = res.results
   } catch (error) {
-    console.error('❌ Error fetching leads:', error)
+    console.error('❌ Error fetching accounts:', error)
   } finally {
     isLoading.value = false
   }
+}
+
+const toggleSort = (field: string) => {
+  if (sortField.value === field) {
+    sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
+  } else {
+    sortField.value = field
+    sortOrder.value = 'ASC'
+  }
+  fetchAccounts()
+}
+
+const handleSearch = async (filters: Record<string, string>) => {
+  searchFilters.value = filters
+  await fetchAccounts()
+}
+
+const handleClear = async () => {
+  searchFilters.value = {}
+  await fetchAccounts()
 }
 
 const navigateToCreateAccount = () => {
@@ -111,8 +166,8 @@ const navigateToEditAccount = (accountId: number) => {
   router.push(`/accounts/${accountId}/edit`)
 }
 
-const toggleMoreOptions = (contactId: number) => {
-  activeMoreOptions.value = activeMoreOptions.value === contactId ? null : contactId
+const toggleMoreOptions = (accountId: number) => {
+  activeMoreOptions.value = activeMoreOptions.value === accountId ? null : accountId
 }
 
 const deleteAccount = async (accountId: number) => {
@@ -122,12 +177,12 @@ const deleteAccount = async (accountId: number) => {
 
   try {
     await accountRepository.destroy(accountId)
-    console.log('✅ Contact deleted successfully:', accountId)
+    console.log('✅ Account deleted successfully:', accountId)
     await fetchAccounts()
     activeMoreOptions.value = null
   } catch (error) {
     console.error('❌ Error deleting account:', error)
-    alert('Failed to delete contact. Please try again.')
+    alert('Failed to delete account. Please try again.')
   }
 }
 
@@ -139,3 +194,59 @@ watch(rowsPerPage, () => {
   fetchAccounts()
 })
 </script>
+
+<style scoped>
+thead {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+thead th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+thead th:hover {
+  background-color: #f1f1f1;
+}
+
+.sort-icons {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  user-select: none;
+}
+
+.sort-icons span {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  margin-bottom: -7px;
+}
+
+.sort-icons span.active {
+  font-weight: bold;
+  color: #333;
+}
+
+.sort-icons span:hover {
+  color: #000;
+}
+
+.sort-icons span:active {
+  color: #007bff;
+}
+
+.sort-icons span.active {
+  color: #007bff;
+}
+</style>

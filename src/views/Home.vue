@@ -89,7 +89,7 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore()
     return {
-      userName: authStore.user?.first_name + ' ' + authStore.user?.last_name,
+      userName: authStore.user?.user.first_name + ' ' + authStore.user?.user.last_name,
     }
   },
 })

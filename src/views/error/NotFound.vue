@@ -16,9 +16,7 @@
 .not-found {
   height: 100vh;
   width: 100vw;
-  background-image: url('@/assets/404-background.png'); 
-  background-size: cover; 
-  background-position: center;
+  background-color: #f5f5f5;
   background-repeat: no-repeat;
   display: flex;
   justify-content: center;

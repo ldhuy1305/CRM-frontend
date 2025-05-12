@@ -311,7 +311,7 @@ const handleSave = async () => {
       isLoading.value = true
       await accountRepository.update(accountId, payload)
       console.log('Account updated successfully!')
-      router.push('/accounts')
+      router.push(`/accounts/${accountId}`)
     } catch (error) {
       console.error('Error saving contact:', error)
       toast.error(error, {

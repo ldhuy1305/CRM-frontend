@@ -250,7 +250,7 @@ const fetchDealDetails = async () => {
   try {
     isLoading.value = true
     const dealRes = await dealsRepository.index(dealId)
-    deal.value = dealRes
+    deal.value = dealRes.data
   } catch (error) {
     toast.error(error, {
       position: POSITION.BOTTOM_RIGHT,

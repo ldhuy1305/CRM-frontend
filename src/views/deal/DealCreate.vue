@@ -174,7 +174,8 @@ const validateForm = (): boolean => {
   let isValid = true
 
   // Clear previous errors
-  Object.keys(errors).forEach((key) => (errors[key] = ''))
+  // Object.keys(errors).forEach((key) => (errors[key] = ''))
+  const errors: { [key: string]: string } = {}; 
 
   if (!form.name.trim()) {
     errors.name = 'Deal Name is required.'

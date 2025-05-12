@@ -48,8 +48,9 @@
                 </div>
                 <div class="amount">
                   <fas-icon icon="fas fa-wallet"></fas-icon>
-                  {{ formatVNDCurrency(parseFloat(deal.amount)) }}
+                  {{ formatVNDCurrency(deal.amount) }}
                 </div>
+
                 <div class="close-date">
                   <fas-icon icon="fas fa-calendar"></fas-icon>
                   {{ new Date(deal.close_date).toLocaleDateString() }}
@@ -119,7 +120,7 @@ const getDealsByStage = (stageName: string) => {
 
 const getStageAmount = (stageName: string) => {
   const stageDeals = getDealsByStage(stageName)
-  const totalAmount = stageDeals.reduce((sum, deal) => sum + parseFloat(deal.amount), 0)
+  const totalAmount = stageDeals.reduce((sum, deal) => sum + deal.amount, 0)
   return formatVNDCurrency(totalAmount)
 }
 

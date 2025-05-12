@@ -359,6 +359,7 @@ const handleSave = async () => {
       contact_owner: form.contactOwnerId,
       lead_source: form.leadSource,
       account: form.account as number,
+      company: '',
     }
     console.log('Prepared API Payload:', payload)
     try {

@@ -1,5 +1,19 @@
+// export type ApiResponseList<T> = {
+//   [x: string]: number;
+//   messages: string;
+//   results: Array<T>;
+//   count: number;
+//   next: number | null;
+//   previous: number | null;
+//   links?: Array<{
+//     url: string | null;
+//     label: string;
+//     active: boolean;
+//   }>;
+// };
+
 export type ApiResponseList<T> = {
-  [x: string]: number;
+  total: number;
   messages: string;
   results: Array<T>;
   count: number;
@@ -11,6 +25,7 @@ export type ApiResponseList<T> = {
     active: boolean;
   }>;
 };
+
 
 export type ApiResponseError = {
   type: string;
@@ -42,4 +57,5 @@ export type ApiRequestParams = {
 
 export type ApiResponseData<T> = {
   data: T;
+  
 };

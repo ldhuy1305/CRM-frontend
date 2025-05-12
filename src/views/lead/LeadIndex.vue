@@ -156,7 +156,7 @@ const fetchLeads = async () => {
     console.log('✅ API Response:', res)
     console.log('📦 Fetched leads:', res.results)
     leads.value = res.results
-    totalRecords.value = res.total
+    totalRecords.value = res.total; 
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
   } finally {

@@ -19,6 +19,7 @@ import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
+import NotFound from '@/views/error/NotFound.vue'
 
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
@@ -134,6 +135,11 @@ const routes = [
         meta: { title: 'Đăng nhập UNIBEAM' },
       },
     ],
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFound,
   },
 ]
 

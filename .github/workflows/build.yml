@@ -15,10 +15,23 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20' 
-        cache: 'npm' 
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Clean npm cache
+      run: npm cache clean --force
 
     - name: Install dependencies
-      run: npm install
+      run: npm ci
+      env:
+        CI: true
+
+    - name: Debug Vite installation
+      run: |
+        npm list vite
+        ls -la node_modules/vite/dist/node/chunks || echo "Vite chunks directory missing"
+        node -v
+        npm -v
 
     - name: Build
       run: npm run build

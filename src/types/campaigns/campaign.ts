@@ -20,3 +20,19 @@ export interface Campaign {
   expected_response: number
   numbers_sent: number
 }
+
+export type CampaignCreateEditPayload = Omit<
+  Campaign,
+  | 'id'
+  | 'created_by'
+  | 'updated_by'
+  | 'created_at'
+  | 'updated_at'
+  | 'campaign_type'
+  | 'campaign_status'
+  | 'campaign_owner'
+> & {
+  campaign_type: number
+  campaign_status: number
+  campaign_owner: number
+}

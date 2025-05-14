@@ -18,7 +18,9 @@
             {{ lead.first_name }} {{ lead.last_name }} -
             <span class="company-name">{{ lead.company_name }}</span>
           </h1>
-          <div class="tag"><span>Tag</span></div>
+          <div class="tag">
+            <span>#{{ lead.id }}</span>
+          </div>
         </div>
       </div>
       <div class="action-buttons">

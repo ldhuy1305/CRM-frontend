@@ -17,7 +17,9 @@
           <h1>
             {{ account.name }}
           </h1>
-          <div class="tag"><span>Tag</span></div>
+          <div class="tag">
+            <span>#{{ account.id }}</span>
+          </div>
         </div>
       </div>
       <div class="action-buttons">

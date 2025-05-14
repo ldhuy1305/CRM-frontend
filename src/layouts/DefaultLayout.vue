@@ -56,7 +56,7 @@ export default defineComponent({
 
 .content {
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   padding: 20px;
   background-color: #f5f5f5;
 }

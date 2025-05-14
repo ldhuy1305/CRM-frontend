@@ -26,6 +26,8 @@ const initialize = async () => {
     pauseOnHover: false,
   })
 
+  app.component('font-awesome-icon', FontAwesomeIcon)
+
   const authStore = useAuthStore()
   await authStore.initialize()
 

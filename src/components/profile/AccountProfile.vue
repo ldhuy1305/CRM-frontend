@@ -48,11 +48,10 @@ const accountFields = [
 }
 
 .account-details {
-  background-color: #f9f9f9;
   border-radius: 0.5rem;
   padding: 1.5rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 2rem;
+  
 }
 
 .detail-row {

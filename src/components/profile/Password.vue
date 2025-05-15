@@ -1,21 +1,21 @@
 <template>
   <div class="password-settings">
-    <h2 class="title">Password Settings</h2>
-    <div class="form-card">
-      <form @submit.prevent="handleSubmit">
-        <div v-for="field in fields" :key="field.id" class="form-group">
-          <label :for="field.id">{{ field.label }}</label>
-          <CRMInput
-            :type="'password'"
-            :id="field.id"
-            v-model="field.model"
-            required
-            :showPassword="field.showPassword"
-            @toggle-password="field.showPassword = !field.showPassword"
-          />
-        </div>
-        <CRMButton @click="handleChangePassword">Change Password</CRMButton>
-      </form>
+    <h3>Password Settings</h3>
+    <div class="password-item" v-for="field in fields" :key="field.id">
+      <label class="label" :for="field.id">{{ field.label }}</label>
+      <div class="input-wrapper">
+        <CRMInput
+          :type="'password'"
+          :id="field.id"
+          v-model="field.model"
+          required
+          :showPassword="field.showPassword"
+          @toggle-password="field.showPassword = !field.showPassword"
+        />
+      </div>
+    </div>
+    <div class="button-wrapper">
+      <CRMButton @click="handleChangePassword">Change Password</CRMButton>
     </div>
   </div>
 </template>
@@ -46,23 +46,19 @@ const fields = reactive([
   },
 ])
 
-const handleSubmit = () => {
+const handleChangePassword = () => {
   if (fields[1].model !== fields[2].model) {
     alert('Passwords do not match!')
     return
   }
   alert('Password changed successfully!')
 }
-const handleChangePassword = () => {
-  console.log('Change password clicked!')
-}
 </script>
 
 <style scoped>
 .password-settings {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 1rem;
+  flex: 1;
+  padding: 2rem;
   border-radius: 12px;
   color: #1f2937;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -71,37 +67,40 @@ const handleChangePassword = () => {
   background-color: white;
   bottom: 50px;
   width: 87%;
-  margin-left: calc(-1 * ((37vw - 100%) / 2));
+  margin-left: calc(-1 * ((68vw - 97%) / 2));
 }
 
-.title {
+.password-settings h3 {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #000;
-}
-
-.description {
   margin-bottom: 1.5rem;
-  color: #333;
+  color: black;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
 }
 
-.form-card {
-  background: #f9f9f9;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.form-group {
-  margin-bottom: 1.25rem;
+.password-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #d1d5db;
 }
 
-label {
+.label {
+  width: 30%;
   font-weight: 500;
-  margin-bottom: 0.5rem;
   color: #333;
+}
+
+.input-wrapper {
+  width: 70%;
+}
+
+.button-wrapper {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end; 
 }
 </style>

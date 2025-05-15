@@ -1,20 +1,29 @@
 <script setup lang="ts">
 import InfoItem from './InfoItem.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
-const name = ref('nguyenkhoa-01')
-const gender = ref('Not provided')
-const location = ref('Your location')
-const github = ref('https://github.com/HuuKhoaDev')
+const emit = defineEmits<{
+  (e: 'update-field', field: string, value: any): void
+}>()
+
+const first_name = ref('Admin')
+const last_name = ref('')
+const address = ref('')
+const phone = ref('')
+
+watch(first_name, (val) => emit('update-field', 'first_name', val))
+watch(last_name, (val) => emit('update-field', 'last_name', val))
+watch(address, (val) => emit('update-field', 'address', val))
+watch(phone, (val) => emit('update-field', 'phone', val))
 </script>
 
 <template>
   <div class="basic-info">
     <h3>Basic Info</h3>
-    <InfoItem label="Name" v-model="name" field="name" />
-    <InfoItem label="Gender" v-model="gender" field="gender" />
-    <InfoItem label="Location" v-model="location" field="location" />
-    <InfoItem label="Github" v-model="github" field="github" />
+    <InfoItem label="First Name" v-model="first_name" field="first_name" />
+    <InfoItem label="Last Name" v-model="last_name" field="last_name" />
+    <InfoItem label="Address" v-model="address" field="address" />
+    <InfoItem label="Phone" v-model="phone" field="phone" />
   </div>
 </template>
 
@@ -44,7 +53,7 @@ const github = ref('https://github.com/HuuKhoaDev')
 
 .basic-info :deep(.info-item) {
   margin-bottom: 1rem;
-  padding: 1.75rem 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;

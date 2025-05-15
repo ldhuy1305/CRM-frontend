@@ -11,6 +11,7 @@
         :required="required"
         :disabled="disabled"
         :class="inputClass"
+        
       />
       <span
         v-if="isPasswordType"

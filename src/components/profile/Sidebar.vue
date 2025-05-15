@@ -1,6 +1,16 @@
 <script setup lang="ts">
-defineProps<{ selectedTab: string }>()
-defineEmits<{ (e: 'selectTab', tab: string): void }>()
+import { useRouter } from 'vue-router'
+
+const props = defineProps<{ selectedTab: string }>()
+const emit = defineEmits<{ (e: 'selectTab', tab: string): void }>()
+
+const router = useRouter()
+
+const handleLogout = () => {
+  localStorage.removeItem('authToken')
+
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -10,17 +20,14 @@ defineEmits<{ (e: 'selectTab', tab: string): void }>()
         <font-awesome-icon :icon="['fas', 'circle-info']" />
         <span>Basic Info</span>
       </li>
-      <li :class="{ active: selectedTab === 'account' }" @click="$emit('selectTab', 'account')">
-        <font-awesome-icon :icon="['fas', 'gear']" />
-        <span>Account</span>
-      </li>
       <li :class="{ active: selectedTab === 'password' }" @click="$emit('selectTab', 'password')">
         <font-awesome-icon :icon="['fas', 'unlock-keyhole']" />
         <span>Change password</span>
       </li>
-      <li :class="{ active: selectedTab === 'security' }" @click="$emit('selectTab', 'security')">
-        <font-awesome-icon :icon="['fas', 'shield-halved']" />
-        <span>Privacy and security</span>
+
+      <li @click="handleLogout" class="logout" style="cursor: pointer; ">
+        <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+        <span>Logout</span>
       </li>
     </ul>
   </div>
@@ -76,4 +83,15 @@ defineEmits<{ (e: 'selectTab', tab: string): void }>()
   margin-right: 12px;
 }
 
+.logout {
+  cursor: pointer;
+  color: #ff4d4f;
+  
+}
+
+.logout:hover {
+  color: #ff1a1a;
+  background-color: #ffe6e6;
+  font-weight: 600;
+}
 </style>

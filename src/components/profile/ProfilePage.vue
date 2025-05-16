@@ -43,15 +43,6 @@ function toggleAvatarMenu() {
   showAvatarMenu.value = !showAvatarMenu.value
 }
 
-function removeAvatar() {
-  const confirmed = window.confirm('Are you sure you want to reset your current avatar?')
-  if (confirmed) {
-    avatarUrl.value = ''
-
-    showAvatarMenu.value = false
-  }
-}
-
 function onAvatarSelected(event: Event) {
   const target = event.target as HTMLInputElement
   const file = target.files?.[0]

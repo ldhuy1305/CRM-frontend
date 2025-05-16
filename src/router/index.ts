@@ -20,6 +20,7 @@ import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
 import NotFound from '@/views/error/NotFound.vue'
+import ProfilePage from '@/components/profile/ProfilePage.vue'
 
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
@@ -114,6 +115,12 @@ const routes = [
         component: DealEdit,
         meta: { requiresAuth: true },
       },
+      {
+        path: '/profile',
+        name: 'ProfilePage',
+        component: ProfilePage,
+        meta: { requiresAuth: true },
+      }
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

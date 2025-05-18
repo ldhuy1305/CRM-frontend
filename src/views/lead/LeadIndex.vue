@@ -118,13 +118,13 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { leadRepository } from '@/services'
-import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
-import type { Lead } from '@/types/leads/lead'
 import '@/styles/shared/index.css'
+import type { Lead } from '@/types/leads/lead'
+import LeadSearchForm from '@/views/lead/LeadSearchForm.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import CRMLoading from '@/components/ui/CRM-Loading.vue'
 
 const router = useRouter()
 const leads = ref<Lead[]>([])
@@ -142,21 +142,22 @@ const isLoading = ref(false)
 const fetchLeads = async () => {
   try {
     isLoading.value = true
-    const res = await leadRepository.show({ limit: rowsPerPage.value })
-    const payload = {
+    const payload: Record<string, any> = {
       limit: rowsPerPage.value,
       page: currentPage.value,
-      sort_Field: sortField.value,
-      sort_Order: sortOrder.value,
       ...searchFilters.value,
     }
 
-    console.log('Payload Lead:', payload)
+    if (sortField.value) {
+      payload.sort_Field = sortField.value
+      payload.sort_Order = sortOrder.value
+    }
 
-    console.log('✅ API Response:', res)
-    console.log('📦 Fetched leads:', res.results)
+    console.log('📤 Request payload:', payload)
+
+    const res = await leadRepository.show(payload)
     leads.value = res.results
-    totalRecords.value = res.total; 
+    totalRecords.value = res.total
   } catch (error) {
     console.error('❌ Error fetching leads:', error)
   } finally {
@@ -174,23 +175,18 @@ const toggleSort = (field: string) => {
   fetchLeads()
 }
 
-const handleSearch = (filters: any) => {
-  searchFilters.value = { ...filters }
-  // currentPage.value = 1
-  // fetchLeads()
-  console.log('Payload:', {
-    limit: rowsPerPage.value,
-    sort_Field: sortField.value,
-    sort_Order: sortOrder.value,
-    ...searchFilters.value,
-  })
-  fetchLeads()
+const handleSearch = async (filters: Record<string, string>) => {
+  currentPage.value = 1
+  searchFilters.value = filters
+  await fetchLeads()
 }
 
-const handleClear = () => {
+const handleClear = async () => {
   searchFilters.value = {}
-  // currentPage.value = 1
-  // fetchLeads()
+  currentPage.value = 1
+  sortField.value = ''
+  sortOrder.value = 'ASC'
+  await fetchLeads()
 }
 
 watch(rowsPerPage, () => {

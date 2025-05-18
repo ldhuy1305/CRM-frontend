@@ -252,18 +252,16 @@ const validateForm = (): boolean => {
   return isValid
 }
 
-const handleIntegerInput = (event: Event, field: string) => {
+const handleIntegerInput = (event: Event, field: keyof typeof form) => {
   const input = event.target as HTMLInputElement
   const value = input.value
 
-  // Remove decimal places and convert to integer
   const intValue = parseInt(value, 10)
 
-  // Update form with integer value
   if (!isNaN(intValue)) {
-    form[field] = intValue.toString()
+    form[field] = intValue.toString() as never
   } else {
-    form[field] = ''
+    form[field] = '' as never
   }
 }
 

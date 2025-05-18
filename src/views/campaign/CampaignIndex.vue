@@ -90,8 +90,8 @@
             <td @click="navigateToCampaignDetails(campaign.id)">{{ campaign.name }}</td>
             <td>{{ campaign.campaign_type.name }}</td>
             <td>{{ campaign.campaign_status.name }}</td>
-            <td>{{ formatDate(campaign.start_date) }}</td>
-            <td>{{ formatDate(campaign.end_date) }}</td>
+            <td>{{ campaign.start_date ? formatDate(campaign.start_date) : 'N/A' }}</td>
+            <td>{{ campaign.end_date ? formatDate(campaign.end_date) : 'N/A' }}</td>
             <td>
               {{ campaign.campaign_owner?.first_name }} {{ campaign.campaign_owner?.last_name }}
             </td>
@@ -157,15 +157,15 @@ const toggleSort = (field: string) => {
   fetchData()
 }
 
-const handleSearch = async (filters: Record<string, string>) => {
-  searchFilters.value = filters
-  await fetchData()
-}
+// const handleSearch = async (filters: Record<string, string>) => {
+//   searchFilters.value = filters
+//   await fetchData()
+// }
 
-const handleClear = async () => {
-  searchFilters.value = {}
-  await fetchData()
-}
+// const handleClear = async () => {
+//   searchFilters.value = {}
+//   await fetchData()
+// }
 
 const navigateToCreateCampaign = () => {
   router.push('/campaigns/create')

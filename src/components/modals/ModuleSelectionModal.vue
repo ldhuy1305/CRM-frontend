@@ -58,7 +58,7 @@ import { ref, watch } from 'vue'
 interface Column {
   key: string
   label: string
-  format?: (value: any) => string
+  format?: (value: any, item?: any) => string
 }
 
 interface Props {

@@ -11,7 +11,7 @@
         <div class="module-title">
           <h1>{{ deal?.name }}</h1>
           <div class="tag">
-            <span>{{ formatCurrency(deal?.amount.toString()) }}</span>
+            <span>{{ formatCurrency(deal?.amount) }}</span>
           </div>
         </div>
       </div>
@@ -83,7 +83,7 @@
           <div class="info-row">
             <div class="info-label">Expected Revenue</div>
             <div class="info-label">:</div>
-            <div class="info-value">{{ formatCurrency(deal?.expected_revenue.toString()) }}</div>
+            <div class="info-value">{{ formatCurrency(deal?.expected_revenue) }}</div>
           </div>
         </div>
       </div>
@@ -161,7 +161,7 @@ const deal = ref<Deal>({} as Deal)
 const isLoading = ref(false)
 const dealId = route.params.id as string
 
-const formatCurrency = (value?: string) => {
+const formatCurrency = (value?: any) => {
   if (!value) return ''
   return parseFloat(value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
 }

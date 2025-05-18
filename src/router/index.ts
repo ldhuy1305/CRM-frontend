@@ -6,6 +6,9 @@ import Home from '@/views/Home.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
+import CampaignCreate from '@/views/campaign/CampaignCreate.vue'
+import CampaignDetails from '@/views/campaign/CampaignDetails.vue'
+import CampaignEdit from '@/views/campaign/CampaignEdit.vue'
 import Campaign from '@/views/campaign/CampaignIndex.vue'
 import ContactCreate from '@/views/contact/ContactCreate.vue'
 import ContactDetails from '@/views/contact/ContactDetails.vue'
@@ -77,7 +80,7 @@ const routes = [
         meta: { requiresAuth: true },
       },
 
-      { path: 'accounts', name: 'Accounts', component: Account },
+      { path: 'accounts', name: 'Accounts', component: Account, meta: { requiresAuth: true } },
       {
         path: '/accounts/:id',
         name: 'AccountDetails',
@@ -117,8 +120,27 @@ const routes = [
         meta: { requiresAuth: true },
       },
 
-      { path: 'campaigns', name: 'Campaigns', component: Campaign },
+      { path: 'campaigns', name: 'Campaigns', component: Campaign, meta: { requiresAuth: true } },
+      {
+        path: '/campaigns/:id',
+        name: 'campaignsDetails',
+        component: CampaignDetails,
+        meta: { requiresAuth: true },
+      },
 
+      {
+        path: '/campaigns/create',
+        name: 'CreateCampaigns',
+        component: CampaignCreate,
+        meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/campaigns/:id/edit',
+        name: 'EditCampaigns',
+        component: CampaignEdit,
+        meta: { requiresAuth: true },
+      },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

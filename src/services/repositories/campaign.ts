@@ -17,7 +17,7 @@ class CampaignTypeRepository extends BaseRepository<NamedObject, Partial<NamedOb
 
 class CampaignStatusRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {
   constructor() {
-    super(api, 'campaigns/status')
+    super(api, 'campaigns/statuses')
   }
 }
 

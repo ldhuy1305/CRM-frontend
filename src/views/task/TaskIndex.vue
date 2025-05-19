@@ -65,6 +65,7 @@ import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { taskRepository, taskStatusRepository } from '@/services'
 import '@/styles/kanban/styles.css'
 import '@/styles/shared/index.css'
+import '@/styles/tasks/styles.css'
 import type { NamedObject } from '@/types/common/common_types'
 import type { Task } from '@/types/task/task'
 import { formatDate } from '@/utils/formatter'
@@ -138,67 +139,3 @@ watch(rowsPerPage, () => {
   fetchTaskData()
 })
 </script>
-
-<style scoped>
-.column-header {
-  background-color: rgba(0, 123, 255, 0.1);
-}
-
-.status-name {
-  font-weight: 600;
-  font-size: 14px;
-  color: #0056b3;
-  max-width: calc(100% - 50px);
-}
-
-.task-card {
-  padding: 12px;
-  margin-bottom: 8px;
-  background: white;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.priority {
-  font-size: 0.9em;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.priority-high {
-  color: #dc3545;
-}
-
-.priority-medium {
-  color: #ffc107;
-}
-
-.priority-low {
-  color: #28a745;
-}
-
-.overdue {
-  color: #dc3545;
-  font-weight: bold;
-}
-
-.card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  font-size: 0.9em;
-}
-
-.card-details > div {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-count {
-  font-size: 0.9em;
-  color: #666;
-}
-</style>

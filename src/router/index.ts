@@ -24,6 +24,9 @@ import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
+import TaskCreate from '@/views/task/TaskCreate.vue'
+import TaskDetails from '@/views/task/TaskDetails.vue'
+import TaskEdit from '@/views/task/TaskEdit.vue'
 import Task from '@/views/task/TaskIndex.vue'
 
 import AccountEdit from '@/views/account/AccountEdit.vue'
@@ -144,6 +147,27 @@ const routes = [
       },
 
       { path: 'tasks', name: 'Tasks', component: Task, meta: { requiresAuth: true } },
+
+      {
+        path: '/tasks/:id',
+        name: 'TasksDetails',
+        component: TaskDetails,
+        meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/tasks/create',
+        name: 'CreateTask',
+        component: TaskCreate,
+        meta: { requiresAuth: true },
+      },
+
+      {
+        path: '/tasks/:id/edit',
+        name: 'EditTask',
+        component: TaskEdit,
+        meta: { requiresAuth: true },
+      },
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

@@ -104,7 +104,7 @@
               <div class="remind-options">
                 <label>
                   <input type="radio" v-model="reminderType" value="on" />
-                  On {{ formatDate(form.due_date) }} at
+                  On {{ formatDate(form.due_date ?? undefined) }} at
                   <input type="time" v-model="reminderTime" />
                 </label>
               </div>

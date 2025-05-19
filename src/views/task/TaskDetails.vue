@@ -66,7 +66,7 @@
           <div class="info-row">
             <div class="info-label">Task Owner:</div>
             <div class="info-value">
-              {{ task?.task_owner?.first_name }} {{ task?.task_owner?.last_name }}
+              {{ task?.task_owner?.last_name }} {{ task?.task_owner?.first_name }}
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@
                 v-if="task?.contact"
                 @click="navigateToContact(task.contact.id)"
               >
-                {{ task.contact.first_name }} {{ task.contact.last_name }}
+                {{ task.contact.last_name }} {{ task.contact.first_name }}
               </div>
               <div v-else>—</div>
             </div>
@@ -119,16 +119,17 @@
             <div class="info-row">
               <label class="info-label">Created By</label>
               <div class="info-value">
-                {{ task?.created_by?.first_name }} {{ task?.created_by?.last_name }}
+                {{ task?.created_by?.last_name }} {{ task?.created_by?.first_name }}
                 <div class="timestamp">{{ formatDateTime(task?.created_at) }}</div>
               </div>
             </div>
             <div class="info-row">
               <label class="info-label">Modified By</label>
-              <div class="info-value">
+              <div class="info-value" v-if="task?.updated_by">
                 {{ task?.updated_by?.first_name }} {{ task?.updated_by?.last_name }}
                 <div class="timestamp">{{ formatDateTime(task?.updated_at) }}</div>
               </div>
+              <div v-else></div>
             </div>
             <div class="info-row">
               <label class="info-label">Reminder</label>
@@ -153,7 +154,7 @@
       <div class="right-sidebar">
         <div class="contact-info" v-if="task?.contact">
           <div class="contact-header">
-            <h3>{{ task.contact.first_name }} {{ task.contact.last_name }}</h3>
+            <h3>{{ task.contact.last_name }} {{ task.contact.first_name }}</h3>
             <button class="btn-tertiary">Send Email</button>
           </div>
           <div class="contact-details">

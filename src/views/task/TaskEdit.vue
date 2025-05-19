@@ -296,7 +296,6 @@ const validateForm = (): boolean => {
 
 const fetchDropdownData = async () => {
   try {
-    isLoading.value = true
     const [ownersRes, statusesRes, prioritiesRes, accountsRes, contactsRes, dealsRes] =
       await Promise.all([
         userRepository.show(),
@@ -317,14 +316,11 @@ const fetchDropdownData = async () => {
     toast.error(error, {
       position: POSITION.BOTTOM_RIGHT,
     })
-  } finally {
-    isLoading.value = false
   }
 }
 
 const fetchTask = async () => {
   try {
-    isLoading.value = true
     const response = await taskRepository.index(id)
     task.value = response.data || response
 
@@ -344,8 +340,6 @@ const fetchTask = async () => {
     toast.error(error, {
       position: POSITION.BOTTOM_RIGHT,
     })
-  } finally {
-    isLoading.value = false
   }
 }
 
@@ -373,6 +367,8 @@ const handleCancel = () => {
 }
 
 onMounted(async () => {
+  isLoading.value = true
   await Promise.all([fetchTask(), fetchDropdownData()])
+  isLoading.value = false
 })
 </script>

@@ -54,12 +54,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import CRMButtonSearch from '@/components/ui/CRM-ButtonSearch.vue'
 import CRMInput from '@/components/ui/CRM-Input.vue'
 import CRMSelect from '@/components/ui/CRM-Select.vue'
-import CRMButtonSearch from '@/components/ui/CRM-ButtonSearch.vue'
+import { leadSourceRepository, userRepository } from '@/services'
+import type { SelectOption } from '@/types/common/common_types'
+import type { UserOption } from '@/types/users/user'
+import { computed, onMounted, ref } from 'vue'
 
 const emit = defineEmits(['search', 'clear'])
+const leadOwnerOptions = ref<UserOption[]>([])
+const leadSourceOptions = ref<SelectOption[]>([])
+const isLoading = ref(false)
+const searchQueryLeadSource = ref('')
+const searchQueryLeadOwner = ref('')
 
 const form = ref({
   leadName: '',
@@ -70,63 +78,46 @@ const form = ref({
   leadOwner: '',
 })
 
-const leadSourceOptions = [
-  { id: 16, name: 'Trò chuyện' },
-  { id: 15, name: 'Nghiên cứu trên Web' },
-  { id: 14, name: 'Tải về từ Web' },
-  { id: 13, name: 'Hội chợ' },
-  { id: 12, name: 'Hội thảo nội bộ' },
-  { id: 11, name: 'Hội thảo đối tác' },
-  { id: 10, name: 'Quan hệ đối ngoại' },
-  { id: 9, name: 'Quan hệ đối nội' },
-  { id: 8, name: 'Đối tác' },
-  { id: 7, name: 'Facebook' },
-  { id: 6, name: 'X (Twitter)' },
-  { id: 5, name: 'Cửa hàng trực tuyến' },
-  { id: 4, name: 'Giới thiệu từ bên ngoài' },
-  { id: 3, name: 'Giới thiệu từ nhân viên' },
-  { id: 2, name: 'Gọi điện' },
-  { id: 1, name: 'Quảng cáo' },
-]
-
-const leadOwnerOptions = [
-  {
-    id: 3,
-    name: 'Nhan Tran',
-    email: 'ttnhan2642@gmail.com',
-    address: '54 Nguyen Luong Bang, Lien Chieu, Da Nang',
-    phone: '0935614863',
-  },
-  {
-    id: 2,
-    name: 'Huy Lê Đức',
-    email: 'ldhuydn1305@gmail.com',
-    address: null,
-    phone: null,
-  },
-  {
-    id: 1,
-    name: 'Admin',
-    email: 'Admin001@gmail.com',
-    address: '',
-    phone: '',
-  },
-]
-
-const searchQueryLeadSource = ref('')
-const searchQueryLeadOwner = ref('')
+const fetchSelectOptions = async () => {
+  try {
+    isLoading.value = true
+    const [sourcesRes, ownersRes] = await Promise.all([
+      leadSourceRepository.show(),
+      userRepository.show(),
+    ])
+    leadSourceOptions.value = sourcesRes.results || sourcesRes
+    leadOwnerOptions.value = ownersRes.results || ownersRes
+  } catch (error) {
+    console.error('Error fetching options:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
 
 const filteredLeadSourceByIdAndName = computed(() =>
-  leadSourceOptions.filter((option) =>
+  leadSourceOptions.value.filter((option) =>
     `${option.id} ${option.name}`.toLowerCase().includes(searchQueryLeadSource.value.toLowerCase()),
   ),
 )
 
-const filteredLeadOwnerByIdAndName = computed(() =>
-  leadOwnerOptions.filter((option) =>
-    `${option.id} ${option.name}`.toLowerCase().includes(searchQueryLeadOwner.value.toLowerCase()),
-  ),
-)
+const filteredLeadOwnerByIdAndName = computed(() => {
+  if (!searchQueryLeadOwner.value)
+    return leadOwnerOptions.value.map((owner) => ({
+      id: owner.id,
+      name: `${owner.first_name} ${owner.last_name}`.trim(),
+    }))
+
+  return leadOwnerOptions.value
+    .map((owner) => ({
+      id: owner.id,
+      name: `${owner.first_name} ${owner.last_name}`.trim(),
+    }))
+    .filter((option) =>
+      `${option.id} ${option.name}`
+        .toLowerCase()
+        .includes(searchQueryLeadOwner.value.toLowerCase().trim()),
+    )
+})
 
 function clearForm() {
   form.value = {
@@ -137,6 +128,9 @@ function clearForm() {
     leadSource: '',
     leadOwner: '',
   }
+
+  searchQueryLeadSource.value = ''
+  searchQueryLeadOwner.value = ''
   emit('clear')
 }
 
@@ -145,12 +139,12 @@ function onSearch() {
 
   const output: { [key: string]: string } = {}
 
-  if (data.leadName) output.lead_name = data.leadName
+  if (data.leadName) output.first_name = data.leadName
   if (data.company) output.company = data.company
   if (data.email) output.email = data.email
   if (data.phone) output.phone = data.phone
-  if (data.leadSource) output.lead_source = data.leadSource.toString()
-  if (data.leadOwner) output.lead_owner = data.leadOwner.toString()
+  if (data.leadSource) output.lead_source__id = data.leadSource.toString()
+  if (data.leadOwner) output.owner__id = data.leadOwner.toString()
 
   console.log('Search Payload:', JSON.stringify(output, null, 2))
   emit('search', output)
@@ -158,11 +152,17 @@ function onSearch() {
 
 function clearLeadSource() {
   form.value.leadSource = ''
+  searchQueryLeadSource.value = ''
 }
 
 function clearLeadOwner() {
   form.value.leadOwner = ''
+  searchQueryLeadOwner.value = ''
 }
+
+onMounted(() => {
+  fetchSelectOptions()
+})
 </script>
 
 <style scoped>

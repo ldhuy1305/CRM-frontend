@@ -18,7 +18,9 @@
             {{ contact.last_name }} {{ contact.first_name }} -
             <span class="company-name">{{ account.name }}</span>
           </h1>
-          <div class="tag"><span>Tag</span></div>
+          <div class="tag">
+            <span>#{{ account.id }}</span>
+          </div>
         </div>
       </div>
       <div class="action-buttons">

@@ -24,7 +24,6 @@ import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
-import NotFound from '@/views/error/NotFound.vue'
 import ProfilePage from '@/components/profile/ProfilePage.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetails from '@/views/task/TaskDetails.vue'
@@ -130,7 +129,7 @@ const routes = [
         name: 'ProfilePage',
         component: ProfilePage,
         meta: { requiresAuth: true },
-      }
+      },
       { path: 'campaigns', name: 'Campaigns', component: Campaign, meta: { requiresAuth: true } },
       {
         path: '/campaigns/:id',

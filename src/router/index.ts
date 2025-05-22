@@ -25,14 +25,12 @@ import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
 import ProfilePage from '@/components/profile/ProfilePage.vue'
-import TaskCreate from '@/views/task/TaskCreate.vue'
-import TaskDetails from '@/views/task/TaskDetails.vue'
-import TaskEdit from '@/views/task/TaskEdit.vue'
-import Task from '@/views/task/TaskIndex.vue'
+import SettingsPage from '@/views/SettingsPage.vue'
 
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import UserGroupPermissions from '@/components/permission/UserGroupPermissions.vue'
 const routes = [
   {
     path: '/',
@@ -130,50 +128,18 @@ const routes = [
         component: ProfilePage,
         meta: { requiresAuth: true },
       },
-      { path: 'campaigns', name: 'Campaigns', component: Campaign, meta: { requiresAuth: true } },
       {
-        path: '/campaigns/:id',
-        name: 'campaignsDetails',
-        component: CampaignDetails,
+        path: '/settings',
+        name: 'Settings',
+        component: SettingsPage,
         meta: { requiresAuth: true },
       },
-
       {
-        path: '/campaigns/create',
-        name: 'CreateCampaigns',
-        component: CampaignCreate,
+        path: '/permissions',
+        name: 'Permissions',
+        component: UserGroupPermissions,
         meta: { requiresAuth: true },
-      },
-
-      {
-        path: '/campaigns/:id/edit',
-        name: 'EditCampaigns',
-        component: CampaignEdit,
-        meta: { requiresAuth: true },
-      },
-
-      { path: 'tasks', name: 'Tasks', component: Task, meta: { requiresAuth: true } },
-
-      {
-        path: '/tasks/:id',
-        name: 'TasksDetails',
-        component: TaskDetails,
-        meta: { requiresAuth: true },
-      },
-
-      {
-        path: '/tasks/create',
-        name: 'CreateTask',
-        component: TaskCreate,
-        meta: { requiresAuth: true },
-      },
-
-      {
-        path: '/tasks/:id/edit',
-        name: 'EditTask',
-        component: TaskEdit,
-        meta: { requiresAuth: true },
-      },
+      }
       // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

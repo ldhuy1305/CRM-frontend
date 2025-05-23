@@ -32,7 +32,10 @@ export class AuthService {
   async login(payload: LoginPayload): Promise<User> {
     try {
       const response = await axios.post(this.resource, payload)
-      return response.data as User
+      const data = response.data as User
+      localStorage.setItem('access', data.access)
+      localStorage.setItem('refresh', data.refresh)
+      return data
     } catch (error: any) {
       const message = error.response?.data?.message || 'Đăng nhập thất bại'
       throw new Error(message)

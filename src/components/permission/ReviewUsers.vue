@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 
-interface ReviewUser {
+type  ReviewUser = {
   name: string
   position: string
   email: string

@@ -27,9 +27,9 @@
       </div>
     </div>
 
-    <div class="content-section">
-      <div class="summary-card">
-        <div class="section-content">
+    <div class="task-content-section">
+      <div class="task-summary-card">
+        <div class="task-section-content">
           <div class="info-row">
             <div class="info-label">Priority:</div>
             <div class="info-value">
@@ -72,11 +72,11 @@
         </div>
       </div>
 
-      <div class="details-section">
-        <div class="section-header">
+      <div class="task-details-section">
+        <div class="task-section-header">
           <h3>Task Information</h3>
         </div>
-        <div class="section-content">
+        <div class="task-section-content">
           <div class="info-grid">
             <div class="info-row">
               <label class="info-label">Title</label>
@@ -151,7 +151,7 @@
         </div>
       </div>
 
-      <div class="right-sidebar">
+      <div class="task-right-sidebar">
         <div class="contact-info" v-if="task?.contact">
           <div class="contact-header">
             <h3>{{ task.contact.last_name }} {{ task.contact.first_name }}</h3>

@@ -9,6 +9,24 @@ const api: AxiosInstance = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+const refreshToken = async () => {
+  try {
+    const refresh = localStorage.getItem('refresh')
+    const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/auth/token/refresh/`, {
+      refresh: refresh,
+    })
+    const { access } = response.data
+    localStorage.setItem('access', access)
+    return access
+  } catch (error) {
+    localStorage.removeItem('access')
+    localStorage.removeItem('refresh')
+    window.location.href = '/login'
+    return null
+  }
+}
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access')
   if (token) {
@@ -16,16 +34,29 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    console.error('API Error:', error.response?.data || error.message)
+  async (error) => {
+    const originalRequest = error.config
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true
+
+      const newToken = await refreshToken()
+      if (newToken) {
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return api(originalRequest)
+      }
+    }
+
     return Promise.reject(error)
   },
 )
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export const getCurrentUser = async (): Promise<any> => {
   const response = await api.get('/auth/me/')
   return response.data
 }
+
 export default api

@@ -22,8 +22,8 @@
     </div>
 
     <div class="meeting-content-section">
-      <div class="summary-card">
-        <div class="section-content">
+      <div class="meeting-summary-card">
+        <div class="meeting-section-content">
           <div class="info-row">
             <div class="info-label">Host:</div>
             <div class="info-value">
@@ -56,11 +56,11 @@
         </div>
       </div>
 
-      <div class="details-section">
-        <div class="section-header">
+      <div class="meeting-details-section">
+        <div class="meeting-section-header">
           <h3>Meeting Information</h3>
         </div>
-        <div class="section-content">
+        <div class="meeting-section-content">
           <div class="info-grid">
             <div class="info-row">
               <label class="info-label">Title</label>
@@ -105,9 +105,9 @@
         </div>
       </div>
 
-      <div class="right-sidebar">
+      <div class="meeting-right-sidebar">
         <div class="participants-section">
-          <div class="section-header">
+          <div class="meeting-section-header">
             <h3>Participants ({{ meeting?.participants?.length || 0 }})</h3>
             <button class="btn-secondary">Add</button>
           </div>

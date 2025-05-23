@@ -33,6 +33,7 @@ import Task from '@/views/task/TaskIndex.vue'
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import UserGroupPermissions from '@/components/permission/UserGroupPermissions.vue'
 const routes = [
   {
     path: '/',
@@ -128,6 +129,12 @@ const routes = [
         path: '/profile',
         name: 'ProfilePage',
         component: ProfilePage,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/permissions',
+        name: 'Permissions',  
+        component: UserGroupPermissions,
         meta: { requiresAuth: true },
       },
       { path: 'campaigns', name: 'Campaigns', component: Campaign, meta: { requiresAuth: true } },

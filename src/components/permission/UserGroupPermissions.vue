@@ -19,34 +19,10 @@
       </p>
 
       <div class="section-box">
-        <h4 class="section-title">Add Users Manually</h4>
-        <div v-for="(user, index) in users" :key="index" class="user-row">
-          <div class="form-group">
-            <label class="form-label">User Name <span class="required">*</span></label>
-            <CRMInput v-model="user.name" placeholder="Enter Name" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Position</label>
-            <CRMInput v-model="user.position" placeholder="Enter Position" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email <span class="required">*</span></label>
-            <CRMInput v-model="user.email" placeholder="Enter Email" />
-          </div>
-          <CRMButton v-if="users.length > 1" class="btn-remove-user" @click="removeUser(index)">
-            🗑
-          </CRMButton>
-        </div>
-
-        <CRMButton class="btn-add-user" @click="addUser">+ Add User</CRMButton>
-      </div>
-
-      <div class="section-box">
         <h4 class="section-title">Select Users from Existing Table</h4>
         <UserSelectTable @add-users="handleSelectedUsers" />
       </div>
 
-      <!-- Access Type -->
       <div class="access-section">
         <h3 class="access-title">Access Type</h3>
         <p class="access-description">
@@ -69,6 +45,9 @@
             v-model="customPassword"
             placeholder="Custom Password"
             class="custom-password-input"
+            type="password"
+            :showPassword="field.showPassword"
+          @toggle-password="field.showPassword = !field.showPassword"
           />
           <label class="access-checkbox-label">
             <CRMInput type="checkbox" v-model="requireReset" /> Require password reset
@@ -77,21 +56,29 @@
       </div>
     </div>
 
-    <!-- Step 2 -->
-    <SetPermissions v-if="currentStep === 2" :role="role" :permissions="permissions" />
-    <!-- Step 3 -->
-    <ReviewUsers v-if="currentStep === 3" :users="users" :selectedPermissions="selectedPermissions" />
+    <SetPermissions
+      v-if="currentStep === 2"
+      :role="role"
+      :permissions="permissions"
+      @update:role="(val) => (role = val)"
+      @update:permissions="(val) => (permissions = val)"
+      @update:selectedPermissions="(val) => (selectedPermissions = val)"
+    />
 
-    <!-- Footer -->
+    <ReviewUsers
+      v-if="currentStep === 3"
+      :users="users"
+      :selectedPermissions="selectedPermissions"
+    />
+
     <div class="footer">
-      <CRMButton class="btn-cancel" @click="goBack">Back</CRMButton>
+      <CRMButton class="btn-cancel" @click="goBack" :disabled="currentStep === 1">Back</CRMButton>
       <CRMButton class="btn-next" @click="goNext">
         {{ currentStep < steps.length ? 'Next ➜' : 'Finish' }}
       </CRMButton>
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
@@ -101,42 +88,50 @@ import SetPermissions from './SetPermissions.vue'
 import ReviewUsers from './ReviewUsers.vue'
 import UserSelectTable from './UserSelectTable.vue'
 
-const role = ref('')
-const permissions = ref('')
-const steps = ['Set Details', 'Set Permissions', 'Review']
-const selectedPermissions = ref<string[]>([])
-const currentStep = ref(1)
+interface User {
+  name: string
+  position: string
+  email: string
+}
 
-const users = reactive([
+const steps = ['Set Details', 'Set Permissions', 'Review']
+const currentStep = ref<number>(1)
+
+const users = reactive<User[]>([
   { name: '', position: '', email: '' },
   { name: '', position: '', email: '' },
 ])
 
-const addUser = () => {
+const addUser = (): void => {
   users.push({ name: '', position: '', email: '' })
 }
 
-const removeUser = (index: number) => {
-  users.splice(index, 1)
-}
+const passwordType = ref<'auto' | 'custom'>('custom')
+const customPassword = ref<string>('')
+const requireReset = ref<boolean>(false)
+const field = reactive({
+  showPassword: false,
+})
 
-const passwordType = ref('custom')
-const customPassword = ref('')
-const requireReset = ref(false)
+const role = ref<string>('')
+const permissions = ref<string>('')
+const selectedPermissions = ref<string[]>([])
 
-const goNext = () => {
+const goNext = (): void => {
   if (currentStep.value < steps.length) {
     currentStep.value++
+  } else {
+    // TODO: handle Finish action (e.g., submit data)
   }
 }
 
-const goBack = () => {
+const goBack = (): void => {
   if (currentStep.value > 1) {
     currentStep.value--
   }
 }
 
-const handleSelectedUsers = (selected: any[]) => {
+const handleSelectedUsers = (selected: User[]): void => {
   selected.forEach((user) => {
     users.push({
       name: user.name,
@@ -408,5 +403,4 @@ const handleSelectedUsers = (selected: any[]) => {
   color: #1f2937;
   margin-bottom: 12px;
 }
-
 </style>

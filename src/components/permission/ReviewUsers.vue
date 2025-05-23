@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { defineProps } from 'vue'
 
-interface User {
+interface ReviewUser {
   name: string
   position: string
   email: string
 }
-
 const props = defineProps<{
-  users: User[]
+  users: ReviewUser[]
   selectedPermissions: string[]
 }>()
 </script>
@@ -36,7 +35,6 @@ const props = defineProps<{
           </tr>
         </tbody>
       </table>
-      
     </div>
 
     <div class="section">

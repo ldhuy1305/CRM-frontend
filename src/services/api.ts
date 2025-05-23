@@ -10,7 +10,6 @@ const api: AxiosInstance = axios.create({
   },
 })
 
-// Thêm hàm refreshToken
 const refreshToken = async () => {
   try {
     const refresh = localStorage.getItem('refresh')
@@ -21,7 +20,6 @@ const refreshToken = async () => {
     localStorage.setItem('access', access)
     return access
   } catch (error) {
-    // Nếu refresh token cũng hết hạn, logout user
     localStorage.removeItem('access')
     localStorage.removeItem('refresh')
     window.location.href = '/login'
@@ -42,7 +40,6 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config
 
-    // Kiểm tra nếu lỗi 401 và chưa thử refresh token
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true
 

@@ -33,6 +33,7 @@ export class AuthService {
     try {
       const response = await axios.post(this.resource, payload)
       const data = response.data as User
+
       localStorage.setItem('access', data.access)
       localStorage.setItem('refresh', data.refresh)
       return data

@@ -5,8 +5,7 @@
       <input
         :id="id"
         v-bind="$attrs"
-        :value="modelValue"
-        @input="onInput"
+        v-model="value"
         :type="computedType"
         :required="required"
         :disabled="disabled"
@@ -47,6 +46,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: any): void
   (e: 'toggle-password'): void
 }>()
+
+const value = defineModel('modelValue')
 
 const id = computed(() => `input-${Math.random().toString(36).substring(2, 15)}`)
 

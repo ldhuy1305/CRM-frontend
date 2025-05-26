@@ -15,7 +15,11 @@
       <tbody>
         <tr v-for="(user, index) in users" :key="user.email">
           <td>
-            <input type="checkbox" v-model="selectedUserEmails" :value="user.email" />
+            <CRMInput
+              type="checkbox"
+              :value="user.email"
+              v-model="modelValue"
+            />
           </td>
           <td>{{ user.name }}</td>
           <td>{{ user.company }}</td>
@@ -26,27 +30,20 @@
         </tr>
       </tbody>
     </table>
-
-    <CRMButton class="btn-add" @click="addSelectedUsers">➕ Add Selected Users</CRMButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineEmits } from 'vue'
-import CRMButton from '../ui/CRMButton.vue'
+import { computed, defineEmits, defineProps, watch } from 'vue'
+import CRMInput from '../ui/CRM-Input.vue'
 
-const emit = defineEmits(['add-users'])
+const emit = defineEmits(['add-users', 'update:selectedUserEmails'])
 
-interface User {
-  name: string
-  company: string
-  position: string
-  email: string
-  phone: string
-  inviter: string
-}
+const props = defineProps<{
+  selectedUserEmails: string[]
+}>()
 
-const users: User[] = [
+const users = [
   {
     name: 'Phan Duy Dong',
     company: 'BKHighTech',
@@ -113,73 +110,39 @@ const users: User[] = [
   },
 ]
 
-const selectedUserEmails = ref<string[]>([])
+const modelValue = computed({
+  get: () => props.selectedUserEmails,
+  set: (val: string[]) => emit('update:selectedUserEmails', val),
+})
 
 const selectedUsers = computed(() =>
-  users.filter((user) => selectedUserEmails.value.includes(user.email)),
+  users.filter((user) => modelValue.value.includes(user.email)),
 )
 
-const addSelectedUsers = () => {
+watch(modelValue, () => {
   emit('add-users', selectedUsers.value)
-}
+})
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
   min-width: 800px;
-}
 
-th,
-td {
-  padding: 8px 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-  color: black;
-}
+  th,
+  td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    color: black;
+  }
 
-th {
-  background-color: #f3f4f6;
-  color: #374151;
-}
-
-.btn-add {
-  background-color: #0b192c;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  border: none;
-  font-weight: 600;
-  user-select: none;
-}
-
-.btn-add:hover {
-  background-color: #ff4d00;
-}
-
-/* .selected-users {
-  margin-top: 20px;
-  padding: 12px;
-  border: 1px solid #10b981;
-  border-radius: 6px;
-  background-color: #f0fdf4;
-  color: #065f46;
-} */
-
-.selected-users h3 {
-  margin-bottom: 8px;
-}
-
-.selected-users ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.selected-users li {
-  padding: 4px 0;
+  th {
+    background-color: #f3f4f6;
+    color: #374151;
+  }
 }
 
 @media (max-width: 768px) {
@@ -188,25 +151,15 @@ th {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-  }
 
-  .btn-add {
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-  }
-
-  .selected-users {
-    font-size: 14px;
-  }
-
-  th:nth-child(3),
-  td:nth-child(3),
-  th:nth-child(5),
-  td:nth-child(5),
-  th:nth-child(6),
-  td:nth-child(6) {
-    display: none;
+    th:nth-child(3),
+    td:nth-child(3),
+    th:nth-child(5),
+    td:nth-child(5),
+    th:nth-child(6),
+    td:nth-child(6) {
+      display: none;
+    }
   }
 }
 </style>

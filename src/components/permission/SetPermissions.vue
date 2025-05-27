@@ -2,37 +2,49 @@
   <div class="permission-card">
     <h3 class="permission-card__title">Permissions</h3>
     <p class="permission-card__subtitle">
-      Here you can review permissions that are related to selected User's Group. Also, you can
+      Here you can review permissions that are related to the selected User's Group. Also, you can
       assign additional permissions if needed.
     </p>
 
     <div class="permission-groups-wrapper">
       <div v-for="(group, index) in permissionGroups" :key="group.id" class="permission-group">
         <div class="group-header" @click="toggleCollapse(index)">
-          <CRMInput type="checkbox" v-model="group.checked" @change="toggleGroup" />
+          <CRMInput type="checkbox" v-model="group.checked" @change="toggleGroup(index)" />
           <span class="group-title">{{ group.title }}</span>
           <span class="chevron" :class="{ rotated: !group.collapsed }">▼</span>
         </div>
 
-        <div v-show="!group.collapsed" class="group-permissions">
-          <div
-            v-for="(perm, permIndex) in group.permissions"
-            :key="perm.id"
-            class="permission-item"
-          >
-            <label>
-              <CRMInput class="checkbox" type="checkbox" v-model="perm.checked" />
-              {{ perm.label }}
-            </label>
-
-            <div v-if="perm.children" class="child-permissions">
-              <label v-for="(child, childIndex) in perm.children" :key="child.id">
-                <CRMInput class="checkbox" type="checkbox" v-model="child.checked" />
-                {{ child.label }}
+        <transition name="dropdown">
+          <div v-show="!group.collapsed" class="group-permissions">
+            <div
+              v-for="(perm, permIndex) in group.permissions"
+              :key="perm.id"
+              class="permission-item"
+            >
+              <label>
+                <CRMInput
+                  class="checkbox"
+                  type="checkbox"
+                  v-model="perm.checked"
+                  @change="onPermissionChange(index, permIndex)"
+                />
+                {{ perm.label }}
               </label>
+
+              <div v-if="perm.children" class="child-permissions">
+                <label v-for="(child, childIndex) in perm.children" :key="child.id">
+                  <CRMInput
+                    class="checkbox"
+                    type="checkbox"
+                    v-model="child.checked"
+                    @change="onChildPermissionChange(index, permIndex, childIndex)"
+                  />
+                  {{ child.label }}
+                </label>
+              </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
     </div>
   </div>
@@ -57,10 +69,8 @@ interface PermissionGroup {
   permissions: PermissionItem[]
 }
 
-// key lưu localStorage
 const STORAGE_KEY = 'permissionGroups'
 
-// Dữ liệu mặc định (giữ nguyên như bạn đã cho)
 const defaultPermissionGroups: PermissionGroup[] = [
   {
     id: 'crm-contacts',
@@ -75,26 +85,13 @@ const defaultPermissionGroups: PermissionGroup[] = [
     ],
   },
   {
-    id: 'crm-leads',
-    title: 'LEAD',
-    checked: false,
-    collapsed: true,
-    permissions: [
-      { id: 'view-leads', label: 'View — Admin, Salesman, Marketer', checked: false },
-      { id: 'create-leads', label: 'Create — Admin, Salesman, Marketer', checked: false },
-      { id: 'edit-leads', label: 'Edit — Admin, Salesman, Marketer', checked: false },
-      { id: 'delete-leads', label: 'Delete — Admin', checked: false },
-      { id: 'convert-leads', label: 'Convert — Admin', checked: false },
-    ],
-  },
-  {
     id: 'crm-deals',
     title: 'DEAL',
     checked: false,
     collapsed: true,
     permissions: [
-      { id: 'view-deals', label: 'View — Admin, Salesman, ', checked: false },
-      { id: 'create-deals', label: 'Create — Admin, Salesman, ', checked: false },
+      { id: 'view-deals', label: 'View — Admin, Salesman', checked: false },
+      { id: 'create-deals', label: 'Create — Admin, Salesman', checked: false },
       { id: 'edit-deals', label: 'Edit — Admin, Salesman', checked: false },
       { id: 'delete-deals', label: 'Delete — Admin, Salesman', checked: false },
       { id: 'close-deals', label: 'Close — Admin, Salesman', checked: false },
@@ -106,16 +103,11 @@ const defaultPermissionGroups: PermissionGroup[] = [
     checked: false,
     collapsed: true,
     permissions: [
-      {
-        id: 'view-account',
-        label:
-          'View accounts — Admin/Manager: All, Salesman: Related to contact, Marketer: Assigned or in campaign',
-        checked: false,
-      },
-      { id: 'create-account', label: 'Create new accounts — Admin/Manager only', checked: false },
-      { id: 'edit-account', label: 'Edit account details — Admin/Manager only', checked: false },
-      { id: 'delete-account', label: 'Delete accounts — Admin/Manager only', checked: false },
-      { id: 'assign-account', label: 'Assign accounts to other users — Admin/Manager only', checked: false },
+      { id: 'view-account', label: 'View accounts', checked: false },
+      { id: 'create-account', label: 'Create new accounts', checked: false },
+      { id: 'edit-account', label: 'Edit account details', checked: false },
+      { id: 'delete-account', label: 'Delete accounts', checked: false },
+      { id: 'assign-account', label: 'Assign accounts to other users', checked: false },
     ],
   },
   {
@@ -130,20 +122,17 @@ const defaultPermissionGroups: PermissionGroup[] = [
   },
 ]
 
-// Helper clone deeply to avoid reactivity issues on load
+const permissionGroups = reactive<PermissionGroup[]>([])
+
 function deepClone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
-
-// Init reactive state from localStorage or default
-const permissionGroups = reactive<PermissionGroup[]>([])
 
 onMounted(() => {
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved) {
     try {
       const parsed: PermissionGroup[] = JSON.parse(saved)
-      // Trước khi gán, merge lại collapsed từ defaultPermissionGroups để giữ trạng thái collapse ban đầu
       const merged = parsed.map((savedGroup) => {
         const defaultGroup = defaultPermissionGroups.find((g) => g.id === savedGroup.id)
         return {
@@ -153,7 +142,6 @@ onMounted(() => {
       })
       permissionGroups.splice(0, permissionGroups.length, ...merged)
     } catch {
-      // Nếu lỗi thì load default
       permissionGroups.splice(0, permissionGroups.length, ...deepClone(defaultPermissionGroups))
     }
   } else {
@@ -167,57 +155,52 @@ const toggleCollapse = (groupIndex: number) => {
 
 const toggleGroup = (groupIndex: number) => {
   const group = permissionGroups[groupIndex]
-  group.checked = !group.checked
-  group.permissions.forEach((p) => {
-    p.checked = group.checked
-    p.children?.forEach((c) => (c.checked = group.checked))
+  group.permissions.forEach((perm) => {
+    perm.checked = group.checked
+    perm.children?.forEach((c) => (c.checked = group.checked))
   })
 }
 
-const togglePermission = (groupIndex: number, permIndex: number) => {
+const onPermissionChange = (groupIndex: number, permIndex: number) => {
   const group = permissionGroups[groupIndex]
-  const permission = group.permissions[permIndex]
-  permission.checked = !permission.checked
+  const perm = group.permissions[permIndex]
 
-  // Nếu permission có children, toggle tất cả children theo permission.checked
-  if (permission.children) {
-    permission.children.forEach((c) => (c.checked = permission.checked))
+  if (perm.children) {
+    perm.children.forEach((c) => (c.checked = perm.checked))
   }
 
-  // Cập nhật lại checked của group: nếu tất cả permission checked thì group checked = true, ngược lại false
-  group.checked = group.permissions.every((p) => p.checked)
+  group.checked = group.permissions.every((p) => {
+    return p.checked || (p.children?.some((c) => c.checked) ?? false)
+  })
 }
 
-const toggleChildPermission = (groupIndex: number, permIndex: number, childIndex: number) => {
+const onChildPermissionChange = (groupIndex: number, permIndex: number, childIndex: number) => {
   const group = permissionGroups[groupIndex]
-  const permission = group.permissions[permIndex]
-  const child = permission.children?.[childIndex]
+  const perm = group.permissions[permIndex]
+  const child = perm.children?.[childIndex]
   if (!child) return
 
   child.checked = !child.checked
 
-  // Cập nhật lại checked của permission: nếu tất cả children checked thì permission.checked = true, ngược lại false
-  if (permission.children) {
-    permission.checked = permission.children.every((c) => c.checked)
+  if (perm.children) {
+    perm.checked = perm.children.every((c) => c.checked)
   }
 
-  // Cập nhật lại checked của group
-  group.checked = group.permissions.every((p) => p.checked)
+  group.checked = group.permissions.every((p) => {
+    return p.checked || (p.children?.some((c) => c.checked) ?? false)
+  })
 }
 
-// watch để lưu trạng thái vào localStorage khi permissionGroups thay đổi
 watch(
   permissionGroups,
   (newVal) => {
-    // Lưu trạng thái hiện tại (không lưu collapsed)
     const toSave = newVal.map((g) => ({
       ...g,
-      // Không cần lưu collapsed, để khi load sẽ mặc định collapsed: true
       collapsed: true,
     }))
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
   },
-  { deep: true }
+  { deep: true },
 )
 
 const emit = defineEmits<{
@@ -230,16 +213,16 @@ watch(
     emit(
       'update:permissions',
       permissionGroups
-        .filter((g) => g.checked)
-        .map((g) => ({
-          ...g,
-          permissions: g.permissions
-            .filter((p) => p.checked)
-            .map((p) => ({
-              ...p,
-              children: p.children?.filter((c) => c.checked),
-            })),
-        })),
+        .map((group) => ({
+          ...group,
+          permissions: group.permissions
+            .map((perm) => ({
+              ...perm,
+              children: perm.children?.filter((c) => c.checked),
+            }))
+            .filter((perm) => perm.checked || perm.children?.some((c) => c.checked)),
+        }))
+        .filter((group) => group.permissions.length > 0),
     )
   },
   { deep: true },
@@ -366,5 +349,4 @@ watch(
     }
   }
 }
-
 </style>

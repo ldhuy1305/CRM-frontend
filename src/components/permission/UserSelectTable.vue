@@ -3,7 +3,12 @@
     <table>
       <thead>
         <tr>
-          <th></th>
+          <th>
+            <CRMInput
+              type="checkbox"
+              v-model="selectAll"
+            />
+          </th>
           <th>Name</th>
           <th>Company</th>
           <th>Position</th>
@@ -109,6 +114,19 @@ const users = [
     inviter: 'Tran NhanUnitech DACH',
   },
 ]
+const allEmails = computed(() => users.map((user) => user.email))
+
+const selectAll = computed({
+  get: () => modelValue.value.length === users.length,
+  set: (checked: boolean) => {
+    if (checked) {
+      modelValue.value = [...allEmails.value]
+    } else {
+      modelValue.value = []
+    }
+  },
+})
+
 
 const modelValue = computed({
   get: () => props.selectedUserEmails,

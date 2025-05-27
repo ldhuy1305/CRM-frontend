@@ -22,14 +22,19 @@
         </tbody>
       </table>
     </div>
+
     <div class="section">
       <h4 class="section-heading">Permissions</h4>
       <ul>
-        <li v-for="(permission, index) in selectedPermissions" :key="index">
-          {{ permission.title }}
-
-          <ul v-if="permission.permissions.length">
-            <li v-for="childPermission in permission.permissions">{{ childPermission.label }}</li>
+        <li v-for="(group, index) in permissionState" :key="group.id">
+          <div class="permission-header" @click="toggleCollapse(index)">
+            <span>{{ group.title }}</span>
+            <span class="chevron" :class="{ rotated: !group.collapsed }"> ▲ </span>
+          </div>
+          <ul v-if="!group.collapsed && group.permissions.length">
+            <li v-for="permission in group.permissions" :key="permission.id">
+              {{ permission.label }}
+            </li>
           </ul>
         </li>
       </ul>
@@ -38,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, watch, onMounted } from 'vue'
+import { defineProps, reactive, watch, onMounted } from 'vue'
 
 type ReviewUser = {
   name: string
@@ -66,6 +71,17 @@ const props = defineProps<{
   selectedPermissions: PermissionGroup[]
 }>()
 
+const permissionState = reactive<PermissionGroup[]>(
+  props.selectedPermissions.map((group) => ({
+    ...group,
+    collapsed: true,
+  })),
+)
+
+function toggleCollapse(index: number) {
+  permissionState[index].collapsed = !permissionState[index].collapsed
+}
+
 onMounted(() => {
   console.log('selectedPermissions on mounted:', props.selectedPermissions)
 })
@@ -81,14 +97,14 @@ watch(
 
 <style scoped lang="scss">
 .card {
-  background: #ffffff;
-  border-radius: 12px;
+  max-width: 1000px;
+  margin: 40px auto;
   padding: 32px;
+  background: #fff;
+  border-radius: 12px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
   font-family: 'Segoe UI', Roboto, sans-serif;
   color: #1f2937;
-  max-width: 1000px;
-  margin: 40px auto;
   transition: all 0.3s ease-in-out;
 
   @media (max-width: 768px) {
@@ -97,9 +113,9 @@ watch(
 }
 
 .section-title {
-  font-size: 24px;
-  font-weight: bold;
   margin-bottom: 6px;
+  font-size: 24px;
+  font-weight: 700;
   color: #111827;
 
   @media (max-width: 768px) {
@@ -108,18 +124,18 @@ watch(
 }
 
 .section-subtitle {
+  margin-bottom: 32px;
   font-size: 16px;
   color: #6b7280;
-  margin-bottom: 32px;
 }
 
 .section {
   margin-bottom: 32px;
 
   &-heading {
+    margin-bottom: 16px;
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 16px;
     color: #374151;
     border-left: 4px solid #ff4d00;
     padding-left: 12px;
@@ -130,29 +146,21 @@ watch(
   }
 
   ul {
+    margin: 0;
     padding-left: 0;
     list-style: none;
-    margin: 0;
 
     > li {
-      background-color: #f9fafb;
-      color: black;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
       margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background-color: #f9fafb;
+      color: #000;
       transition: background-color 0.2s;
 
       &:hover {
         background-color: #f3f4f6;
-        color: #ff4d00;
-      }
-
-      > span,
-      > strong {
-        font-weight: 600;
-        font-size: 16px;
-        color: #111827;
       }
     }
 
@@ -162,74 +170,40 @@ watch(
       list-style-type: disc;
 
       li {
+        margin-bottom: 4px;
         font-size: 14px;
         color: #4b5563;
-        margin-bottom: 4px;
       }
     }
   }
 }
 
-.info-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  background-color: #f9fafb;
+.permission-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 8px;
+  padding: 5px 13px;
+  font-weight: 600;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
 
-  thead {
-    background-color: #e5e7eb;
-    font-weight: 600;
-  }
-
-  th,
-  td {
-    text-align: left;
-    padding: 14px 18px;
-    border-bottom: 1px solid #e5e7eb;
-    font-size: 15px;
-    color: black;
-
-    &:hover {
-      color: #ff4d00;
-      cursor: pointer;
-      transition: color 0.2s ease-in-out;
-    }
-  }
-
-  tbody {
-    tr {
-      &:hover {
-        background-color: #f3f4f6;
-        transition: background-color 0.2s;
-      }
-    }
-  }
-
-  @media (max-width: 768px) {
-    th,
-    td {
-      padding: 10px;
-      font-size: 14px;
-    }
+  span {
+    display: flex;
+    align-items: center;
   }
 }
 
-ul {
-  padding-left: 20px;
-  list-style: disc;
-  font-size: 15px;
-  color: #374151;
+.chevron {
+  font-size: 12px;
+  color: #ff4d00;
+  transition: transform 0.3s ease;
+  margin-top: 7px;
 
-  ul {
-    list-style: circle;
-    margin-top: 4px;
-    margin-bottom: 8px;
-    color: #4b5563;
-  }
-
-  li {
-    margin-bottom: 8px;
+  &.rotated {
+    transform: rotate(180deg);
   }
 }
 </style>

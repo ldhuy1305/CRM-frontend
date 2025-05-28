@@ -3,6 +3,7 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
 
+import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
@@ -24,7 +25,10 @@ import LeadCreate from '@/views/lead/LeadCreate.vue'
 import LeadDetails from '@/views/lead/LeadDetails.vue'
 import LeadEdit from '@/views/lead/LeadEdit.vue'
 import Lead from '@/views/lead/LeadIndex.vue'
-import ProfilePage from '@/components/profile/ProfilePage.vue'
+import MeetingCreate from '@/views/meeting/MeetingCreate.vue'
+import MeetingDetails from '@/views/meeting/MeetingDetails.vue'
+import MeetingEdit from '@/views/meeting/MeetingEdit.vue'
+import Meeting from '@/views/meeting/MeetingIndex.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetails from '@/views/task/TaskDetails.vue'
 import TaskEdit from '@/views/task/TaskEdit.vue'
@@ -174,7 +178,25 @@ const routes = [
         component: TaskEdit,
         meta: { requiresAuth: true },
       },
-      // { path: 'meetings', name: 'Meetings', component: () => import('@/views/Meetings.vue') },
+      { path: 'meetings', name: 'Meetings', component: Meeting, meta: { requiresAuth: true } },
+      {
+        path: '/meetings/:id',
+        name: 'MeetingDetails',
+        component: MeetingDetails,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/meetings/create',
+        name: 'MeetingTask',
+        component: MeetingCreate,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/meetings/:id/edit',
+        name: 'MeetingTask',
+        component: MeetingEdit,
+        meta: { requiresAuth: true },
+      },
       // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },
       // { path: 'documents', name: 'Documents', component: () => import('@/views/Documents.vue') },

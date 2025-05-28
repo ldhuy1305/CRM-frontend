@@ -331,7 +331,7 @@ thead th:hover {
 
 .checkbox-group {
   display: flex;
-  align-items: center;
+  align-items: right;
 }
 
 .checkbox-label {
@@ -388,5 +388,14 @@ thead th:hover {
 
 .participant-item label {
   margin: 0 0 0 8px;
+  cursor: pointer;
+}
+
+.btn-add-participants {
+  background-color: white;
+  color: #007bff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
   cursor: pointer;
 }

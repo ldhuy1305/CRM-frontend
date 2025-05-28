@@ -22,7 +22,7 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore()
     const router = useRouter()
-    let wsClient: WebSocketClient | null = null
+    const wsClient: WebSocketClient | null = null
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
@@ -56,7 +56,7 @@ export default defineComponent({
 
 .content {
   flex: 1;
-  /* overflow-y: auto; */
+  overflow-y: auto;
   padding: 20px;
   background-color: #f5f5f5;
 }

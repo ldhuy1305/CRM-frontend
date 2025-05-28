@@ -2,7 +2,7 @@
   <div class="page-container">
     <CRMLoading :loading="isLoading" />
     <div class="module-header">
-      <h1>Create Meeting</h1>
+      <h1>Edit Meeting</h1>
       <div class="header-actions">
         <button class="btn-secondary" @click="handleCancel">Cancel</button>
         <button class="btn-primary" @click="handleSave">Save</button>
@@ -191,12 +191,12 @@ import type { Campaign } from '@/types/campaigns/campaign'
 import type { Contact } from '@/types/contacts/contact'
 import type { Deal } from '@/types/deals/deal'
 import type { Lead } from '@/types/leads/lead'
-import type { MeetingCreateEditPayload } from '@/types/meetings/meeting'
+import type { Meeting, MeetingCreateEditPayload } from '@/types/meetings/meeting'
 import type { UserOption } from '@/types/users/user'
 import { onMounted, reactive, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
-
+const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 const isLoading = ref(false)
@@ -209,6 +209,7 @@ const deals = ref<Deal[]>([])
 const campaigns = ref<Campaign[]>([])
 const showModal = ref(false)
 const selectedParticipants = ref<Participant[]>([])
+const meeting = ref<Meeting>({} as Meeting)
 
 interface Participant {
   id: number
@@ -295,6 +296,109 @@ const fetchDropdownData = async () => {
   }
 }
 
+const fetchMeetingData = async (id: number) => {
+  try {
+    isLoading.value = true
+    const response = await meetingRepository.index(id)
+    console.log('Meeting data:', response)
+    meeting.value = response.data || response
+
+    // Format datetime strings to match input datetime-local format
+    const formatDateTime = (dateStr: string) => {
+      return dateStr ? dateStr.substring(0, 16) : '' // Get only YYYY-MM-DDTHH:mm part
+    }
+
+    // Populate form with meeting data
+    Object.assign(form, {
+      title: meeting.value.title,
+      location: meeting.value.location,
+      from_datetime: formatDateTime(meeting.value.from_datetime),
+      to_datetime: formatDateTime(meeting.value.to_datetime),
+      is_all_day: meeting.value.is_all_day,
+      is_online_meeting: meeting.value.is_online_meeting,
+      host: meeting.value.host,
+      participants: meeting.value.participants,
+      related_lead: meeting.value.related_lead,
+      related_contact: meeting.value.related_contact,
+      related_account: meeting.value.related_account,
+      related_deal: meeting.value.related_deal,
+      related_campaign: meeting.value.related_campaign,
+    })
+
+    // Set related_to and fetch related data
+    if (meeting.value.related_campaign) {
+      related_to.value = 'campaign'
+      await fetchRelatedData('campaign')
+      form.related_campaign = meeting.value.related_campaign?.id ?? null
+    } else if (meeting.value.related_lead) {
+      related_to.value = 'lead'
+      await fetchRelatedData('lead')
+      form.related_lead = meeting.value.related_lead?.id ?? null
+    } else if (meeting.value.related_contact) {
+      related_to.value = 'contact'
+      await fetchRelatedData('contact')
+      form.related_contact = meeting.value.related_contact?.id ?? null
+    } else if (meeting.value.related_account) {
+      related_to.value = 'account'
+      await fetchRelatedData('account')
+      form.related_account = meeting.value.related_account?.id ?? null
+    } else if (meeting.value.related_deal) {
+      related_to.value = 'deal'
+      await fetchRelatedData('deal')
+      form.related_deal = meeting.value.related_deal?.id ?? null
+    }
+
+    // Convert participants to the format needed for display
+    if (meeting.value.participants && Array.isArray(meeting.value.participants)) {
+      selectedParticipants.value = meeting.value.participants
+        .map((p: any) => {
+          let type: 'user' | 'contact' | 'lead'
+          let id: number | null = null
+
+          if (p.user) {
+            type = 'user'
+            id = p.user
+          } else if (p.contact) {
+            type = 'contact'
+            id = p.contact
+          } else if (p.lead) {
+            type = 'lead'
+            id = p.lead
+          } else {
+            return null
+          }
+
+          return {
+            id,
+            type,
+            email: p.email || '',
+            name: p.name || '',
+          }
+        })
+        .filter((p): p is Participant => p !== null)
+
+      // Update form participants
+      form.participants = selectedParticipants.value.map((p) => ({
+        user: p.type === 'user' ? p.id : null,
+        contact: p.type === 'contact' ? p.id : null,
+        lead: p.type === 'lead' ? p.id : null,
+      }))
+    }
+
+    // Fetch related data if needed
+    if (related_to.value) {
+      await fetchRelatedData(related_to.value)
+    }
+  } catch (error) {
+    console.error('Error fetching meeting data:', error)
+    toast.error('Error loading meeting data', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+  } finally {
+    isLoading.value = false
+  }
+}
+
 const fetchRelatedData = async (type: string) => {
   try {
     isLoading.value = true
@@ -346,9 +450,17 @@ const handleSave = async () => {
   if (validateForm()) {
     try {
       isLoading.value = true
-      console.log('Form data:', form)
-      await meetingRepository.create(form)
-      toast.success('Meeting created successfully', {
+      const meetingId = Number(route.params.id)
+
+      // Format datetime strings for API
+      const apiPayload = {
+        ...form,
+        from_datetime: form.from_datetime + ':00',
+        to_datetime: form.to_datetime + ':00',
+      }
+
+      await meetingRepository.update(meetingId, apiPayload)
+      toast.success('Meeting updated successfully', {
         position: POSITION.BOTTOM_RIGHT,
       })
       router.push('/meetings')
@@ -395,8 +507,12 @@ const removeParticipant = (participantToRemove: any) => {
   )
 }
 
-onMounted(() => {
-  fetchDropdownData()
+onMounted(async () => {
+  await fetchDropdownData()
+  const meetingId = Number(route.params.id)
+  if (meetingId) {
+    await fetchMeetingData(meetingId)
+  }
 })
 </script>
 

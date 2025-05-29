@@ -35,11 +35,7 @@
       @update:selectedPermissions="(val: string[]) => (selectedPermissions = val)"
     />
 
-    <ReviewUsers
-      v-if="currentStep === 3"
-      :users="users"
-      :selectedPermissions="permissions"
-    />
+    <ReviewUsers v-if="currentStep === 3" :users="users" :selectedPermissions="permissions" />
 
     <div class="footer">
       <CRMButton class="btn-cancel" @click="goBack" :disabled="currentStep === 1">Back</CRMButton>
@@ -51,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import CRMButton from '@/components/ui/CRMButton.vue'
 import SetPermissions from '@/components/permission/SetPermissions.vue'
 import ReviewUsers from '@/components/permission/ReviewUsers.vue'
@@ -84,6 +80,34 @@ const currentStep = ref<number>(1)
 const users = reactive<User[]>([])
 const selectedUserEmails = ref<string[]>([])
 
+const savedEmails = localStorage.getItem('selectedUserEmails')
+if (savedEmails) {
+  selectedUserEmails.value = JSON.parse(savedEmails)
+}
+
+const savedUsers = localStorage.getItem('selectedUsers')
+if (savedUsers) {
+  const parsedUsers: User[] = JSON.parse(savedUsers)
+  users.splice(0, users.length, ...parsedUsers)
+}
+
+watch(
+  users,
+  (newUsers) => {
+    selectedUserEmails.value = newUsers.map((u) => u.email)
+    localStorage.setItem('selectedUsers', JSON.stringify(newUsers))
+  },
+  { deep: true, immediate: true },
+)
+
+watch(
+  selectedUserEmails,
+  (newEmails) => {
+    localStorage.setItem('selectedUserEmails', JSON.stringify(newEmails))
+  },
+  { immediate: true },
+)
+
 const role = ref<string>('')
 const permissions = ref<PermissionGroup[]>([])
 const selectedPermissions = ref<string[]>([])
@@ -107,17 +131,18 @@ const goBack = (): void => {
 }
 
 const handleSelectedUsers = (selected: User[]): void => {
-  users.splice(0)
-  selected.forEach((user) => {
-    users.push({
+  users.splice(
+    0,
+    users.length,
+    ...selected.map((user) => ({
       name: user.name,
       position: user.position || '',
       email: user.email,
-    })
-  })
+    })),
+  )
+  selectedUserEmails.value = selected.map((u) => u.email)
 }
 </script>
-
 
 <style scoped lang="scss">
 .user-page {

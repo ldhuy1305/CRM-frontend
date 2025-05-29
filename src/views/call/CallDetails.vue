@@ -44,7 +44,7 @@
             >
               {{ call.contact.last_name }} {{ call.contact.first_name }}
             </div>
-            <div v-else>—</div>
+            <div v-else></div>
           </div>
 
           <div class="info-row">
@@ -56,7 +56,7 @@
             >
               {{ call.related_account.name }}
             </div>
-            <div v-else>—</div>
+            <div v-else></div>
           </div>
 
           <div class="info-row">
@@ -82,6 +82,13 @@
           </div>
 
           <div class="info-row">
+            <div class="info-label">Title:</div>
+            <div class="info-value">
+              {{ call.title }}
+            </div>
+          </div>
+
+          <div class="info-row">
             <label class="info-label">Created By</label>
             <div class="info-value">
               {{ call?.created_by?.last_name }} {{ call?.created_by?.first_name }}
@@ -94,7 +101,7 @@
               {{ call?.updated_by?.last_name }} {{ call?.updated_by?.first_name }}
               <div class="timestamp">{{ formatDateTime(call?.updated_at) }}</div>
             </div>
-            <div v-else>—</div>
+            <div v-else></div>
           </div>
         </div>
       </div>
@@ -113,7 +120,7 @@
             </div>
             <div class="info-row">
               <div class="info-label">Call Agenda</div>
-              <div class="info-value">{{ call?.call_agenda || '-' }}</div>
+              <div class="info-value">{{ call?.call_agenda || '' }}</div>
             </div>
           </div>
 
@@ -125,7 +132,7 @@
             </div>
             <div class="info-row">
               <div class="info-label">Description</div>
-              <div class="info-value">{{ call?.description || '-' }}</div>
+              <div class="info-value">{{ call?.description || '' }}</div>
             </div>
           </div>
         </div>

@@ -26,3 +26,10 @@ export const formatDateTime = (datetime?: string) => {
     minute: '2-digit',
   })
 }
+
+export const formatSecondsToMinutes = (duration: number) => {
+  if (duration < 60) {
+    return duration
+  }
+  return Math.floor(duration / 60)
+}

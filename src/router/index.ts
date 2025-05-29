@@ -7,6 +7,8 @@ import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
+import CallDetails from '@/views/call/CallDetails.vue'
+import Call from '@/views/call/CallIndex.vue'
 import CampaignCreate from '@/views/campaign/CampaignCreate.vue'
 import CampaignDetails from '@/views/campaign/CampaignDetails.vue'
 import CampaignEdit from '@/views/campaign/CampaignEdit.vue'
@@ -197,11 +199,14 @@ const routes = [
         component: MeetingEdit,
         meta: { requiresAuth: true },
       },
-      // { path: 'calls', name: 'Calls', component: () => import('@/views/Calls.vue') },
+      { path: 'calls', name: 'Calls', component: Call, meta: { requiresAuth: true } },
+      {
+        path: '/calls/:id',
+        name: 'CallDetails',
+        component: CallDetails,
+        meta: { requiresAuth: true },
+      },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },
-      // { path: 'documents', name: 'Documents', component: () => import('@/views/Documents.vue') },
-      // { path: 'visits', name: 'Visits', component: () => import('@/views/Visits.vue') },
-      // { path: 'projects', name: 'Projects', component: () => import('@/views/Projects.vue') },
     ],
     meta: { requiresAuth: true },
   },

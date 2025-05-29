@@ -187,13 +187,13 @@ const routes = [
       },
       {
         path: '/meetings/create',
-        name: 'MeetingTask',
+        name: 'CreateMeeting',
         component: MeetingCreate,
         meta: { requiresAuth: true },
       },
       {
         path: '/meetings/:id/edit',
-        name: 'MeetingTask',
+        name: 'EditMeeting',
         component: MeetingEdit,
         meta: { requiresAuth: true },
       },

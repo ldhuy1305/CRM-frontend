@@ -5,13 +5,11 @@
       <input
         :id="id"
         v-bind="$attrs"
-        :value="modelValue"
-        @input="onInput"
+        v-model="value"
         :type="computedType"
         :required="required"
         :disabled="disabled"
         :class="inputClass"
-        
       />
       <span
         v-if="isPasswordType"
@@ -22,16 +20,8 @@
         :aria-label="showPassword ? 'Hide password' : 'Show password'"
         @keydown.enter="togglePassword"
       >
-        <font-awesome-icon
-          v-if="showPassword"
-          :icon="['fas', 'eye']"
-          class="eye-icon"
-        />
-        <font-awesome-icon
-          v-else
-          :icon="['fas', 'eye-slash']"
-          class="eye-icon"
-        />
+        <font-awesome-icon v-if="showPassword" :icon="['fas', 'eye']" class="eye-icon" />
+        <font-awesome-icon v-else :icon="['fas', 'eye-slash']" class="eye-icon" />
       </span>
     </div>
     <span v-if="error" class="error-message">{{ error }}</span>
@@ -57,6 +47,8 @@ const emit = defineEmits<{
   (e: 'toggle-password'): void
 }>()
 
+const value = defineModel('modelValue')
+
 const id = computed(() => `input-${Math.random().toString(36).substring(2, 15)}`)
 
 const onInput = (event: Event) => {
@@ -64,11 +56,11 @@ const onInput = (event: Event) => {
   emit('update:modelValue', target.value)
 }
 
-const isPasswordType = computed(() => props.type === 'password' || props.type === 'text')
+const isPasswordType = computed(() => props.type === 'password')
 const showPassword = computed(() => props.showPassword ?? false)
 
 const computedType = computed(() =>
-  props.type === 'password' && showPassword.value ? 'text' : props.type
+  props.type === 'password' && showPassword.value ? 'text' : props.type,
 )
 
 const togglePassword = () => {

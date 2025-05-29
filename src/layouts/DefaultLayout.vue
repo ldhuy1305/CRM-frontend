@@ -13,12 +13,10 @@ import { WebSocketClient } from '@/plugins/websocket'
 import { useAuthStore } from '@/stores/modules/auth'
 import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
+
 export default defineComponent({
   name: 'DefaultLayout',
-  components: {
-    // eslint-disable-next-line vue/no-reserved-component-names
-    Header,
-  },
+  components: { Header },
   setup() {
     const authStore = useAuthStore()
     const router = useRouter()
@@ -26,19 +24,25 @@ export default defineComponent({
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
-        await authStore.fetchUser()
+        try {
+          await authStore.fetchUser()
+        } catch (error) {
+          console.error('Error fetching user:', error)
+        }
       }
 
-      // if (!authStore.user?.id) {
-      //   router.push('/login')
-      // } else {
-      //   wsClient = new WebSocketClient(authStore.user.id.toString())
-      //   wsClient.connect()
-      // }
+      if (!authStore.user?.user?.id) {
+        router.push('/login')
+      } else {
+        wsClient = new WebSocketClient(authStore.user.user.id.toString())
+        wsClient.connect()
+      }
     })
 
     onUnmounted(() => {
-      // wsClient?.disconnect()
+      if (wsClient) {
+        wsClient.disconnect()
+      }
     })
 
     return {}

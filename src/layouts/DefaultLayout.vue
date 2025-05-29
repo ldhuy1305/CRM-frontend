@@ -40,7 +40,9 @@ export default defineComponent({
     })
 
     onUnmounted(() => {
-      wsClient?.disconnect()
+      if (wsClient) {
+        wsClient.disconnect()
+      }
     })
 
     return {}

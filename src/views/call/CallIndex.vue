@@ -4,7 +4,7 @@
     <div class="module-header">
       <h1>Calls</h1>
       <div class="header-actions">
-        <button class="btn-primary" @click="navigateToCreateCall">Create Call</button>
+        <CreateCallDropdown @select-option="handleCreateOption" />
       </div>
     </div>
 
@@ -116,9 +116,10 @@
             <td @click="navigateToCallDetails(call.id)">{{ call.title }}</td>
             <td @click="navigateToCallDetails(call.id)">{{ call.call_type.name }}</td>
             <td @click="navigateToCallDetails(call.id)">{{ formatDateTime(call.start_time) }}</td>
-            <td @click="navigateToCallDetails(call.id)">
+            <td @click="navigateToCallDetails(call.id)" v-if="call.duration > 0">
               {{ formatSecondsToMinutes(call.duration) }} minutes
             </td>
+            <td @click="navigateToCallDetails(call.id)" v-else></td>
             <td
               v-if="call.related_account?.id"
               @click="navigateToRelatedAccount(call.related_account.id)"
@@ -145,16 +146,15 @@
 </template>
 
 <script setup lang="ts">
+import CreateCallDropdown from '@/components/dropdowns/CreateCallDropdown.vue'
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { callRepository } from '@/services'
-import { formatSecondsToMinutes } from '@/utils/formatter'
 import '@/styles/shared/index.css'
 import type { Call } from '@/types/calls/call'
-import { formatDateTime } from '@/utils/formatter'
+import { formatDateTime, formatSecondsToMinutes } from '@/utils/formatter'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
-// import CallSearchForm from './CallSearchForm.vue'
 
 const router = useRouter()
 const toast = useToast()
@@ -212,8 +212,12 @@ const handleClear = async () => {
   await fetchCalls()
 }
 
-const navigateToCreateCall = () => {
-  router.push('/calls/create')
+const handleCreateOption = (option: 'schedule' | 'log') => {
+  if (option === 'schedule') {
+    router.push('/calls/create?type=schedule')
+  } else {
+    router.push('/calls/create?type=log')
+  }
 }
 
 const navigateToCallDetails = (callId: number) => {

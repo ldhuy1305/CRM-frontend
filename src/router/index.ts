@@ -7,6 +7,7 @@ import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
+import CallCreate from '@/views/call/CallCreate.vue'
 import CallDetails from '@/views/call/CallDetails.vue'
 import Call from '@/views/call/CallIndex.vue'
 import CampaignCreate from '@/views/campaign/CampaignCreate.vue'
@@ -204,6 +205,12 @@ const routes = [
         path: '/calls/:id',
         name: 'CallDetails',
         component: CallDetails,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/calls/create',
+        name: 'CreateCall',
+        component: CallCreate,
         meta: { requiresAuth: true },
       },
       // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },

@@ -39,6 +39,7 @@ export interface Call {
   call_agenda: string
   start_time: string
   duration: number
+  is_remind: boolean
 }
 
 export type CallCreateEditPayload = Omit<
@@ -58,8 +59,8 @@ export type CallCreateEditPayload = Omit<
   | 'contact'
 > & {
   call_type: number
-  call_purpose: number
-  call_result: number
+  call_purpose: number | null
+  call_result: number | null
   call_owner: number
   related_deal: number | null
   related_account: number | null

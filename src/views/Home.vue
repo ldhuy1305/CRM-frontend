@@ -93,7 +93,7 @@
               <th>Company</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Status</th>
+              <th>Source</th>
             </tr>
           </thead>
           <tbody>
@@ -107,7 +107,7 @@
               <td>{{ lead.company_name }}</td>
               <td>{{ lead.email }}</td>
               <td>{{ lead.phone }}</td>
-              <td>{{ lead.lead_status?.name }}</td>
+              <td>{{ lead.lead_source?.name }}</td>
             </tr>
           </tbody>
         </table>

@@ -117,7 +117,7 @@
             <td @click="navigateToCallDetails(call.id)">{{ call.call_type.name }}</td>
             <td @click="navigateToCallDetails(call.id)">{{ formatDateTime(call.start_time) }}</td>
             <td @click="navigateToCallDetails(call.id)" v-if="call.duration > 0">
-              {{ formatSecondsToMinutes(call.duration) }} minutes
+              {{ formatSecondsToMinutes(call.duration) }}
             </td>
             <td @click="navigateToCallDetails(call.id)" v-else></td>
             <td

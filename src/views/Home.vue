@@ -34,9 +34,9 @@
               <td>{{ formatDate(task.due_date ?? undefined) }}</td>
               <td>{{ task.status.name }}</td>
               <td>{{ task.priority.name }}</td>
-              <td>{{ task.related_account?.name || '-' }}</td>
+              <td>{{ task.related_account?.name || '' }}</td>
               <td>
-                {{ task.contact ? `${task.contact.last_name} ${task.contact.first_name}` : '-' }}
+                {{ task.contact ? `${task.contact.last_name} ${task.contact.first_name}` : '' }}
               </td>
             </tr>
           </tbody>
@@ -124,11 +124,11 @@
             <tr>
               <th>Deal Name</th>
               <th>Amount</th>
-              <th>Stage</th>
+
               <th>Closing Date</th>
-              <th>Account Name</th>
-              <th>Contact Name</th>
-              <th>Deal Owner</th>
+              <th>Contact</th>
+              <th>Account</th>
+              <th>Stage</th>
             </tr>
           </thead>
           <tbody>
@@ -140,13 +140,12 @@
             >
               <td>{{ deal.name }}</td>
               <td>{{ formatVNDCurrency(deal.amount) }}</td>
-              <td>{{ deal.stage?.name }}</td>
               <td>{{ formatDate(deal.close_date) }}</td>
-              <td>{{ deal.account?.name || '-' }}</td>
               <td>
-                {{ deal.contact ? `${deal.contact.last_name} ${deal.contact.first_name}` : '-' }}
+                {{ deal.contact ? `${deal.contact.last_name} ${deal.contact.first_name}` : '' }}
               </td>
-              <td>{{ `${deal.deal_owner.last_name} ${deal.deal_owner.first_name}` }}</td>
+              <td>{{ deal.account?.name || '' }}</td>
+              <td>{{ deal.stage?.name }}</td>
             </tr>
           </tbody>
         </table>

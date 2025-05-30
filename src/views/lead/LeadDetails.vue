@@ -256,7 +256,7 @@ const handleBack = () => {
   //   router.back()
   // } else {
   // Fallback to leads list if no history
-  router.push('/leads')
+  router.back()
   // }
 }
 

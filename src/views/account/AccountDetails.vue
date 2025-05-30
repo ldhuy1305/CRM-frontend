@@ -304,7 +304,7 @@ const isLoading = ref(false)
 const account = ref<Account>({} as Account)
 
 const handleBack = () => {
-  router.push('/accounts')
+  router.back()
 }
 
 const navigateToEditAccount = (accountId: number) => {

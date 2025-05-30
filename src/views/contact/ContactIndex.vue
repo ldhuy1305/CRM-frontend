@@ -101,10 +101,6 @@
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
             <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
-
-            <span v-if="contact.account" @click="navigateToContactDetails(contact.account)">
-              {{ getAccountName(contact.account) }}
-            </span>
           </tr>
         </tbody>
         <tbody v-else>

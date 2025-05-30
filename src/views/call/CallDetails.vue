@@ -71,7 +71,7 @@
 
           <div class="info-row">
             <div class="info-label">Duration:</div>
-            <div class="info-value">{{ formatSecondsToMinutes(call?.duration) }} minutes</div>
+            <div class="info-value">{{ formatSecondsToMinutes(call?.duration) }}</div>
           </div>
 
           <div class="info-row">

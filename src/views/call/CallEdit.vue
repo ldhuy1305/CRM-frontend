@@ -58,7 +58,10 @@
           </div>
 
           <div class="form-group">
-            <label>Call Duration</label>
+            <label>
+              Call Duration (in seconds)
+              <span class="duration-text" v-if="form.duration">{{ formattedDuration }}</span>
+            </label>
             <input type="number" v-model="form.duration" min="1" />
           </div>
 
@@ -138,7 +141,7 @@ import type { CallCreateEditPayload, CallPurpose, CallResult, CallType } from '@
 import type { Contact } from '@/types/contacts/contact'
 import type { UserInfo } from '@/types/users/user'
 import { formatDateTimeLocal } from '@/utils/formatter'
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
 
@@ -306,6 +309,25 @@ const handleSubmit = async () => {
     }
   }
 }
+
+const formattedDuration = computed(() => {
+  const duration = Number(form.duration)
+  if (!duration) return ''
+
+  if (duration < 60) {
+    return `- ${duration} second${duration > 1 ? 's' : ''}`
+  } else {
+    const minutes = Math.floor(duration / 60)
+    const seconds = duration % 60
+
+    let formatted = `- ${minutes} minute${minutes > 1 ? 's' : ''}`
+    if (seconds > 0) {
+      formatted += ` ${seconds} second${seconds > 1 ? 's' : ''}`
+    }
+
+    return formatted
+  }
+})
 
 onMounted(async () => {
   isLoading.value = true

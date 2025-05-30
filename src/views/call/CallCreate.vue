@@ -58,7 +58,10 @@
           </div>
 
           <div class="form-group" v-if="!isSchedule">
-            <label>Call Duration</label>
+            <label>
+              Call Duration (in seconds)
+              <span class="duration-text" v-if="form.duration">{{ formattedDuration }}</span>
+            </label>
             <input type="number" v-model="form.duration" min="1" />
           </div>
 
@@ -278,6 +281,25 @@ const handleSubmit = async () => {
   }
 }
 
+const formattedDuration = computed(() => {
+  const duration = Number(form.duration)
+  if (!duration) return ''
+
+  if (duration < 60) {
+    return `- ${duration} second${duration > 1 ? 's' : ''}`
+  } else {
+    const minutes = Math.floor(duration / 60)
+    const seconds = duration % 60
+
+    let formatted = `- ${minutes} minute${minutes > 1 ? 's' : ''}`
+    if (seconds > 0) {
+      formatted += ` ${seconds} second${seconds > 1 ? 's' : ''}`
+    }
+
+    return formatted
+  }
+})
+
 onMounted(() => {
   fetchDropdownData()
 })
@@ -321,5 +343,12 @@ h3 {
   color: red;
   font-size: 12px;
   margin-top: 4px;
+}
+
+.duration-text {
+  color: #666;
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-left: 4px;
 }
 </style>

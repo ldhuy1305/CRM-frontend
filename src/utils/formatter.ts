@@ -26,3 +26,22 @@ export const formatDateTime = (datetime?: string) => {
     minute: '2-digit',
   })
 }
+
+export const formatSecondsToMinutes = (duration: number) => {
+  if (duration < 60) {
+    return duration + ' seconds'
+  }
+  return Math.floor(duration / 60) + ' minutes'
+}
+
+export const formatDateTimeLocal = (dateString: string): string => {
+  if (!dateString) return ''
+
+  const date = new Date(dateString)
+
+  const tzOffset = date.getTimezoneOffset()
+
+  const localDate = new Date(date.getTime() - tzOffset * 60000)
+
+  return localDate.toISOString().slice(0, 16)
+}

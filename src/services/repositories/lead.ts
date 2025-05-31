@@ -1,3 +1,4 @@
+import type { ApiResponseList } from '@/types/api'
 import type { NamedObject } from '@/types/common/common_types'
 import type { Lead, LeadConvertPayload, LeadCreateEditPayload } from '@/types/leads/lead'
 import api from '../api'
@@ -15,6 +16,67 @@ class LeadRepository extends BaseRepository<Lead, LeadCreateEditPayload> {
     } catch (error: any) {
       const message = error.response?.data?.message || 'Lead conversion failed'
       throw new Error(message)
+    }
+  }
+
+  // Get today's leads
+  async getTodayLeads(): Promise<ApiResponseList<Lead>> {
+    const today = new Date().toISOString().split('T')[0]
+    try {
+      const response = await this.$axios.get(`${this.resource}`, {
+        params: { created_date: today },
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error("Failed to fetch today's leads")
+    }
+  }
+
+  // Get leads grouped by status
+  async getLeadsByStatus(): Promise<ApiResponseList<Lead>> {
+    try {
+      const response = await this.$axios.get(`${this.resource}`, {
+        params: { group_by: 'status' },
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error('Failed to fetch leads by status')
+    }
+  }
+
+  // Get leads grouped by source
+  async getLeadsBySource(): Promise<ApiResponseList<Lead>> {
+    try {
+      const response = await this.$axios.get(`${this.resource}`, {
+        params: { group_by: 'source' },
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error('Failed to fetch leads by source')
+    }
+  }
+
+  // Get leads grouped by owner
+  async getLeadsByOwner(): Promise<ApiResponseList<Lead>> {
+    try {
+      const response = await this.$axios.get(`${this.resource}`, {
+        params: { group_by: 'owner' },
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error('Failed to fetch leads by owner')
+    }
+  }
+
+  // Get leads grouped by industry
+  async getLeadsByIndustry(): Promise<ApiResponseList<Lead>> {
+    try {
+      const response = await this.$axios.get(`${this.resource}`, {
+        params: { group_by: 'industry' },
+      })
+      return response.data
+    } catch (error: any) {
+      throw new Error('Failed to fetch leads by industry')
     }
   }
 }

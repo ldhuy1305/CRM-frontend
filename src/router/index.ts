@@ -34,6 +34,7 @@ import MeetingDetails from '@/views/meeting/MeetingDetails.vue'
 import MeetingEdit from '@/views/meeting/MeetingEdit.vue'
 import Meeting from '@/views/meeting/MeetingIndex.vue'
 import Reports from '@/views/report/ReportIndex.vue'
+import ReportLeadView from '@/views/report/ReportLeadView.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetails from '@/views/task/TaskDetails.vue'
 import TaskEdit from '@/views/task/TaskEdit.vue'
@@ -222,6 +223,12 @@ const routes = [
         meta: { requiresAuth: true },
       },
       { path: 'reports', name: 'Reports', component: Reports, meta: { requiresAuth: true } },
+      {
+        path: '/reports/leads/:id',
+        name: 'ReportLeadView',
+        component: ReportLeadView,
+        meta: { requiresAuth: true },
+      },
     ],
     meta: { requiresAuth: true },
   },

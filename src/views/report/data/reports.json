@@ -31,12 +31,6 @@
       "category": "lead"
     },
     {
-      "id": "converted-leads",
-      "name": "Converted Leads",
-      "description": "Leads converted to Account / Deal / Contact",
-      "category": "lead"
-    },
-    {
       "id": "key-accounts",
       "name": "Key Accounts",
       "description": "Accounts with more Deals",

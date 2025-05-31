@@ -143,12 +143,7 @@ export default defineComponent({
           route.path.match(/^\/calls\/\d+\/edit$/) // /calls/{id}/edit
         )
       } else if (path === '/reports') {
-        return (
-          route.path === '/reports' ||
-          route.path.match(
-            /^\/reports\/(leads|contacts|accounts|deals|campaigns|tasks|meetings|calls)$/,
-          ) // /reports/{type}
-        )
+        return route.path.includes('/reports')
       }
       // Add more conditions for other paths as needed
       return route.path === path

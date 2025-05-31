@@ -13,7 +13,6 @@
             <tr>
               <th>Report Name</th>
               <th>Description</th>
-              <th>Related Module</th>
             </tr>
           </thead>
           <tbody>
@@ -27,7 +26,6 @@
                 {{ report.name }}
               </td>
               <td class="report-description">{{ report.description }}</td>
-              <td>{{ report.category.toLocaleUpperCase() }}</td>
             </tr>
           </tbody>
         </table>
@@ -67,10 +65,8 @@ const handleCategorySelect = (category: string) => {
 const navigateToReport = (reportId: string) => {
   if (reportId.includes('lead')) {
     router.push(`/reports/leads/${reportId}`)
-  } else if (reportId.includes('contact')) {
-    router.push(`/reports/contacts/${reportId}`)
-  } else if (reportId.includes('account')) {
-    router.push(`/reports/accounts/${reportId}`)
+  } else if (reportId.includes('contact') || reportId.includes('account')) {
+    router.push(`/reports/contact-account/${reportId}`)
   } else if (reportId.includes('deal')) {
     router.push(`/reports/deals/${reportId}`)
   } else if (reportId.includes('campaign')) {

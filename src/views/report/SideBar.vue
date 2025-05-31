@@ -62,13 +62,14 @@ const selectCategory = (categoryId: string) => {
 }
 
 .category-item.active {
-  background-color: #0d6efd;
+  background-color: #ff6500;
   color: white;
 }
 
 h3 {
   margin: 0;
   color: #343a40;
+  font-weight: 600;
   font-size: 18px;
 }
 </style>

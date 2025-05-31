@@ -33,6 +33,7 @@ import MeetingCreate from '@/views/meeting/MeetingCreate.vue'
 import MeetingDetails from '@/views/meeting/MeetingDetails.vue'
 import MeetingEdit from '@/views/meeting/MeetingEdit.vue'
 import Meeting from '@/views/meeting/MeetingIndex.vue'
+import Reports from '@/views/report/ReportIndex.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetails from '@/views/task/TaskDetails.vue'
 import TaskEdit from '@/views/task/TaskEdit.vue'
@@ -220,7 +221,7 @@ const routes = [
         component: CallEdit,
         meta: { requiresAuth: true },
       },
-      // { path: 'reports', name: 'Reports', component: () => import('@/views/Reports.vue') },
+      { path: 'reports', name: 'Reports', component: Reports, meta: { requiresAuth: true } },
     ],
     meta: { requiresAuth: true },
   },

@@ -18,7 +18,7 @@
       </div>
       <p v-if="error" class="error">{{ error }}</p>
       <button type="submit" :disabled="isLoading">Đăng nhập</button>
-      <p>
+      <p class="forgot-password">
         Quên mật khẩu?
         <!--        <router-link to="/email">Đăng ký</router-link>-->
       </p>

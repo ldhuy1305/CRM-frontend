@@ -24,9 +24,17 @@
         </select>
       </div>
       <div class="pagination">
-        <button class="nav-btn">&lt;</button>
-        <span class="current-page">1</span>
-        <button class="nav-btn">&gt;</button>
+        <button class="nav-btn" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
+          &lt;
+        </button>
+        <span class="current-page">{{ currentPage }}</span>
+        <button
+          class="nav-btn"
+          @click="changePage(currentPage + 1)"
+          :disabled="currentPage * rowsPerPage >= totalRecords"
+        >
+          &gt;
+        </button>
       </div>
     </div>
 
@@ -96,11 +104,11 @@
 <script setup lang="ts">
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { accountRepository } from '@/services'
-import AccountSearchForm from './AccountSearchForm.vue'
+import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import '@/styles/shared/index.css'
+import AccountSearchForm from './AccountSearchForm.vue'
 
 const router = useRouter()
 const accounts = ref<Account[]>([])
@@ -112,21 +120,30 @@ const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 const searchFilters = ref<Record<string, string>>({})
 const isLoading = ref(false)
 
+// Update the refs section with pagination support
+const totalRecords = ref(0)
+const currentPage = ref(1)
+
+// Replace the fetchAccounts function with this improved version
 const fetchAccounts = async () => {
   try {
     isLoading.value = true
-    const res = await accountRepository.show({ limit: rowsPerPage.value })
-    console.log('📦 Fetched accounts:', res.results)
-    const payload = {
+    const payload: Record<string, any> = {
       limit: rowsPerPage.value,
-      sort_field: sortField.value,
-      sort_order: sortOrder.value,
+      page: currentPage.value,
       ...searchFilters.value,
     }
 
-    console.log('Payload Account:', payload)
+    if (sortField.value) {
+      payload.sort_field = sortField.value
+      payload.sort_order = sortOrder.value
+    }
 
+    console.log('📤 Request payload:', payload)
+
+    const res = await accountRepository.show(payload)
     accounts.value = res.results
+    totalRecords.value = res.total
   } catch (error) {
     console.error('❌ Error fetching accounts:', error)
   } finally {
@@ -145,12 +162,16 @@ const toggleSort = (field: string) => {
 }
 
 const handleSearch = async (filters: Record<string, string>) => {
+  currentPage.value = 1
   searchFilters.value = filters
   await fetchAccounts()
 }
 
 const handleClear = async () => {
   searchFilters.value = {}
+  currentPage.value = 1
+  sortField.value = ''
+  sortOrder.value = 'ASC'
   await fetchAccounts()
 }
 
@@ -184,6 +205,14 @@ const deleteAccount = async (accountId: number) => {
     console.error('❌ Error deleting account:', error)
     alert('Failed to delete account. Please try again.')
   }
+}
+
+const changePage = (page: number) => {
+  if (page < 1 || (page - 1) * rowsPerPage.value >= totalRecords.value) {
+    return
+  }
+  currentPage.value = page
+  fetchAccounts()
 }
 
 onMounted(() => {

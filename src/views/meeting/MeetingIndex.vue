@@ -8,6 +8,9 @@
       </div>
     </div>
 
+    <!-- Add this after the module-header div -->
+    <MeetingSearchForm @search="handleSearch" @clear="handleClear" />
+
     <div class="table-pagination">
       <div class="rows-per-page">
         Records per page:
@@ -129,6 +132,7 @@
 <script setup lang="ts">
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { meetingRepository, userRepository } from '@/services'
+import MeetingSearchForm from './MeetingSearchForm.vue'
 
 import '@/styles/meeting/styles.css'
 import '@/styles/shared/index.css'
@@ -147,18 +151,26 @@ const isLoading = ref(false)
 
 const sortField = ref<string>('')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+const searchFilters = ref<Record<string, string>>({})
+const currentPage = ref(1)
+const totalRecords = ref(0)
 
 const fetchMeetings = async () => {
   try {
     isLoading.value = true
     const payload = {
       limit: rowsPerPage.value,
+      page: currentPage.value,
       sort_field: sortField.value,
       sort_order: sortOrder.value,
+      ...searchFilters.value,
     }
+
+    console.log('📤 Request payload:', payload)
 
     const response = await meetingRepository.show(payload)
     meetings.value = response.results
+    totalRecords.value = response.total
   } catch (error) {
     console.error('Error fetching meetings:', error)
   } finally {
@@ -232,6 +244,25 @@ onMounted(async () => {
 })
 
 watch(rowsPerPage, () => {
+  fetchMeetings()
+})
+
+const handleSearch = async (filters: Record<string, string>) => {
+  currentPage.value = 1
+  searchFilters.value = filters
+  await fetchMeetings()
+}
+
+const handleClear = async () => {
+  searchFilters.value = {}
+  currentPage.value = 1
+  sortField.value = ''
+  sortOrder.value = 'ASC'
+  await fetchMeetings()
+}
+
+// Add this watch for pagination
+watch([currentPage, rowsPerPage], () => {
   fetchMeetings()
 })
 </script>

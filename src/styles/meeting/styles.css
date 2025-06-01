@@ -360,10 +360,6 @@ thead th:hover {
   margin-bottom: 16px;
 }
 
-.search-input {
-  max-width: 200px;
-}
-
 .selected-count {
   color: #6c757d;
 }

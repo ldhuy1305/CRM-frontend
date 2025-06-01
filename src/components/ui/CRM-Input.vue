@@ -11,7 +11,6 @@
         :required="required"
         :disabled="disabled"
         :class="inputClass"
-        
       />
       <span
         v-if="isPasswordType"
@@ -22,16 +21,8 @@
         :aria-label="showPassword ? 'Hide password' : 'Show password'"
         @keydown.enter="togglePassword"
       >
-        <font-awesome-icon
-          v-if="showPassword"
-          :icon="['fas', 'eye']"
-          class="eye-icon"
-        />
-        <font-awesome-icon
-          v-else
-          :icon="['fas', 'eye-slash']"
-          class="eye-icon"
-        />
+        <font-awesome-icon v-if="showPassword" :icon="['fas', 'eye']" class="eye-icon" />
+        <font-awesome-icon v-else :icon="['fas', 'eye-slash']" class="eye-icon" />
       </span>
     </div>
     <span v-if="error" class="error-message">{{ error }}</span>
@@ -68,7 +59,7 @@ const isPasswordType = computed(() => props.type === 'password' || props.type ==
 const showPassword = computed(() => props.showPassword ?? false)
 
 const computedType = computed(() =>
-  props.type === 'password' && showPassword.value ? 'text' : props.type
+  props.type === 'password' && showPassword.value ? 'text' : props.type,
 )
 
 const togglePassword = () => {
@@ -83,6 +74,12 @@ const togglePassword = () => {
   gap: 4px;
 }
 
+label {
+  font-size: 14px;
+  color: #1a3353;
+  font-weight: 600;
+}
+
 .input-wrapper {
   position: relative;
   display: flex;
@@ -94,6 +91,13 @@ input {
   padding: 0.5rem 2rem 0.5rem 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.375rem;
+  height: 38px; /* Add fixed height */
+}
+
+/* For date input specific styling */
+input[type='date'] {
+  height: 38px;
+  padding: 0.5rem;
 }
 
 .toggle-password-icon {

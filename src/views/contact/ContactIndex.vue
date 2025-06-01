@@ -24,9 +24,15 @@
         </select>
       </div>
       <div class="pagination">
-        <button class="nav-btn">&lt;</button>
-        <span class="current-page">1</span>
-        <button class="nav-btn">&gt;</button>
+        <button class="nav-btn" :disabled="currentPage === 1" @click="currentPage--">&lt;</button>
+        <span class="current-page">{{ currentPage }}</span>
+        <button
+          class="nav-btn"
+          :disabled="currentPage * rowsPerPage >= totalRecords"
+          @click="currentPage++"
+        >
+          &gt;
+        </button>
       </div>
     </div>
 
@@ -100,7 +106,7 @@
             </td>
             <td>{{ contact.email }}</td>
             <td>{{ contact.phone }}</td>
-            <td>{{ contact.contact_owner?.last_name }} {{ contact.contact_owner?.first_name }}</td>
+            <td>{{ contact.contact_owner?.first_name }} {{ contact.contact_owner?.last_name }}</td>
           </tr>
         </tbody>
         <tbody v-else>
@@ -133,31 +139,35 @@ const sortField = ref<string>('')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 const searchFilters = ref<Record<string, string>>({})
 const isLoading = ref(false)
+const totalRecords = ref(0)
+const currentPage = ref(1)
 
 const fetchData = async () => {
   try {
     isLoading.value = true
-
-    const payload = {
+    const payload: Record<string, any> = {
       limit: rowsPerPage.value,
-      sort_field: sortField.value,
-      sort_order: sortOrder.value,
+      page: currentPage.value,
       ...searchFilters.value,
     }
 
-    console.log('Payload Contact:', payload)
+    if (sortField.value) {
+      payload.sort_field = sortField.value
+      payload.sort_order = sortOrder.value
+    }
 
-    const [contactsRes, accountsRes] = await Promise.all([
-      contactRepository.show(),
-      accountRepository.show(),
-    ])
+    console.log('📤 Request payload:', payload)
 
+    // Fetch contacts with search filters
+    const contactsRes = await contactRepository.show(payload)
     contacts.value = contactsRes.results
-    accounts.value = accountsRes.results
-    console.log('📦 Fetched contacts:', contactsRes.results)
-    console.log('📦 Fetched accounts:', accountsRes.results)
+    totalRecords.value = contactsRes.total
+
+    // Fetch accounts for reference
+    const accountsRes = await accountRepository.show()
+    accounts.value = accountsRes.results || []
   } catch (error) {
-    console.error('❌ Error fetching contacts:', error)
+    console.error('❌ Error fetching data:', error)
   } finally {
     isLoading.value = false
   }
@@ -174,12 +184,16 @@ const toggleSort = (field: string) => {
 }
 
 const handleSearch = async (filters: Record<string, string>) => {
+  currentPage.value = 1
   searchFilters.value = filters
   await fetchData()
 }
 
 const handleClear = async () => {
   searchFilters.value = {}
+  currentPage.value = 1
+  sortField.value = ''
+  sortOrder.value = 'ASC'
   await fetchData()
 }
 
@@ -231,7 +245,7 @@ onMounted(() => {
   fetchData()
 })
 
-watch(rowsPerPage, () => {
+watch([currentPage, rowsPerPage], () => {
   fetchData()
 })
 </script>

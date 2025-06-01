@@ -8,7 +8,7 @@
       </div>
     </div>
 
-    <!-- <CampaignSearchForm @search="handleSearch" @clear="handleClear" /> -->
+    <CampaignSearchForm @search="handleSearch" @clear="handleClear" />
 
     <div class="table-pagination">
       <div class="rows-per-page">
@@ -20,9 +20,15 @@
         </select>
       </div>
       <div class="pagination">
-        <button class="nav-btn">&lt;</button>
-        <span class="current-page">1</span>
-        <button class="nav-btn">&gt;</button>
+        <button class="nav-btn" :disabled="currentPage === 1" @click="currentPage--">&lt;</button>
+        <span class="current-page">{{ currentPage }}</span>
+        <button
+          class="nav-btn"
+          :disabled="currentPage * rowsPerPage >= totalRecords"
+          @click="currentPage++"
+        >
+          &gt;
+        </button>
       </div>
     </div>
 
@@ -112,6 +118,8 @@ import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { campaignRepository } from '@/services'
 import '@/styles/shared/index.css'
 import type { Campaign } from '@/types/campaigns/campaign'
+import { formatDate } from '@/utils/formatter'
+import CampaignSearchForm from '@/views/campaign/CampaignSearchForm.vue'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -123,28 +131,30 @@ const sortField = ref<string>('')
 const sortOrder = ref<'ASC' | 'DESC'>('ASC')
 const searchFilters = ref<Record<string, string>>({})
 const isLoading = ref(false)
+const totalRecords = ref(0)
+const currentPage = ref(1)
 
 const fetchData = async () => {
   try {
     isLoading.value = true
     const payload = {
       limit: rowsPerPage.value,
+      page: currentPage.value,
       sort_field: sortField.value,
       sort_order: sortOrder.value,
       ...searchFilters.value,
     }
 
+    console.log('📤 Request payload:', payload)
+
     const response = await campaignRepository.show(payload)
     campaigns.value = response.results
+    totalRecords.value = response.total
   } catch (error) {
     console.error('❌ Error fetching campaigns:', error)
   } finally {
     isLoading.value = false
   }
-}
-
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString()
 }
 
 const toggleSort = (field: string) => {
@@ -157,15 +167,19 @@ const toggleSort = (field: string) => {
   fetchData()
 }
 
-// const handleSearch = async (filters: Record<string, string>) => {
-//   searchFilters.value = filters
-//   await fetchData()
-// }
+const handleSearch = async (filters: Record<string, string>) => {
+  currentPage.value = 1
+  searchFilters.value = filters
+  await fetchData()
+}
 
-// const handleClear = async () => {
-//   searchFilters.value = {}
-//   await fetchData()
-// }
+const handleClear = async () => {
+  searchFilters.value = {}
+  currentPage.value = 1
+  sortField.value = ''
+  sortOrder.value = 'ASC'
+  await fetchData()
+}
 
 const navigateToCreateCampaign = () => {
   router.push('/campaigns/create')
@@ -199,11 +213,19 @@ const deleteCampaign = async (campaignId: number) => {
   }
 }
 
+const changePage = (newPage: number) => {
+  currentPage.value = newPage
+  fetchData()
+}
+
 onMounted(() => {
   fetchData()
 })
 
 watch(rowsPerPage, () => {
+  fetchData()
+})
+watch([currentPage, rowsPerPage], () => {
   fetchData()
 })
 </script>

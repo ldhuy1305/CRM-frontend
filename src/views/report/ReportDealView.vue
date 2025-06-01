@@ -112,9 +112,9 @@
         <thead>
           <tr>
             <th>Deal Name</th>
+            <th>Close Date</th>
             <th>Amount</th>
             <th>Stage</th>
-            <th>Close Date</th>
             <th>Account</th>
             <th>Contact</th>
             <th>Owner</th>
@@ -123,9 +123,10 @@
         <tbody>
           <tr v-for="deal in groupedData" :key="deal.id">
             <td class="first-col">{{ deal.name }}</td>
+            <td class="first-col">{{ formatDate(deal.close_date) }}</td>
             <td class="currency">{{ formatVNDCurrency(deal.amount) }}</td>
             <td>{{ deal.stage?.name }}</td>
-            <td>{{ formatDate(deal.close_date) }}</td>
+
             <td>{{ deal.account?.name }}</td>
             <td>
               {{ deal.contact ? `${deal.contact.last_name} ${deal.contact.first_name}` : '-' }}

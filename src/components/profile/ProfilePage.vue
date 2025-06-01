@@ -87,7 +87,7 @@ function onAvatarSelected(event: Event) {
       <Sidebar :selectedTab="selectedTab" @selectTab="selectedTab = $event" />
       <div class="profile-content">
         <component :is="currentComponent" @update-field="updateProfileField" />
-        <pre>{{ profileData }}</pre>
+        <!-- <pre>{{ profileData }}</pre> -->
       </div>
     </div>
 

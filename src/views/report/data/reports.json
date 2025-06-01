@@ -61,9 +61,9 @@
       "category": "deal"
     },
     {
-      "id": "deals-by-type",
-      "name": "Deals by Type",
-      "description": "Deals by Type",
+      "id": "deals-by-stage",
+      "name": "Deals by Stage",
+      "description": "Deals by Stage",
       "category": "deal"
     },
     {

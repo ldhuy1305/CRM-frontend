@@ -33,6 +33,7 @@ import MeetingCreate from '@/views/meeting/MeetingCreate.vue'
 import MeetingDetails from '@/views/meeting/MeetingDetails.vue'
 import MeetingEdit from '@/views/meeting/MeetingEdit.vue'
 import Meeting from '@/views/meeting/MeetingIndex.vue'
+import ReportCampaignView from '@/views/report/ReportCampaignView.vue'
 import ReportContactAccountView from '@/views/report/ReportContactAccountView.vue'
 import ReportDealView from '@/views/report/ReportDealView.vue'
 import Reports from '@/views/report/ReportIndex.vue'
@@ -241,6 +242,12 @@ const routes = [
         path: '/reports/deals/:id',
         name: 'ReportDealView',
         component: ReportDealView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reports/campaigns/:id',
+        name: 'ReportCampaignView',
+        component: ReportCampaignView,
         meta: { requiresAuth: true },
       },
     ],

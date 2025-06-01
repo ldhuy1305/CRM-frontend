@@ -79,12 +79,6 @@
       "category": "campaign"
     },
     {
-      "id": "campaign-leads",
-      "name": "Campaign Leads",
-      "description": "Leads marketed through this Campaign",
-      "category": "campaign"
-    },
-    {
       "id": "planned-meetings",
       "name": "Planned Meetings this Month",
       "description": "List of planned meeting in the current month",

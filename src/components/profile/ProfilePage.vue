@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import Sidebar from './Sidebar.vue'
+import { computed, ref } from 'vue'
+import CRMButton from '../ui/CRMButton.vue'
 import BasicInfo from './BasicInfo.vue'
 import Password from './Password.vue'
-import CRMButton from '../ui/CRMButton.vue'
+import Sidebar from './Sidebar.vue'
 
 const selectedTab = ref('basic')
 
@@ -81,18 +81,13 @@ function onAvatarSelected(event: Event) {
           @change="onAvatarSelected"
         />
       </div>
-
-      <div class="user-info">
-        <h2>Nguyen Huu Khoa</h2>
-        <p>LeetCode ID: nguyenkhoa-01</p>
-      </div>
     </div>
 
     <div class="profile-body">
       <Sidebar :selectedTab="selectedTab" @selectTab="selectedTab = $event" />
       <div class="profile-content">
         <component :is="currentComponent" @update-field="updateProfileField" />
-        <pre>{{ profileData }}</pre>
+        <!-- <pre>{{ profileData }}</pre> -->
       </div>
     </div>
 
@@ -108,7 +103,7 @@ function onAvatarSelected(event: Event) {
   display: flex;
   align-items: center;
   padding: 2rem 10rem;
-  background: linear-gradient(to right, #2d2d2d, #1a1a1a);
+  background: #f5f5f5;
   color: white;
   width: 100vw;
   margin-left: calc(-1 * ((100vw - 100%) / 2));

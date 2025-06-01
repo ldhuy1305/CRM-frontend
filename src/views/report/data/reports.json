@@ -1,0 +1,88 @@
+{
+  "reports": [
+    {
+      "id": "todays-lead",
+      "name": "Today's Lead",
+      "description": "Leads obtained today",
+      "category": "lead"
+    },
+    {
+      "id": "leads-by-status",
+      "name": "Leads by Status",
+      "description": "Leads and their statuses",
+      "category": "lead"
+    },
+    {
+      "id": "leads-by-source",
+      "name": "Leads by Source",
+      "description": "Leads from various sources",
+      "category": "lead"
+    },
+    {
+      "id": "leads-by-owner",
+      "name": "Leads by Owner",
+      "description": "Leads by Owner",
+      "category": "lead"
+    },
+    {
+      "id": "leads-by-industry",
+      "name": "Leads by Industry",
+      "description": "Leads by Industry",
+      "category": "lead"
+    },
+    {
+      "id": "key-accounts",
+      "name": "Key Accounts",
+      "description": "Accounts with more Deals",
+      "category": "account"
+    },
+    {
+      "id": "accounts-by-industry",
+      "name": "Accounts by Industry",
+      "description": "Accounts by Industry",
+      "category": "account"
+    },
+    {
+      "id": "contact-details",
+      "name": "Contact Address details",
+      "description": "Contact Address details",
+      "category": "account"
+    },
+    {
+      "id": "open-deals",
+      "name": "Open Deals",
+      "description": "Deals Pending",
+      "category": "deal"
+    },
+    {
+      "id": "lost-deals",
+      "name": "Lost Deals",
+      "description": "Deals Lost",
+      "category": "deal"
+    },
+    {
+      "id": "deals-by-stage",
+      "name": "Deals by Stage",
+      "description": "Deals by Stage",
+      "category": "deal"
+    },
+    {
+      "id": "deals-closing-month",
+      "name": "Deals Closing this Month",
+      "description": "Deals closing this month",
+      "category": "deal"
+    },
+    {
+      "id": "campaign-revenue",
+      "name": "Campaigns Revenue Report",
+      "description": "Revenue generated from this Campaign",
+      "category": "campaign"
+    },
+    {
+      "id": "planned-meetings",
+      "name": "Planned Meetings this Month",
+      "description": "List of planned meeting in the current month",
+      "category": "meeting"
+    }
+  ]
+}

@@ -38,6 +38,7 @@ import ReportContactAccountView from '@/views/report/ReportContactAccountView.vu
 import ReportDealView from '@/views/report/ReportDealView.vue'
 import Reports from '@/views/report/ReportIndex.vue'
 import ReportLeadView from '@/views/report/ReportLeadView.vue'
+import ReportMeetingView from '@/views/report/ReportMeetingView.vue'
 import TaskCreate from '@/views/task/TaskCreate.vue'
 import TaskDetails from '@/views/task/TaskDetails.vue'
 import TaskEdit from '@/views/task/TaskEdit.vue'
@@ -248,6 +249,12 @@ const routes = [
         path: '/reports/campaigns/:id',
         name: 'ReportCampaignView',
         component: ReportCampaignView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/reports/meetings/:id',
+        name: 'ReportMeetingView',
+        component: ReportMeetingView,
         meta: { requiresAuth: true },
       },
     ],

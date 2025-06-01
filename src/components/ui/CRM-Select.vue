@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: [String, Number],
@@ -122,6 +122,7 @@ function selectOption(option: { id: number; name: string }) {
   outline: none;
   padding: 8px 12px;
   font-size: 14px;
+  margin-bottom: 0;
 }
 
 .dropdown-icon {

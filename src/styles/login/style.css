@@ -10,6 +10,14 @@
 .form-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 0;
+}
+
+.forgot-password {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #666;
+  cursor: pointer;
 }
 
 label {

@@ -143,8 +143,8 @@ function onSearch() {
   if (data.company) output.company = data.company
   if (data.email) output.email = data.email
   if (data.phone) output.phone = data.phone
-  if (data.leadSource) output.lead_source__id = data.leadSource.toString()
-  if (data.leadOwner) output.owner__id = data.leadOwner.toString()
+  if (data.leadSource) output.source = data.leadSource.toString()
+  if (data.leadOwner) output.owner = data.leadOwner.toString()
 
   console.log('Search Payload:', JSON.stringify(output, null, 2))
   emit('search', output)

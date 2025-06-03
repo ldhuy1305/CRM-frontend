@@ -244,31 +244,8 @@ const report = computed(() => {
 const fetchReportData = async () => {
   try {
     isLoading.value = true
-
-    switch (report.value?.id) {
-      case 'todays-lead':
-        const resTodayLead = await leadRepository.getTodayLeads()
-        reportData.value = resTodayLead.results || []
-        break
-      case 'leads-by-status':
-        const resLeadStatus = await leadRepository.getLeadsByStatus()
-        reportData.value = resLeadStatus.results || []
-        break
-      case 'leads-by-source':
-        const resLeadSource = await leadRepository.getLeadsBySource()
-        reportData.value = resLeadSource.results || []
-        break
-      case 'leads-by-owner':
-        const resLeadOwner = await leadRepository.getLeadsByOwner()
-        reportData.value = resLeadOwner.results || []
-        break
-      case 'leads-by-industry':
-        const resLeadIndustry = await leadRepository.getLeadsByIndustry()
-        reportData.value = resLeadIndustry.results || []
-        break
-      default:
-        reportData.value = []
-    }
+    const resLead = await leadRepository.show()
+    reportData.value = resLead.results || []
   } catch (error) {
     console.error('Error fetching report data:', error)
     toast.error('Failed to load report data', {
@@ -304,7 +281,7 @@ const groupedData = computed(() => {
 // Update the grouping functions to handle possible undefined values
 const groupByStatus = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const status = lead.lead_status?.name || 'Unknown'
+    const status = lead.lead_status?.name || ''
     if (!groups[status]) {
       groups[status] = []
     }
@@ -315,7 +292,7 @@ const groupByStatus = (data: Lead[]) => {
 
 const groupBySource = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const source = lead.lead_source?.name || 'Unknown'
+    const source = lead.lead_source?.name || ''
     if (!groups[source]) {
       groups[source] = []
     }
@@ -339,7 +316,7 @@ const groupByOwner = (data: Lead[]) => {
 
 const groupByIndustry = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const industry = lead.industry?.name || 'Unknown'
+    const industry = lead.industry?.name || ''
     if (!groups[industry]) {
       groups[industry] = []
     }

@@ -174,6 +174,7 @@ onMounted(() => {
 
 .first-col {
   font-weight: 700;
+  background-color: antiquewhite;
   font-style: italic;
 }
 

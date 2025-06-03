@@ -12,9 +12,10 @@
         <thead>
           <tr>
             <th>Account Name</th>
-
             <th>Phone</th>
             <th>Website</th>
+            <th>City</th>
+            <th>Country</th>
             <th>Industry</th>
             <th>Owner</th>
           </tr>
@@ -24,6 +25,8 @@
             <td class="first-col">{{ (account as Account).name }}</td>
             <td>{{ (account as Account).phone }}</td>
             <td>{{ (account as Account).website }}</td>
+            <td>{{ (account as Account).city }}</td>
+            <td>{{ (account as Account).country }}</td>
             <td>{{ (account as Account).industry?.name }}</td>
             <td>
               {{
@@ -38,24 +41,24 @@
       <table v-else-if="report.id === 'accounts-by-industry'" class="report-table">
         <thead>
           <tr>
-            <th>Industry</th>
             <th>Account Name</th>
             <th>Phone</th>
             <th>Website</th>
             <th>City</th>
             <th>Country</th>
+            <th>Industry</th>
             <th>Owner</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(accounts, industry) in groupedData" :key="industry">
             <tr v-for="account in accounts" :key="(account as Account).id">
-              <td class="first-col">{{ industry }}</td>
               <td>{{ (account as Account).name }}</td>
               <td>{{ (account as Account).phone }}</td>
               <td>{{ (account as Account).website }}</td>
               <td>{{ (account as Account).city }}</td>
               <td>{{ (account as Account).country }}</td>
+              <td class="first-col">{{ industry }}</td>
               <td>
                 {{
                   `${(account as Account).account_owner?.first_name} ${(account as Account).account_owner?.last_name}`
@@ -125,7 +128,8 @@ import { POSITION, useToast } from 'vue-toastification'
 import reportsData from './data/reports.json'
 
 const route = useRoute()
-const reportData = ref<Account[] | Contact[]>([])
+const reportAccountData = ref<Account[]>([])
+const reportContactData = ref<Contact[]>([])
 const isLoading = ref(true)
 const toast = useToast()
 
@@ -136,23 +140,10 @@ const report = computed(() => {
 const fetchReportData = async () => {
   try {
     isLoading.value = true
-
-    switch (report.value?.id) {
-      case 'contact-details':
-        const resContacts = await contactRepository.show()
-        reportData.value = resContacts.results || []
-        break
-      case 'key-accounts':
-        const resKeyAccounts = await accountRepository.getKeyAccounts()
-        reportData.value = resKeyAccounts.results || []
-        break
-      case 'accounts-by-industry':
-        const resIndustry = await accountRepository.getAccountsByIndustry()
-        reportData.value = resIndustry.results || []
-        break
-      default:
-        reportData.value = []
-    }
+    const resContacts = await contactRepository.show()
+    const resAccounts = await accountRepository.show()
+    reportContactData.value = resContacts.results || []
+    reportAccountData.value = resAccounts.results || []
   } catch (error) {
     console.error('Error fetching report data:', error)
     toast.error('Failed to load report data', {
@@ -164,18 +155,19 @@ const fetchReportData = async () => {
 }
 
 const groupedData = computed(() => {
-  const data = reportData.value || []
-  if (!data.length) return []
+  const contactData = reportContactData.value || []
+  const accountData = reportAccountData.value || []
+  if (!contactData.length && !accountData.length) return []
 
   switch (report.value?.id) {
     case 'accounts-by-industry':
-      // Only pass Account[] to groupByIndustry
-      return groupByIndustry(data.filter((item): item is Account => 'industry' in item))
+      return groupByIndustry(accountData)
     case 'key-accounts':
+      return accountData
     case 'contact-details':
-      return data
+      return contactData
     default:
-      return data
+      return contactData
   }
 })
 
@@ -249,6 +241,7 @@ onMounted(() => {
 .first-col {
   font-weight: 700;
   font-style: italic;
+  background-color: antiquewhite;
 }
 
 .currency {

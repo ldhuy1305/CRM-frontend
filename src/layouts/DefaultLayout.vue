@@ -11,7 +11,7 @@
 import Header from '@/components/layout/Header.vue'
 import { WebSocketClient } from '@/plugins/websocket'
 import { useAuthStore } from '@/stores/modules/auth'
-import { defineComponent, onMounted, onUnmounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'DefaultLayout',
@@ -22,23 +22,25 @@ export default defineComponent({
   setup() {
     const authStore = useAuthStore()
     const router = useRouter()
-    const wsClient: WebSocketClient | null = null
+    // let wsClient: WebSocketClient | null = null
+
+    const wsClient = ref<WebSocketClient | null>(null)
 
     onMounted(async () => {
       if (!authStore.isAuthenticated) {
         await authStore.fetchUser()
       }
 
-      // if (!authStore.user?.id) {
-      //   router.push('/login')
-      // } else {
-      //   wsClient = new WebSocketClient(authStore.user.id.toString())
-      //   wsClient.connect()
-      // }
+      if (!authStore.user?.user?.id) {
+        router.push('/login')
+      } else {
+        wsClient.value = new WebSocketClient(authStore.user.user.id.toString())
+        wsClient.value.connect()
+      }
     })
 
     onUnmounted(() => {
-      // wsClient?.disconnect()
+      wsClient.value?.disconnect()
     })
 
     return {}

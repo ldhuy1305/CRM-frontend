@@ -47,6 +47,7 @@ import Task from '@/views/task/TaskIndex.vue'
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+
 const routes = [
   {
     path: '/',
@@ -286,7 +287,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const requiresAuth = to.matched.some((r) => r.meta.requiresAuth)
 
   // Wait for auth to be initialized
   if (!authStore.isInitialized) {

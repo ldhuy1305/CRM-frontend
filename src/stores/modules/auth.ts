@@ -51,18 +51,33 @@ export const useAuthStore = defineStore('auth', {
 
     async initialize() {
       const token = localStorage.getItem('access')
-      if (token) {
+      const cachedUser = localStorage.getItem('user')
+
+      if (token && cachedUser) {
+        this.user = JSON.parse(cachedUser)
+        this.isAuthenticated = true
         try {
-          await this.fetchUser()
+          const freshUser = await getCurrentUser()
+          this.user = freshUser
+          localStorage.setItem('user', JSON.stringify(freshUser))
+        } catch (error) {
+          console.error('Error updating user:', error)
+        }
+      } else if (token) {
+        try {
+          const userData = await getCurrentUser()
+          this.user = userData
+          this.isAuthenticated = true
+          localStorage.setItem('user', JSON.stringify(userData))
         } catch (error) {
           localStorage.removeItem('access')
           this.isAuthenticated = false
           this.user = null
         }
       }
+
       this.isInitialized = true
     },
-
     async fetchUser() {
       const toast = useToast()
       try {

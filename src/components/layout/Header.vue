@@ -28,6 +28,7 @@
         <div v-if="showDropdown" class="dropdown">
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
           <router-link to="/settings" class="dropdown-item">Settings</router-link>
+          <router-link to="/permissions" class="dropdown-item">Permissions</router-link>
           <div class="dropdown-item" @click="handleLogout">Logout</div>
         </div>
       </div>

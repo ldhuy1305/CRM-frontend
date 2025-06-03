@@ -55,15 +55,16 @@
       <table v-else-if="report.id === 'leads-by-status'" class="report-table">
         <thead>
           <tr>
-            <th>Status</th>
-            <th>Name</th>
+            <th>Lead Name</th>
             <th>Company</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
             <th>State</th>
             <th>Zip Code</th>
             <th>Country</th>
+            <th>Status</th>
             <th>Source</th>
             <th>Industry</th>
             <th>Owner</th>
@@ -72,15 +73,16 @@
         <tbody>
           <template v-for="(leads, status) in groupedData" :key="status">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
-              <td class="first-col">{{ status }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
+              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
               <td>{{ (lead as Lead).state_province }}</td>
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
+              <td class="first-col">{{ status }}</td>
               <td>{{ (lead as Lead).lead_source?.name }}</td>
               <td>{{ (lead as Lead).industry?.name }}</td>
               <td>
@@ -97,9 +99,9 @@
       <table v-else-if="report.id === 'leads-by-source'" class="report-table">
         <thead>
           <tr>
-            <th>Source</th>
-            <th>Name</th>
+            <th>Lead Name</th>
             <th>Company</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -107,6 +109,7 @@
             <th>Zip Code</th>
             <th>Country</th>
             <th>Status</th>
+            <th>Source</th>
             <th>Industry</th>
             <th>Owner</th>
           </tr>
@@ -114,9 +117,9 @@
         <tbody>
           <template v-for="(leads, source) in groupedData" :key="source">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
-              <td class="first-col">{{ source }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
+              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -124,6 +127,7 @@
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
+              <td class="first-col">{{ source }}</td>
               <td>{{ (lead as Lead).industry?.name }}</td>
               <td>
                 {{
@@ -139,9 +143,9 @@
       <table v-else-if="report.id === 'leads-by-owner'" class="report-table">
         <thead>
           <tr>
-            <th>Owner</th>
-            <th>Name</th>
+            <th>Lead Name</th>
             <th>Company</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -149,16 +153,17 @@
             <th>Zip Code</th>
             <th>Country</th>
             <th>Status</th>
-            <th>Industry</th>
             <th>Source</th>
+            <th>Industry</th>
+            <th>Owner</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(leads, owner) in groupedData" :key="owner">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
-              <td class="first-col">{{ owner }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
+              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -166,8 +171,9 @@
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
-              <td>{{ (lead as Lead).industry?.name }}</td>
               <td>{{ (lead as Lead).lead_source?.name }}</td>
+              <td>{{ (lead as Lead).industry?.name }}</td>
+              <td class="first-col">{{ owner }}</td>
             </tr>
           </template>
         </tbody>
@@ -177,9 +183,9 @@
       <table v-else-if="report.id === 'leads-by-industry'" class="report-table">
         <thead>
           <tr>
-            <th>Industry</th>
-            <th>Name</th>
+            <th>Lead Name</th>
             <th>Company</th>
+            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -188,15 +194,16 @@
             <th>Country</th>
             <th>Status</th>
             <th>Source</th>
+            <th>Industry</th>
             <th>Owner</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(leads, industry) in groupedData" :key="industry">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
-              <td class="first-col">{{ industry }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
+              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -205,6 +212,7 @@
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
               <td>{{ (lead as Lead).lead_source?.name }}</td>
+              <td class="first-col">{{ industry }}</td>
               <td>
                 {{
                   `${(lead as Lead).lead_owner?.first_name} ${(lead as Lead).lead_owner?.last_name}`
@@ -384,5 +392,12 @@ onMounted(() => {
 .first-col {
   font-weight: 700;
   font-style: italic;
+  background-color: antiquewhite;
+}
+
+.highlight-field {
+  background-color: #007bff !important;
+  color: white !important;
+  font-weight: 700 !important;
 }
 </style>

@@ -46,7 +46,9 @@ import Task from '@/views/task/TaskIndex.vue'
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+
 import UserGroupPermissions from '@/views/UserGroupPermissions.vue'
+
 
 const routes = [
   {

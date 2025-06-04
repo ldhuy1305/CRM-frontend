@@ -5,8 +5,7 @@
       <input
         :id="id"
         v-bind="$attrs"
-        :value="modelValue"
-        @input="onInput"
+        v-model="value"
         :type="computedType"
         :required="required"
         :disabled="disabled"
@@ -48,6 +47,8 @@ const emit = defineEmits<{
   (e: 'toggle-password'): void
 }>()
 
+const value = defineModel('modelValue')
+
 const id = computed(() => `input-${Math.random().toString(36).substring(2, 15)}`)
 
 const onInput = (event: Event) => {
@@ -55,7 +56,7 @@ const onInput = (event: Event) => {
   emit('update:modelValue', target.value)
 }
 
-const isPasswordType = computed(() => props.type === 'password' || props.type === 'text')
+const isPasswordType = computed(() => props.type === 'password')
 const showPassword = computed(() => props.showPassword ?? false)
 
 const computedType = computed(() =>

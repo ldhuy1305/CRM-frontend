@@ -44,7 +44,7 @@
           <tr>
             <th>Deal Name</th>
             <th>Amount</th>
-            <th>Stage</th>
+            <th>Lost Reason</th>
             <th>Close Date</th>
             <th>Account</th>
             <th>Contact</th>
@@ -55,7 +55,7 @@
           <tr v-for="deal in groupedData" :key="deal.id">
             <td class="first-col">{{ deal.name }}</td>
             <td class="currency">{{ formatVNDCurrency(deal.amount) }}</td>
-            <td>{{ deal.stage?.name }}</td>
+            <td>{{ deal.lost_reason?.name }}</td>
             <td>{{ formatDate(deal.close_date) }}</td>
             <td>{{ deal.account?.name }}</td>
             <td>
@@ -70,9 +70,9 @@
       <table v-else-if="report.id === 'deals-by-stage'" class="report-table">
         <thead>
           <tr>
+            <th>Stage</th>
             <th>Deal Name</th>
             <th>Amount</th>
-            <th>Stage</th>
             <th>Close Date</th>
             <th>Account</th>
             <th>Contact</th>
@@ -82,9 +82,9 @@
         <tbody>
           <template v-for="(deals, stage) in groupedData" :key="stage">
             <tr v-for="deal in deals" :key="(deal as Deal).id">
+              <td class="first-col">{{ stage }}</td>
               <td>{{ (deal as Deal).name }}</td>
               <td class="currency">{{ formatVNDCurrency((deal as Deal).amount) }}</td>
-              <td class="first-col">{{ stage }}</td>
               <td>{{ formatDate((deal as Deal).close_date) }}</td>
               <td>{{ (deal as Deal).account?.name }}</td>
               <td>
@@ -112,9 +112,9 @@
         <thead>
           <tr>
             <th>Deal Name</th>
+            <th>Close Date</th>
             <th>Amount</th>
             <th>Stage</th>
-            <th>Close Date</th>
             <th>Account</th>
             <th>Contact</th>
             <th>Owner</th>
@@ -123,9 +123,10 @@
         <tbody>
           <tr v-for="deal in groupedData" :key="deal.id">
             <td class="first-col">{{ deal.name }}</td>
+            <td class="first-col">{{ formatDate(deal.close_date) }}</td>
             <td class="currency">{{ formatVNDCurrency(deal.amount) }}</td>
             <td>{{ deal.stage?.name }}</td>
-            <td class="first-col">{{ formatDate(deal.close_date) }}</td>
+
             <td>{{ deal.account?.name }}</td>
             <td>
               {{ deal.contact ? `${deal.contact.last_name} ${deal.contact.first_name}` : '-' }}
@@ -284,7 +285,6 @@ onMounted(() => {
 .first-col {
   font-weight: 700;
   font-style: italic;
-  background-color: antiquewhite;
 }
 
 .currency {

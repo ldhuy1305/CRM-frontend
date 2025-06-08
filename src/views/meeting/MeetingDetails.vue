@@ -48,9 +48,8 @@
           <div class="info-row">
             <div class="info-label">Meeting Type:</div>
             <div class="info-value">
-              <span :class="{ 'online-badge': meeting?.is_online_meeting }">
-                {{ meeting?.is_online_meeting ? 'Online Meeting' : 'In Person Meeting' }}
-              </span>
+              <span class="online-badge" v-if="meeting.is_online_meeting"> Online </span>
+              <span class="in-person-badge" v-if="!meeting.is_online_meeting"> In Person </span>
             </div>
           </div>
         </div>

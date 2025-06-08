@@ -71,9 +71,8 @@
               <td>{{ formatDateTime(meeting.to_datetime) }}</td>
               <td>{{ getHostInfo(meeting.host) }}</td>
               <td>
-                <span :class="{ 'online-badge': meeting.is_online_meeting }">
-                  {{ meeting.is_online_meeting ? 'Online' : 'In Person' }}
-                </span>
+                <span class="online-badge" v-if="meeting.is_online_meeting"> Online </span>
+                <span class="in-person-badge" v-if="!meeting.is_online_meeting"> In Person </span>
               </td>
             </tr>
           </tbody>

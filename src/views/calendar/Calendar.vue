@@ -73,7 +73,7 @@
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h3>{{ selectedEvent?.title || 'New Event' }}</h3>
-          <button @click="closeEventModal" class="close-btn">×</button>
+          <button @click="closeEventModal" class="close-btn">&times;</button>
         </div>
         <div class="modal-body">
           <p><strong>Date:</strong> {{ formatDate(selectedEvent?.start_time) }}</p>
@@ -85,14 +85,11 @@
           <p v-if="selectedEvent?.description">
             <strong>Description:</strong> {{ selectedEvent.description }}
           </p>
-          <p v-if="selectedEvent?.is_online_meeting">
-            <strong>Type:</strong>
-            {{ selectedEvent.is_online_meeting ? 'Online Meeting' : 'In-Person Meeting' }}
-          </p>
+          <p v-if="selectedEvent?.is_online_meeting"><strong>Type:</strong> Online Meeting</p>
+          <p v-else><strong>Type:</strong> In Person Meeting</p>
         </div>
         <div class="modal-actions">
-          <button @click="detailEvent" class="btn-primary">Details</button>
-          <button @click="closeEventModal" class="btn-secondary">Close</button>
+          <button @click="detailEvent" class="today-btn">Details</button>
         </div>
       </div>
     </div>
@@ -490,6 +487,11 @@ onMounted(() => {
   overflow-y: auto;
 }
 
+.modal-content p {
+  margin: 10px 10px;
+  color: #495057;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -502,29 +504,13 @@ onMounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: #495057;
 }
 
 .modal-actions {
   display: flex;
+  justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
-}
-
-.btn-primary {
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
 }
 </style>

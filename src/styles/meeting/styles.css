@@ -122,6 +122,14 @@
   font-size: 0.9em;
 }
 
+.in-person-badge {
+  background-color: #fff3e0;
+  color: #f57c00;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* Button Styles */
 .icon-button {
   padding: 8px;

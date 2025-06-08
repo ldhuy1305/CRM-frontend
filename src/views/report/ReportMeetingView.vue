@@ -49,9 +49,8 @@
             <td>{{ formatDateTime(meeting.from_datetime) }}</td>
             <td>{{ formatDateTime(meeting.to_datetime) }}</td>
             <td>
-              <span :class="{ 'online-badge': meeting.is_online_meeting }">
-                {{ meeting.is_online_meeting ? 'Online' : 'In Person' }}
-              </span>
+              <span class="online-badge" v-if="meeting.is_online_meeting"> Online </span>
+              <span class="in-person-badge" v-if="!meeting.is_online_meeting"> In Person </span>
             </td>
             <td>
               <div class="participants">

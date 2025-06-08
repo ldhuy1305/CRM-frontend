@@ -7,6 +7,7 @@ import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
+import CalendarView from '@/views/calendar/Calendar.vue'
 import CallCreate from '@/views/call/CallCreate.vue'
 import CallDetails from '@/views/call/CallDetails.vue'
 import CallEdit from '@/views/call/CallEdit.vue'
@@ -256,6 +257,12 @@ const routes = [
         path: '/reports/meetings/:id',
         name: 'ReportMeetingView',
         component: ReportMeetingView,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: '/calendar',
+        name: 'Calendar',
+        component: CalendarView,
         meta: { requiresAuth: true },
       },
     ],

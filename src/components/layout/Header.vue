@@ -18,6 +18,10 @@
     </div>
 
     <div class="header-right">
+      <div class="calendar" @click="navigateToCalendar">
+        <i class="fas fa-calendar-alt"></i>
+      </div>
+
       <div class="notification" @click="toggleNotifications">
         <i class="fas fa-bell"></i>
         <span v-if="unreadNotifications > 0" class="badge">{{ unreadNotifications }}</span>
@@ -82,6 +86,10 @@ export default defineComponent({
 
     const navigateToHome = () => {
       router.push('/')
+    }
+
+    const navigateToCalendar = () => {
+      router.push('/calendar')
     }
 
     const isActiveRoute = (path: string) => {
@@ -159,6 +167,7 @@ export default defineComponent({
       currentPath,
       isActiveRoute,
       navigateToHome,
+      navigateToCalendar,
     }
   },
   data() {

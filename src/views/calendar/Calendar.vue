@@ -111,7 +111,7 @@ const showEventModal = ref(false)
 const selectedEvent = ref<any>(null)
 const isLoading = ref(false)
 
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 const currentMonthYear = computed(() => {
   return currentDate.value.toLocaleDateString('en-US', {
@@ -125,13 +125,15 @@ const calendarDays = computed(() => {
   const month = currentDate.value.getMonth()
   const firstDay = new Date(year, month, 1)
   const startDate = new Date(firstDay)
-  startDate.setDate(startDate.getDate() - firstDay.getDay())
+
+  const dayOfWeek = firstDay.getDay()
+  const mondayOffset = dayOfWeek === 0 ? 6 : dayOfWeek - 1
+  startDate.setDate(startDate.getDate() - mondayOffset)
 
   const days = []
   const currentDateObj = new Date(startDate)
 
   for (let i = 0; i < 42; i++) {
-    // Filter events for each day from all available events
     const dayEvents = events.value.filter((event) => {
       if (!event.start_time) return false
       const eventDate = new Date(event.start_time)
@@ -342,10 +344,6 @@ onMounted(() => {
 }
 
 .calendar-day.today {
-  background: #e3f2fd;
-}
-
-.calendar-day.has-events {
   background: #fff3cd;
 }
 

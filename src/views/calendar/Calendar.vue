@@ -81,12 +81,16 @@
             <strong>Time:</strong> {{ formatTime(selectedEvent?.start_time) }} -
             {{ formatTime(selectedEvent?.end_time) }}
           </p>
-          <p v-else><strong>Time:</strong> {{ formatTime(selectedEvent?.start_time) }}</p>
+          <p v-else-if="selectedEvent?.type === 'call'">
+            <strong>Time:</strong> {{ formatTime(selectedEvent?.start_time) }}
+          </p>
           <p v-if="selectedEvent?.description">
             <strong>Description:</strong> {{ selectedEvent.description }}
           </p>
           <p v-if="selectedEvent?.is_online_meeting"><strong>Type:</strong> Online Meeting</p>
-          <p v-else><strong>Type:</strong> In Person Meeting</p>
+          <p v-else-if="!selectedEvent?.is_online_meeting && selectedEvent?.type === 'meeting'">
+            <strong>Type:</strong> In Person Meeting
+          </p>
         </div>
         <div class="modal-actions">
           <button @click="detailEvent" class="today-btn">Details</button>

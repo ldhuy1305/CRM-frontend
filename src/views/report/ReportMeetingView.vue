@@ -38,7 +38,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="meeting in groupedData" :key="meeting.id">
+          <tr v-for="meeting in reportData" :key="meeting.id">
             <td class="first-col">{{ meeting.title }}</td>
             <td>{{ meeting.location }}</td>
             <td>
@@ -115,8 +115,14 @@ const getHostInfo = (hostId: number) => {
 const fetchReportData = async () => {
   try {
     isLoading.value = true
+    const now = new Date()
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0)
 
-    const response = await meetingRepository.show()
+    const response = await meetingRepository.show({
+      from_date: startOfMonth.toISOString(),
+      to_date: endOfMonth.toISOString(),
+    })
 
     reportData.value = response.results || []
   } catch (error) {
@@ -132,26 +138,6 @@ const fetchReportData = async () => {
 // Computed properties for summary calculations
 const onlineMeetingsCount = computed(() => {
   return reportData.value.filter((meeting) => meeting.is_online_meeting).length
-})
-
-const getMeetingThisMonth = (meeting: Meeting) => {
-  const meetingDate = new Date(meeting.from_datetime)
-  const currentDate = new Date()
-  return (
-    meetingDate.getMonth() === currentDate.getMonth() &&
-    meetingDate.getFullYear() === currentDate.getFullYear()
-  )
-}
-
-const groupedData = computed<Meeting[]>(() => {
-  const data = reportData.value || []
-  if (!data.length) return []
-
-  if (report.value?.id === 'planned-meetings') {
-    return data.filter(getMeetingThisMonth)
-  }
-
-  return data
 })
 
 const inPersonMeetingsCount = computed(() => {
@@ -201,8 +187,6 @@ onMounted(async () => {
 
 .first-col {
   font-weight: 700;
-  background-color: antiquewhite;
-  font-style: italic;
 }
 
 .attendees-list {

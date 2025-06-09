@@ -3,7 +3,6 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import { useAuthStore } from '@/stores/modules/auth.ts'
 import Home from '@/views/Home.vue'
 
-import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
@@ -48,6 +47,9 @@ import Task from '@/views/task/TaskIndex.vue'
 import AccountEdit from '@/views/account/AccountEdit.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+
+import UserGroupPermissions from '@/views/UserGroupPermissions.vue'
+
 
 const routes = [
   {
@@ -141,9 +143,9 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/profile',
-        name: 'ProfilePage',
-        component: ProfilePage,
+        path: '/permissions',
+        name: 'Permissions',
+        component: UserGroupPermissions,
         meta: { requiresAuth: true },
       },
       { path: 'campaigns', name: 'Campaigns', component: Campaign, meta: { requiresAuth: true } },
@@ -292,20 +294,19 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   const requiresAuth = to.matched.some((r) => r.meta.requiresAuth)
 
-  // Wait for auth to be initialized
   if (!authStore.isInitialized) {
-    await authStore.initialize()
+    authStore.initialize()
   }
 
   if (requiresAuth && !authStore.isAuthenticated) {
-    next('/login')
-  } else {
-    next()
+    return next('/login')
   }
+
+  next()
 })
 
 export default router

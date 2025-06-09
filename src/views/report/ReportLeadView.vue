@@ -55,16 +55,15 @@
       <table v-else-if="report.id === 'leads-by-status'" class="report-table">
         <thead>
           <tr>
-            <th>Lead Name</th>
+            <th>Status</th>
+            <th>Name</th>
             <th>Company</th>
-            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
             <th>State</th>
             <th>Zip Code</th>
             <th>Country</th>
-            <th>Status</th>
             <th>Source</th>
             <th>Industry</th>
             <th>Owner</th>
@@ -73,16 +72,15 @@
         <tbody>
           <template v-for="(leads, status) in groupedData" :key="status">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
+              <td class="first-col">{{ status }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
-              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
               <td>{{ (lead as Lead).state_province }}</td>
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
-              <td class="first-col">{{ status }}</td>
               <td>{{ (lead as Lead).lead_source?.name }}</td>
               <td>{{ (lead as Lead).industry?.name }}</td>
               <td>
@@ -99,9 +97,9 @@
       <table v-else-if="report.id === 'leads-by-source'" class="report-table">
         <thead>
           <tr>
-            <th>Lead Name</th>
+            <th>Source</th>
+            <th>Name</th>
             <th>Company</th>
-            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -109,7 +107,6 @@
             <th>Zip Code</th>
             <th>Country</th>
             <th>Status</th>
-            <th>Source</th>
             <th>Industry</th>
             <th>Owner</th>
           </tr>
@@ -117,9 +114,9 @@
         <tbody>
           <template v-for="(leads, source) in groupedData" :key="source">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
+              <td class="first-col">{{ source }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
-              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -127,7 +124,6 @@
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
-              <td class="first-col">{{ source }}</td>
               <td>{{ (lead as Lead).industry?.name }}</td>
               <td>
                 {{
@@ -143,9 +139,9 @@
       <table v-else-if="report.id === 'leads-by-owner'" class="report-table">
         <thead>
           <tr>
-            <th>Lead Name</th>
+            <th>Owner</th>
+            <th>Name</th>
             <th>Company</th>
-            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -153,17 +149,16 @@
             <th>Zip Code</th>
             <th>Country</th>
             <th>Status</th>
-            <th>Source</th>
             <th>Industry</th>
-            <th>Owner</th>
+            <th>Source</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(leads, owner) in groupedData" :key="owner">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
+              <td class="first-col">{{ owner }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
-              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -171,9 +166,8 @@
               <td>{{ (lead as Lead).postal_code }}</td>
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
-              <td>{{ (lead as Lead).lead_source?.name }}</td>
               <td>{{ (lead as Lead).industry?.name }}</td>
-              <td class="first-col">{{ owner }}</td>
+              <td>{{ (lead as Lead).lead_source?.name }}</td>
             </tr>
           </template>
         </tbody>
@@ -183,9 +177,9 @@
       <table v-else-if="report.id === 'leads-by-industry'" class="report-table">
         <thead>
           <tr>
-            <th>Lead Name</th>
+            <th>Industry</th>
+            <th>Name</th>
             <th>Company</th>
-            <th>Email</th>
             <th>Phone</th>
             <th>Street</th>
             <th>City</th>
@@ -194,16 +188,15 @@
             <th>Country</th>
             <th>Status</th>
             <th>Source</th>
-            <th>Industry</th>
             <th>Owner</th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(leads, industry) in groupedData" :key="industry">
             <tr v-for="lead in leads" :key="(lead as Lead).id">
+              <td class="first-col">{{ industry }}</td>
               <td>{{ `${(lead as Lead).last_name} ${(lead as Lead).first_name}` }}</td>
               <td>{{ (lead as Lead).company_name }}</td>
-              <td>{{ (lead as Lead).email }}</td>
               <td>{{ (lead as Lead).phone }}</td>
               <td>{{ (lead as Lead).street }}</td>
               <td>{{ (lead as Lead).city }}</td>
@@ -212,7 +205,6 @@
               <td>{{ (lead as Lead).country }}</td>
               <td>{{ (lead as Lead).lead_status?.name }}</td>
               <td>{{ (lead as Lead).lead_source?.name }}</td>
-              <td class="first-col">{{ industry }}</td>
               <td>
                 {{
                   `${(lead as Lead).lead_owner?.first_name} ${(lead as Lead).lead_owner?.last_name}`
@@ -252,8 +244,31 @@ const report = computed(() => {
 const fetchReportData = async () => {
   try {
     isLoading.value = true
-    const resLead = await leadRepository.show()
-    reportData.value = resLead.results || []
+
+    switch (report.value?.id) {
+      case 'todays-lead':
+        const resTodayLead = await leadRepository.getTodayLeads()
+        reportData.value = resTodayLead.results || []
+        break
+      case 'leads-by-status':
+        const resLeadStatus = await leadRepository.getLeadsByStatus()
+        reportData.value = resLeadStatus.results || []
+        break
+      case 'leads-by-source':
+        const resLeadSource = await leadRepository.getLeadsBySource()
+        reportData.value = resLeadSource.results || []
+        break
+      case 'leads-by-owner':
+        const resLeadOwner = await leadRepository.getLeadsByOwner()
+        reportData.value = resLeadOwner.results || []
+        break
+      case 'leads-by-industry':
+        const resLeadIndustry = await leadRepository.getLeadsByIndustry()
+        reportData.value = resLeadIndustry.results || []
+        break
+      default:
+        reportData.value = []
+    }
   } catch (error) {
     console.error('Error fetching report data:', error)
     toast.error('Failed to load report data', {
@@ -289,7 +304,7 @@ const groupedData = computed(() => {
 // Update the grouping functions to handle possible undefined values
 const groupByStatus = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const status = lead.lead_status?.name || ''
+    const status = lead.lead_status?.name || 'Unknown'
     if (!groups[status]) {
       groups[status] = []
     }
@@ -300,7 +315,7 @@ const groupByStatus = (data: Lead[]) => {
 
 const groupBySource = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const source = lead.lead_source?.name || ''
+    const source = lead.lead_source?.name || 'Unknown'
     if (!groups[source]) {
       groups[source] = []
     }
@@ -324,7 +339,7 @@ const groupByOwner = (data: Lead[]) => {
 
 const groupByIndustry = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const industry = lead.industry?.name || ''
+    const industry = lead.industry?.name || 'Unknown'
     if (!groups[industry]) {
       groups[industry] = []
     }
@@ -392,12 +407,5 @@ onMounted(() => {
 .first-col {
   font-weight: 700;
   font-style: italic;
-  background-color: antiquewhite;
-}
-
-.highlight-field {
-  background-color: #007bff !important;
-  color: white !important;
-  font-weight: 700 !important;
 }
 </style>

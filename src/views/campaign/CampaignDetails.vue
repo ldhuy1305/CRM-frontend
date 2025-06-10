@@ -29,8 +29,22 @@
         <div class="stats-card">
           <div class="stats-header">Total Count</div>
           <div class="stats-content">
-            <div>0 Leads</div>
-            <div>0 Contacts</div>
+            <div>{{ campaignLeads.length }} Leads</div>
+            <div>{{ campaignContacts.length }} Contacts</div>
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <div class="stats-header">Expected Revenue</div>
+          <div class="stats-content">
+            {{ formatVNDCurrency(parseFloat(campaign?.expected_revenue)) }}
+          </div>
+        </div>
+
+        <div class="stats-card">
+          <div class="stats-header">Budgeted Cost</div>
+          <div class="stats-content">
+            {{ formatVNDCurrency(parseFloat(campaign?.budgeted_cost)) }}
           </div>
         </div>
 
@@ -39,22 +53,6 @@
           <div class="stats-content">
             {{ formatVNDCurrency(parseFloat(campaign?.actual_cost)) }}
           </div>
-        </div>
-
-        <div class="stats-card">
-          <div class="stats-header">Revenue</div>
-          <div class="stats-content">
-            {{ formatVNDCurrency(parseFloat('0')) }}
-          </div>
-          <div class="stats-subtitle">From 0 Closed Deals</div>
-        </div>
-
-        <div class="stats-card">
-          <div class="stats-header">In Pipeline</div>
-          <div class="stats-content">
-            {{ formatVNDCurrency(parseFloat('0')) }}
-          </div>
-          <div class="stats-subtitle">From 0 Open Deals</div>
         </div>
       </div>
 
@@ -92,24 +90,6 @@
               <div class="info-value">{{ formatDate(campaign?.end_date ?? undefined) }}</div>
             </div>
             <div class="info-row">
-              <label class="info-label">Expected Revenue</label>
-              <div class="info-value">
-                {{ formatVNDCurrency(parseFloat(campaign?.expected_revenue)) }}
-              </div>
-            </div>
-            <div class="info-row">
-              <label class="info-label">Budgeted Cost</label>
-              <div class="info-value">
-                {{ formatVNDCurrency(parseFloat(campaign?.budgeted_cost)) }}
-              </div>
-            </div>
-            <div class="info-row">
-              <label class="info-label">Actual Cost</label>
-              <div class="info-value">
-                {{ formatVNDCurrency(parseFloat(campaign?.actual_cost)) }}
-              </div>
-            </div>
-            <div class="info-row">
               <label class="info-label">Expected Response</label>
               <div class="info-value">{{ campaign?.expected_response }}</div>
             </div>
@@ -123,10 +103,6 @@
                 {{ campaign?.created_by?.first_name }} {{ campaign?.created_by?.last_name }}
                 <div class="timestamp">{{ formatDateTime(campaign?.created_at) }}</div>
               </div>
-            </div>
-            <div class="info-row">
-              <label class="info-label"></label>
-              <div class="info-value"></div>
             </div>
             <div class="info-row">
               <label class="info-label">Modified By</label>
@@ -148,9 +124,10 @@
       </div>
 
       <!-- Related Lists Tabs -->
+      <!-- Leads Section - Fix the table display -->
       <div class="email-section">
         <div class="section-header">
-          <h3>Leads</h3>
+          <h3>Leads ({{ campaignLeads.length }})</h3>
           <div class="action-buttons">
             <button class="btn-primary" @click="navigateToAddLeadModal()">Add Leads</button>
           </div>
@@ -167,39 +144,31 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Lead rows -->
-          </tbody>
-        </table>
-      </div>
-      <div class="email-section">
-        <div class="section-header">
-          <h3>Deals</h3>
-          <div class="action-buttons">
-            <button class="btn-tertiary" @click="navigateToAddDealModal()">Assign</button>
-            <button class="btn-primary" @click="navigateToCreateDeal()">New Deal</button>
-          </div>
-        </div>
-        <table class="deals-table">
-          <thead>
-            <tr>
-              <th>Deal Name</th>
-              <th>Amount</th>
-              <th>Stage</th>
-              <th>Probability (%)</th>
-              <th>Closing Date</th>
-              <th>Type</th>
+            <tr v-if="campaignLeads.length === 0">
+              <td colspan="7" class="text-center">No leads assigned to this campaign</td>
             </tr>
-          </thead>
-          <tbody>
-            <!-- Deal rows -->
+            <tr v-for="lead in campaignLeads" :key="lead.id">
+              <td>
+                {{
+                  lead.first_name && lead.last_name
+                    ? `${lead.first_name} ${lead.last_name}`
+                    : lead.name || 'N/A'
+                }}
+              </td>
+              <td>{{ lead.company_name || lead.company || 'N/A' }}</td>
+              <td>{{ lead.email || 'N/A' }}</td>
+              <td>{{ lead.lead_source?.name || lead.lead_source || 'N/A' }}</td>
+              <td>{{ lead.lead_status?.name || lead.lead_status || 'N/A' }}</td>
+              <td>{{ lead.phone || 'N/A' }}</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Contacts Section -->
+      <!-- Contacts Section - Fix the table display -->
       <div class="email-section">
         <div class="section-header">
-          <h3>Contacts</h3>
+          <h3>Contacts ({{ campaignContacts.length }})</h3>
           <div class="action-buttons">
             <button class="btn-primary" @click="navigateToAddContactModal()">Add Contacts</button>
           </div>
@@ -213,7 +182,31 @@
               <th>Contact Owner</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <tr v-if="campaignContacts.length === 0">
+              <td colspan="5" class="text-center">No contacts assigned to this campaign</td>
+            </tr>
+            <tr v-for="contact in campaignContacts" :key="contact.id">
+              <td>
+                {{
+                  contact.first_name && contact.last_name
+                    ? `${contact.first_name} ${contact.last_name}`
+                    : contact.name || 'N/A'
+                }}
+              </td>
+              <td>{{ contact.email || 'N/A' }}</td>
+              <td>{{ contact.phone || 'N/A' }}</td>
+              <td>
+                {{
+                  contact.contact_owner
+                    ? typeof contact.contact_owner === 'string'
+                      ? contact.contact_owner
+                      : `${contact.contact_owner.first_name} ${contact.contact_owner.last_name}`
+                    : 'N/A'
+                }}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -229,18 +222,6 @@
       :campaign-id="id"
       @close="closeModal"
       @submit="handleLeadsSubmit"
-    />
-
-    <ModuleSelectionModal
-      v-if="activeModal === 'deals'"
-      :is-open="true"
-      title="Deals"
-      module-name="Deal"
-      :columns="dealColumns"
-      :items="availableDeals"
-      :campaign-id="id"
-      @close="closeModal"
-      @submit="handleDealsSubmit"
     />
 
     <ModuleSelectionModal
@@ -260,23 +241,33 @@
 <script setup lang="ts">
 import ModuleSelectionModal from '@/components/modals/ModuleSelectionModal.vue'
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
-import { campaignRepository, contactRepository, dealsRepository, leadRepository } from '@/services'
+import { campaignRepository, contactRepository, leadRepository } from '@/services'
 import '@/styles/campaign/styles.css'
 import type { Campaign } from '@/types/campaigns/campaign'
 import type { NamedObject } from '@/types/common/common_types'
 import type { Contact } from '@/types/contacts/contact'
-import type { Deal, Stage } from '@/types/deals/deal'
 import type { Lead } from '@/types/leads/lead'
 import type { UserOption } from '@/types/users/user'
 import { formatDate, formatDateTime, formatVNDCurrency } from '@/utils/formatter'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
 
 const route = useRoute()
 const router = useRouter()
 const id = Number(route.params.id)
 const campaign = ref<Campaign>({} as Campaign)
 const isLoading = ref(false)
+const toast = useToast()
+
+// Campaign target data
+const campaignLeads = ref<Lead[]>([])
+const campaignContacts = ref<Contact[]>([])
+// const campaignDeals = ref<Deal[]>([])
+
+// Available data for modals
+const availableLeads = ref<Lead[]>([])
+const availableContacts = ref<Contact[]>([])
 
 const fetchCampaign = async () => {
   try {
@@ -290,53 +281,64 @@ const fetchCampaign = async () => {
   }
 }
 
+// Fetch campaign targets
+const fetchCampaignLeads = async () => {
+  try {
+    const response = await campaignRepository.getCampaignLeads(id)
+    campaignLeads.value = response.results || []
+  } catch (error) {
+    console.error('Error fetching campaign leads:', error)
+    campaignLeads.value = []
+  }
+}
+
+const fetchCampaignContacts = async () => {
+  try {
+    const response = await campaignRepository.getCampaignContacts(id)
+    campaignContacts.value = response.results || []
+  } catch (error) {
+    console.error('Error fetching campaign contacts:', error)
+    campaignContacts.value = []
+  }
+}
+
 const activeModal = ref<'leads' | 'deals' | 'contacts' | null>(null)
-const availableLeads = ref<Lead[]>([])
-const availableDeals = ref<Deal[]>([])
-const availableContacts = ref<Contact[]>([])
 
 const leadColumns = [
   {
     key: 'lead_name',
     label: 'Lead Name',
-    format: (lead: Lead) => `${lead?.first_name} ${lead?.last_name}`,
+    format: (value: string | undefined, lead: Lead) => {
+      if (lead.first_name && lead.last_name) {
+        return `${lead.first_name} ${lead.last_name}`
+      } else if (lead.first_name) {
+        return lead.first_name
+      } else if (lead.last_name) {
+        return lead.last_name
+      }
+      return 'N/A'
+    },
   },
   {
     key: 'company',
     label: 'Company',
-    format: (lead: Lead) => `${lead?.company_name}`,
+    format: (value: string | undefined, lead: Lead) => {
+      return lead.company_name || 'N/A'
+    },
   },
-  { key: 'email', label: 'Email' },
-  { key: 'phone', label: 'Phone' },
+  {
+    key: 'email',
+    label: 'Email',
+  },
+  {
+    key: 'phone',
+    label: 'Phone',
+  },
   { key: 'lead_source', label: 'Lead Source', format: (source: NamedObject) => source?.name },
   {
     key: 'lead_owner',
     label: 'Lead Owner',
-    format: (owner: UserOption) => `${owner?.first_name} ${owner?.last_name}`,
-  },
-]
-
-const dealColumns = [
-  { key: 'name', label: 'Deal Name' },
-  {
-    key: 'amount',
-    label: 'Amount',
-    format: (value: string | number) => formatVNDCurrency(parseFloat(value as string)),
-  },
-  {
-    key: 'stage',
-    label: 'Stage',
-    format: (stage: Stage) => stage?.name || '-',
-  },
-  {
-    key: 'probability',
-    label: 'Probability (%)',
-    format: (value: number | null | undefined) => (value ? `${value}%` : '-'),
-  },
-  {
-    key: 'closing_date',
-    label: 'Closing Date',
-    format: (date: string) => (date ? formatDate(date) : '-'),
+    format: (owner: UserOption) => (owner ? `${owner.first_name} ${owner.last_name}` : '-'),
   },
 ]
 
@@ -344,10 +346,25 @@ const contactColumns = [
   {
     key: 'contact_name',
     label: 'Contact Name',
-    format: (contact: Contact) => `${contact?.first_name} ${contact?.last_name}`,
+    format: (value: string | undefined, contact: Contact) => {
+      if (contact.first_name && contact.last_name) {
+        return `${contact.first_name} ${contact.last_name}`
+      } else if (contact.first_name) {
+        return contact.first_name
+      } else if (contact.last_name) {
+        return contact.last_name
+      }
+      return 'N/A'
+    },
   },
-  { key: 'email', label: 'Email' },
-  { key: 'phone', label: 'Phone' },
+  {
+    key: 'email',
+    label: 'Email',
+  },
+  {
+    key: 'phone',
+    label: 'Phone',
+  },
   {
     key: 'contact_owner',
     label: 'Contact Owner',
@@ -360,11 +377,6 @@ const openLeadModal = async () => {
   activeModal.value = 'leads'
 }
 
-const openDealModal = async () => {
-  await fetchAvailableDeals()
-  activeModal.value = 'deals'
-}
-
 const openContactModal = async () => {
   await fetchAvailableContacts()
   activeModal.value = 'contacts'
@@ -374,17 +386,76 @@ const closeModal = () => {
   activeModal.value = null
 }
 
-// Handle submissions
-const handleLeadsSubmit = async (selectedIds: number[]) => {
-  // Implement lead assignment logic
+// Handle submissions - Fix the data extraction
+const handleLeadsSubmit = async (selectedData: any) => {
+  try {
+    console.log('Selected Data:', selectedData)
+
+    // Extract the actual array from the proxy object
+    let leadIds: number[] = []
+
+    if (Array.isArray(selectedData)) {
+      leadIds = selectedData
+    } else if (selectedData && typeof selectedData === 'object') {
+      // Handle proxy object case
+      if (selectedData[0] !== undefined) {
+        // Convert proxy to array
+        leadIds = Object.values(selectedData).filter((id) => typeof id === 'number') as number[]
+      }
+    }
+
+    console.log('Processed Lead IDs:', leadIds)
+
+    if (leadIds.length > 0) {
+      for (const leadId of leadIds) {
+        await campaignRepository.addLeadsToCampaign(id, leadId)
+      }
+      await fetchCampaignLeads()
+      closeModal()
+      toast.success('Leads added to campaign successfully!')
+    } else {
+      toast.error('No leads selected')
+    }
+  } catch (error) {
+    console.error('Error adding leads to campaign:', error)
+    toast.error('Failed to add leads to campaign.')
+  }
 }
 
-const handleDealsSubmit = async (selectedIds: number[]) => {
-  // Implement deal assignment logic
-}
+const handleContactsSubmit = async (selectedData: any) => {
+  try {
+    console.log('Selected Data:', selectedData)
 
-const handleContactsSubmit = async (selectedIds: number[]) => {
-  // Implement contact assignment logic
+    // Extract the actual array from the proxy object
+    let contactIds: number[] = []
+
+    if (Array.isArray(selectedData)) {
+      contactIds = selectedData
+    } else if (selectedData && typeof selectedData === 'object') {
+      // Handle proxy object case
+      if (selectedData[0] !== undefined) {
+        // Convert proxy to array
+        contactIds = Object.values(selectedData).filter((id) => typeof id === 'number') as number[]
+      }
+    }
+
+    console.log('Processed Contact IDs:', contactIds)
+
+    if (contactIds.length > 0) {
+      for (const contactId of contactIds) {
+        await campaignRepository.addContactsToCampaign(id, contactId)
+      }
+
+      await fetchCampaignContacts()
+      closeModal()
+      toast.success('Contacts added to campaign successfully!')
+    } else {
+      toast.error('No contacts selected')
+    }
+  } catch (error) {
+    console.error('Error adding contacts to campaign:', error)
+    toast.error('Failed to add contacts to campaign.')
+  }
 }
 
 const navigateToEditCampaign = (campaignId: number | undefined) => {
@@ -393,12 +464,7 @@ const navigateToEditCampaign = (campaignId: number | undefined) => {
   }
 }
 
-const navigateToCreateDeal = () => {
-  router.push('/deals/create/')
-}
-
 const navigateToAddLeadModal = () => openLeadModal()
-const navigateToAddDealModal = () => openDealModal()
 const navigateToAddContactModal = () => openContactModal()
 
 const handleDelete = async (campaignId: number | undefined) => {
@@ -407,12 +473,12 @@ const handleDelete = async (campaignId: number | undefined) => {
     const confirmed = confirm('Are you sure you want to delete this campaign?')
     if (confirmed) {
       await campaignRepository.destroy(campaignId)
-      alert('Campaign deleted successfully.')
+      toast.success('Campaign deleted successfully!')
       router.push('/campaigns')
     }
   } catch (error) {
     console.error('Error deleting campaign:', error)
-    alert('Failed to delete the campaign.')
+    toast.error('Failed to delete campaign.')
   }
 }
 
@@ -423,24 +489,6 @@ const fetchAvailableLeads = async () => {
     availableLeads.value = response.results
   } catch (error) {
     console.error('Error fetching available leads:', error)
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const fetchAvailableDeals = async () => {
-  try {
-    isLoading.value = true
-    const response = await dealsRepository.show()
-    availableDeals.value = response.results.map((deal) => ({
-      ...deal,
-      closing_date: formatDate(deal.close_date)
-        ? new Date(deal.close_date).toLocaleDateString()
-        : null,
-      probability: deal.probability,
-    }))
-  } catch (error) {
-    console.error('Error fetching available deals:', error)
   } finally {
     isLoading.value = false
   }
@@ -458,7 +506,27 @@ const fetchAvailableContacts = async () => {
   }
 }
 
-onMounted(() => {
-  fetchCampaign()
+onMounted(async () => {
+  await fetchCampaign()
+  await Promise.all([fetchCampaignLeads(), fetchCampaignContacts()])
+
+  // Debug data structure
+  debugLeadData()
+  debugContactData()
 })
+
+// Debug the data structure - add this temporarily
+const debugLeadData = () => {
+  console.log('Campaign Leads:', campaignLeads.value)
+  if (campaignLeads.value.length > 0) {
+    console.log('First Lead:', campaignLeads.value[0])
+  }
+}
+
+const debugContactData = () => {
+  console.log('Campaign Contacts:', campaignContacts.value)
+  if (campaignContacts.value.length > 0) {
+    console.log('First Contact:', campaignContacts.value[0])
+  }
+}
 </script>

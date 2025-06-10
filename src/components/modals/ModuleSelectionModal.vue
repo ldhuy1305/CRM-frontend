@@ -16,7 +16,7 @@
       </div>
 
       <div class="table-controls">
-        <div class="records-info">Total Records: {{ totalRecords }}</div>
+        <div class="records-info"></div>
         <div class="pagination-control">
           {{ startRecord }}-{{ endRecord }} of {{ totalRecords }}
           <select v-model="rowsPerPage">

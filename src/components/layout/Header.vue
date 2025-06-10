@@ -31,7 +31,7 @@
         <img src="@/assets/default_avatar.png" alt="User Avatar" />
         <div v-if="showDropdown" class="dropdown">
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
-          <router-link to="/settings" class="dropdown-item">Settings</router-link>
+          <!-- <router-link to="/settings" class="dropdown-item">Settings</router-link> -->
           <div class="dropdown-item" @click="handleLogout">Logout</div>
         </div>
       </div>
@@ -63,6 +63,10 @@ export default defineComponent({
     const currentPath = computed(() => route.path)
     const showDropdown = ref(false)
     const showNotificationsPanel = ref(false)
+
+    const isAdmin = computed(() => {
+      return authStore.user?.user.id === 1
+    })
 
     const toggleDropdown = () => {
       showDropdown.value = !showDropdown.value
@@ -152,6 +156,8 @@ export default defineComponent({
         )
       } else if (path === '/reports') {
         return route.path.includes('/reports')
+      } else if (path === '/permissions') {
+        return route.path === '/permissions' || route.path.includes('/permissions')
       }
       // Add more conditions for other paths as needed
       return route.path === path
@@ -168,11 +174,12 @@ export default defineComponent({
       isActiveRoute,
       navigateToHome,
       navigateToCalendar,
+      isAdmin,
     }
   },
   data() {
     return {
-      menuItems: [
+      baseMenuItems: [
         { label: 'Home', path: '/' },
         { label: 'Leads', path: '/leads' },
         { label: 'Contacts', path: '/contacts' },
@@ -184,11 +191,19 @@ export default defineComponent({
         { label: 'Calls', path: '/calls' },
         { label: 'Reports', path: '/reports' },
       ],
+      adminMenuItem: { label: 'Managements', path: '/permissions' },
     }
   },
   computed: {
     unreadNotifications(): number {
       return this.notificationStore.unreadNotifications
+    },
+    menuItems(): Array<{ label: string; path: string }> {
+      const items = [...this.baseMenuItems]
+      if (this.isAdmin) {
+        items.push(this.adminMenuItem)
+      }
+      return items
     },
   },
 })

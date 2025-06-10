@@ -1,5 +1,6 @@
 <template>
   <div class="group-management">
+    <CRMLoading :loading="isLoading" />
     <div class="page-header">
       <h2>Group Management</h2>
       <button class="btn-primary" @click="showCreateModal = true">
@@ -251,6 +252,7 @@
 </template>
 
 <script setup lang="ts">
+import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { groupPermissionRepository, groupRepository, userRepository } from '@/services'
 import type { Group, GroupPermissions, Permission } from '@/types/permissions/permission'
 import type { UserInfo } from '@/types/users/user'

@@ -1,5 +1,6 @@
 <template>
   <div class="permission-management">
+    <CRMLoading :loading="isLoading" />
     <div class="page-header">
       <h2>Permission Management</h2>
       <button class="btn-primary" @click="refreshPermissions">
@@ -32,9 +33,7 @@
       </div>
     </div>
 
-    <CRMLoading v-if="isLoading" />
-
-    <div v-else class="permissions-container">
+    <div class="permissions-container">
       <div v-if="filteredPermissionGroups.length === 0" class="empty-state">
         <fas-icon icon="exclamation-circle" size="3x" />
         <h3>No Permission Groups Found</h3>

@@ -1,5 +1,6 @@
 <template>
   <div class="user-management">
+    <CRMLoading :loading="isLoading" />
     <div class="page-header">
       <h2>User Management</h2>
       <button class="btn-primary" @click="showCreateModal = true">
@@ -8,9 +9,7 @@
       </button>
     </div>
 
-    <CRMLoading v-if="isLoading" />
-
-    <div v-else class="users-container">
+    <div class="users-container">
       <div v-if="users.length === 0" class="empty-state">
         <fas-icon icon="users" size="3x" />
         <h3>No Users Found</h3>
@@ -33,7 +32,6 @@
 
           <div class="user-info">
             <h3 class="user-name">{{ user.first_name }} {{ user.last_name }}</h3>
-            <p class="user-email">{{ user.email }}</p>
           </div>
 
           <div class="user-actions">

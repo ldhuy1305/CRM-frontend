@@ -5,7 +5,7 @@ export interface UserInfo {
   address: string
   phone: string
   // permission: Array<Permission>[]
-  avarar: string
+  avatar: string
 }
 
 export interface UserOption {

@@ -261,8 +261,8 @@ const isLoading = ref(false)
 const toast = useToast()
 
 // Campaign target data
-const campaignLeads = ref<Lead[]>([])
-const campaignContacts = ref<Contact[]>([])
+const campaignLeads = ref<any[]>([])
+const campaignContacts = ref<any[]>([])
 // const campaignDeals = ref<Deal[]>([])
 
 // Available data for modals

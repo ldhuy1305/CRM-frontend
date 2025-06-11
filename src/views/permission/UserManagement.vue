@@ -101,7 +101,7 @@
                         @click="addGroupToUser(group)"
                       >
                         <span>{{ group.name }}</span>
-                        <i class="fas fa-plus"></i>
+                        <fas-icon icon="plus" />
                       </div>
                       <div v-if="availableGroups.length === 0" class="empty-list">
                         No groups available
@@ -119,7 +119,7 @@
                         @click="removeGroupFromUser(group)"
                       >
                         <span>{{ group.name }}</span>
-                        <i class="fas fa-times"></i>
+                        <fas-icon icon="times" />
                       </div>
                       <div v-if="userForm.groups.length === 0" class="empty-list">
                         No groups selected
@@ -136,7 +136,7 @@
               class="btn-primary"
               :disabled="!userForm.email.trim() || isCreating"
             >
-              <i v-if="isCreating" class="fas fa-spinner fa-spin"></i>
+              <fas-icon v-if="isCreating" icon="spinner"></fas-icon>
               {{ isCreating ? 'Creating...' : 'Create User' }}
             </button>
             <button @click="closeModal" class="btn-secondary">Cancel</button>

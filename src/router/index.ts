@@ -47,6 +47,7 @@ import TaskEdit from '@/views/task/TaskEdit.vue'
 import Task from '@/views/task/TaskIndex.vue'
 
 import AccountEdit from '@/views/account/AccountEdit.vue'
+import CreatePassword from '@/views/authen/CreatePassword.vue'
 import Login from '@/views/Login.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -291,6 +292,14 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'NotFound',
     component: NotFound,
+  },
+  {
+    path: '/invited-email',
+    name: 'CreatePassword',
+    component: CreatePassword,
+    meta: {
+      requiresAuth: false,
+    },
   },
 ]
 

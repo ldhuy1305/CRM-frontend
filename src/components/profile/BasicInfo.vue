@@ -1,20 +1,49 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/modules/auth'
+import { onMounted, ref, watch } from 'vue'
 import InfoItem from './InfoItem.vue'
-import { ref, watch } from 'vue'
+
+const authStore = useAuthStore()
 
 const emit = defineEmits<{
   (e: 'update-field', field: string, value: any): void
 }>()
 
-const first_name = ref('Admin')
+// Reactive refs for user data
+const first_name = ref('')
 const last_name = ref('')
 const address = ref('')
 const phone = ref('')
 
+// Load user data from auth store
+const loadUserData = () => {
+  if (authStore.user) {
+    console.log('Loading user data from store:', authStore.user)
+    first_name.value = authStore.user.user.first_name
+    last_name.value = authStore.user.user.last_name
+    address.value = authStore.user.user.address || ''
+    phone.value = authStore.user.user.phone || ''
+  }
+}
+
+// Watch for changes and emit updates
 watch(first_name, (val) => emit('update-field', 'first_name', val))
 watch(last_name, (val) => emit('update-field', 'last_name', val))
 watch(address, (val) => emit('update-field', 'address', val))
 watch(phone, (val) => emit('update-field', 'phone', val))
+
+// Watch for user data changes in store
+watch(
+  () => authStore.user,
+  () => {
+    loadUserData()
+  },
+  { immediate: true, deep: true },
+)
+
+onMounted(() => {
+  loadUserData()
+})
 </script>
 
 <template>

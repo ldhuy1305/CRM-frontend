@@ -3,6 +3,9 @@ export interface User {
   email: string
   first_name: string
   last_name: string
+  address: string
+  phone: string
+  avatar: string
 }
 
 export interface AuthUser {

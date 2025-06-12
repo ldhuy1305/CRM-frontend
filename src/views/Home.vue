@@ -175,10 +175,8 @@ import type { UserInfo } from '@/types/users/user'
 import { formatDate, formatDateTime, formatVNDCurrency } from '@/utils/formatter'
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { POSITION, useToast } from 'vue-toastification'
 
 const authStore = useAuthStore()
-const toast = useToast()
 const router = useRouter()
 const isLoading = ref(false)
 
@@ -207,7 +205,6 @@ const fetchOpenTasks = async () => {
     openTasks.value = response.results || response
   } catch (error) {
     console.error('Error fetching open tasks:', error)
-    toast.error('Failed to load open tasks', { position: POSITION.BOTTOM_RIGHT })
   }
 }
 
@@ -221,7 +218,6 @@ const fetchMeetings = async () => {
     console.log('Meetings:', meetings.value)
   } catch (error) {
     console.error('Error fetching meetings:', error)
-    toast.error('Failed to load meetings', { position: POSITION.BOTTOM_RIGHT })
   }
 }
 
@@ -235,7 +231,6 @@ const fetchTodayLeads = async () => {
     todayLeads.value = response.results || response
   } catch (error) {
     console.error("Error fetching today's leads:", error)
-    toast.error('Failed to load leads', { position: POSITION.BOTTOM_RIGHT })
   }
 }
 
@@ -259,7 +254,6 @@ const fetchMonthDeals = async () => {
     console.log('Month Deals:', monthDeals.value)
   } catch (error) {
     console.error('Error fetching deals:', error)
-    toast.error('Failed to load deals', { position: POSITION.BOTTOM_RIGHT })
   }
 }
 

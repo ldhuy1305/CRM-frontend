@@ -19,7 +19,7 @@
     </div>
 
     <div class="info-actions">
-      <span
+      <!-- <span
         v-if="!isEditing"
         class="edit-btn"
         @click="requestEdit"
@@ -27,7 +27,7 @@
         tabindex="0"
       >
         Edit
-      </span>
+      </span> -->
 
       <div v-if="isEditing" class="action-buttons">
         <CRMButton class="save" @click="save">Save</CRMButton>
@@ -38,9 +38,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
-import CRMButton from '../ui/CRMButton.vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import CRMInput from '../ui/CRM-Input.vue'
+import CRMButton from '../ui/CRMButton.vue'
 
 const modelValue = defineModel<string>()
 

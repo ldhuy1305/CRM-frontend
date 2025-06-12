@@ -1,6 +1,6 @@
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
-import { useAuthStore } from '@/stores/modules/auth.ts'
+import { useAuthStore } from '@/stores/modules/auth'
 import Home from '@/views/Home.vue'
 
 import ProfilePage from '@/components/profile/ProfilePage.vue'
@@ -310,14 +310,12 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  const requiresAuth = to.matched.some((r) => r.meta.requiresAuth)
 
-  // Wait for auth to be initialized
-  if (!authStore.isInitialized) {
+  if (!authStore.isInitialized && !authStore.isInitializing) {
     await authStore.initialize()
   }
 
-  if (requiresAuth && !authStore.isAuthenticated) {
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
   } else {
     next()

@@ -11,6 +11,7 @@ interface AuthState {
   isAuthenticated: boolean
   error: string | null
   isInitialized: boolean
+  isInitializing: boolean // Add this flag
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -19,6 +20,7 @@ export const useAuthStore = defineStore('auth', {
     isAuthenticated: false,
     error: null as string | null,
     isInitialized: false,
+    isInitializing: false, // Add this flag
   }),
 
   actions: {
@@ -32,6 +34,7 @@ export const useAuthStore = defineStore('auth', {
 
         const userData = await getCurrentUser()
         this.user = { ...userData }
+        localStorage.setItem('user', JSON.stringify(userData)) // Cache user data
 
         router.push('/')
         toast.success('Đăng nhập thành công!', {
@@ -50,57 +53,97 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async initialize() {
-      const token = localStorage.getItem('access')
-      const cachedUser = localStorage.getItem('user')
-
-      if (token && cachedUser) {
-        this.user = JSON.parse(cachedUser)
-        this.isAuthenticated = true
-        try {
-          const freshUser = await getCurrentUser()
-          this.user = freshUser
-          localStorage.setItem('user', JSON.stringify(freshUser))
-        } catch (error) {
-          console.error('Error updating user:', error)
-        }
-      } else if (token) {
-        try {
-          const userData = await getCurrentUser()
-          this.user = userData
-          this.isAuthenticated = true
-          localStorage.setItem('user', JSON.stringify(userData))
-        } catch (error) {
-          localStorage.removeItem('access')
-          this.isAuthenticated = false
-          this.user = null
-        }
+      // Prevent multiple simultaneous initializations
+      if (this.isInitialized || this.isInitializing) {
+        return
       }
 
-      this.isInitialized = true
+      this.isInitializing = true
+
+      try {
+        const token = localStorage.getItem('access')
+
+        if (!token) {
+          this.isAuthenticated = false
+          this.user = null
+          return
+        }
+
+        // Try to use cached user first
+        const cachedUser = localStorage.getItem('user')
+        if (cachedUser) {
+          try {
+            this.user = JSON.parse(cachedUser)
+            this.isAuthenticated = true
+
+            // Optionally refresh user data in background (without blocking)
+            this.refreshUserInBackground()
+          } catch (error) {
+            console.error('Error parsing cached user:', error)
+            localStorage.removeItem('user')
+            await this.fetchUserData()
+          }
+        } else {
+          // No cached user, fetch from API
+          await this.fetchUserData()
+        }
+      } catch (error) {
+        console.error('Error during initialization:', error)
+        this.clearAuthData()
+      } finally {
+        this.isInitialized = true
+        this.isInitializing = false
+      }
     },
+
+    async fetchUserData() {
+      try {
+        const userData = await getCurrentUser()
+        this.user = userData
+        this.isAuthenticated = true
+        localStorage.setItem('user', JSON.stringify(userData))
+      } catch (error) {
+        console.error('Error fetching user data:', error)
+        this.clearAuthData()
+        throw error
+      }
+    },
+
+    async refreshUserInBackground() {
+      try {
+        const userData = await getCurrentUser()
+        this.user = userData
+        localStorage.setItem('user', JSON.stringify(userData))
+      } catch (error) {
+        console.error('Error refreshing user in background:', error)
+        // Don't throw error for background refresh
+      }
+    },
+
     async fetchUser() {
       const toast = useToast()
       try {
         this.error = null
-        const userData = await getCurrentUser()
-        this.user = userData
-        this.isAuthenticated = true
+        await this.fetchUserData()
       } catch (error: any) {
         this.error = error.message || 'Không thể lấy thông tin user'
         toast.error(this.error, {
           icon: '❌',
           position: POSITION.BOTTOM_RIGHT,
         })
-        this.isAuthenticated = false
-        this.user = null
       }
     },
 
-    async logout(router: Router) {
+    clearAuthData() {
       this.user = null
       this.isAuthenticated = false
-      // this.isInitialized = false
       localStorage.removeItem('access')
+      localStorage.removeItem('user')
+    },
+
+    async logout(router: Router) {
+      this.clearAuthData()
+      this.isInitialized = false // Reset initialization state
       router.push('/login')
     },
   },

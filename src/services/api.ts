@@ -1,4 +1,5 @@
 // src/services/api.ts
+import { useAuthStore } from '@/stores/modules/auth'
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
 
@@ -47,6 +48,10 @@ api.interceptors.response.use(
       if (newToken) {
         originalRequest.headers.Authorization = `Bearer ${newToken}`
         return api(originalRequest)
+      } else {
+        // Clear user data when refresh fails
+        const authStore = useAuthStore()
+        authStore.clearAuthData()
       }
     }
 

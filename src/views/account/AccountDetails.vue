@@ -169,28 +169,6 @@
         </div>
       </div>
 
-      <!-- Deals Section -->
-      <div class="email-section">
-        <div class="section-header">
-          <h3>Deals</h3>
-        </div>
-        <table class="deals-table">
-          <thead>
-            <tr>
-              <th>Deal Name</th>
-              <th>Amount</th>
-              <th>Stage</th>
-              <th>Probability (%)</th>
-              <th>Closing Date</th>
-              <th>Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Deal rows -->
-          </tbody>
-        </table>
-      </div>
-
       <!-- Contacts Section -->
       <div class="email-section">
         <div class="section-header">
@@ -228,7 +206,28 @@
         </table>
       </div>
 
+      <!-- Deals Section -->
       <div class="email-section">
+        <div class="section-header">
+          <h3>Deals</h3>
+        </div>
+        <table class="deals-table">
+          <thead>
+            <tr>
+              <th>Deal Name</th>
+              <th>Amount</th>
+              <th>Stage</th>
+              <th>Probability (%)</th>
+              <th>Closing Date</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Deal rows -->
+          </tbody>
+        </table>
+      </div>
+      <!-- <div class="email-section">
         <div class="section-header">
           <h3>Email</h3>
           <button class="btn-primary">Send mail</button>
@@ -249,7 +248,7 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </div> -->
 
       <!-- <div class="campaigns-section">
         <div class="section-header">

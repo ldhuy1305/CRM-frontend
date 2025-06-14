@@ -16,7 +16,7 @@
           <div class="form-group">
             <label>Task Owner<span class="mandatory">*</span></label>
             <select v-model="form.task_owner" :class="{ 'input-error': errors.task_owner }">
-              <option :value="null">-None-</option>
+              <!-- <option :value="null">-None-</option> -->
               <option v-for="owner in taskOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>

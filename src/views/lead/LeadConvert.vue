@@ -19,11 +19,6 @@
           <div class="convert-tag">{{ lead.last_name }} {{ lead.first_name }}</div>
         </div>
 
-        <div class="form-row checkbox-row">
-          <input type="checkbox" id="create-deal" class="checkbox" v-model="form.is_create_deal" />
-          <label for="create-deal">Create a new Deal for this Account.</label>
-        </div>
-
         <div class="form-row">
           <label>Owner of the new Account</label>
           <div class="select-owner">
@@ -33,11 +28,6 @@
               </option>
             </select>
           </div>
-        </div>
-
-        <div class="form-row checkbox-row">
-          <input type="checkbox" id="notify-owner" class="checkbox" />
-          <label for="notify-owner">Notify owner (Account and Contact).</label>
         </div>
 
         <div class="form-actions">
@@ -87,13 +77,32 @@ const handleConvert = async () => {
     const leadId = Number(route.params.id)
     console.log('API payload:', payload)
 
-    await leadRepository.convert(leadId, payload)
+    const convertResponse = await leadRepository.convert(leadId, payload)
     console.log('Lead convert successfully!')
-    router.push('/leads')
-    toast.success('Convert lead successfully', {
+    toast.success('Lead converted successfully!', {
       icon: '✅',
       position: POSITION.BOTTOM_RIGHT,
     })
+
+    // Extract contact ID from the response
+    let contactId: number | undefined
+
+    if (convertResponse?.contact?.id) {
+      contactId = convertResponse.contact.id
+    } else if (convertResponse?.data?.contact?.id) {
+      contactId = convertResponse.data.contact.id
+    } else if (convertResponse?.contact_id) {
+      contactId = convertResponse.contact_id
+    } else if (convertResponse?.data?.contact_id) {
+      contactId = convertResponse.data.contact_id
+    }
+
+    console.log('Extracted contact ID:', contactId)
+    if (contactId) {
+      router.push(`/contacts/${contactId}`)
+    } else {
+      router.push('/contacts')
+    }
   } catch (error) {
     console.error('Error converting lead:', error)
     toast.error(error, {

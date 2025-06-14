@@ -16,7 +16,7 @@
           <div class="avatar-placeholder">
             <img src="@/assets/company_avatar.svg" alt="Account Avatar" />
           </div>
-          <span class="edit-avatar">Edit avatar</span>
+          <!-- <span class="edit-avatar">Edit avatar</span> -->
         </div>
 
         <div class="form-grid">
@@ -28,7 +28,7 @@
           <div class="form-group">
             <label>Account Owner</label>
             <select v-model="form.accountOwnerId">
-              <option :value="null"></option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in accountOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>

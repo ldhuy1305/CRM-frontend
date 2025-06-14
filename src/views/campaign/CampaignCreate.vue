@@ -130,9 +130,19 @@ const campaignOwners = ref<UserOption[]>([])
 const campaignTypes = ref<SelectOption[]>([])
 const campaignStatuses = ref<SelectOption[]>([])
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
 const form = reactive({
   name: '',
-  campaignOwnerId: 0,
+  campaignOwnerId: getCurrentUserId(),
   campaignTypeId: 0,
   campaignStatusId: 0,
   startDate: null as Date | null,

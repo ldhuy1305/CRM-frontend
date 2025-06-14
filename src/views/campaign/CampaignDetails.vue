@@ -147,7 +147,12 @@
             <tr v-if="campaignLeads.length === 0">
               <td colspan="7" class="text-center">No leads assigned to this campaign</td>
             </tr>
-            <tr v-for="lead in campaignLeads" :key="lead.id">
+            <tr
+              v-for="lead in campaignLeads"
+              :key="lead.id"
+              @click="navigateToLeadDetail(lead.id)"
+              class="clickable"
+            >
               <td>
                 {{
                   lead.first_name && lead.last_name
@@ -186,7 +191,12 @@
             <tr v-if="campaignContacts.length === 0">
               <td colspan="5" class="text-center">No contacts assigned to this campaign</td>
             </tr>
-            <tr v-for="contact in campaignContacts" :key="contact.id">
+            <tr
+              v-for="contact in campaignContacts"
+              :key="contact.id"
+              @click="navigateToContactDetail(contact.id)"
+              class="clickable"
+            >
               <td>
                 {{
                   contact.first_name && contact.last_name
@@ -384,6 +394,14 @@ const openContactModal = async () => {
 
 const closeModal = () => {
   activeModal.value = null
+}
+
+const navigateToLeadDetail = (leadId: number) => {
+  router.push(`/leads/${leadId}`)
+}
+
+const navigateToContactDetail = (contactId: number) => {
+  router.push(`/contacts/${contactId}`)
 }
 
 // Handle submissions - Fix the data extraction

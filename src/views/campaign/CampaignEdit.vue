@@ -16,7 +16,7 @@
           <div class="form-group">
             <label>Campaign Owner<span class="mandatory">*</span></label>
             <select v-model="form.campaignOwnerId" :class="{ 'input-error': errors.campaignOwner }">
-              <option :value="null">-None-</option>
+              <!-- <option :value="null">-None-</option> -->
               <option v-for="owner in campaignOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>

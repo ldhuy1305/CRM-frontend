@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/modules/auth'
 import { computed, ref } from 'vue'
 import CRMButton from '../ui/CRMButton.vue'
 import BasicInfo from './BasicInfo.vue'
@@ -6,6 +7,7 @@ import Password from './Password.vue'
 import Sidebar from './Sidebar.vue'
 
 const selectedTab = ref('basic')
+const authStore = useAuthStore()
 
 const profileData = ref({
   first_name: '',
@@ -30,9 +32,12 @@ const currentComponent = computed(() => {
   }
 })
 
-const avatarUrl = ref<string>(
-  'https://scontent.fdad3-1.fna.fbcdn.net/v/t39.30808-1/474608916_2015410792297042_2457717296624445349_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_ohc=x-t9HDIjVvMQ7kNvwFnCgVT&_nc_oc=AdkNut4W1KMuT0bx2crZYLF4C2r49qcEAo4GdAY473lxSbzi3iK3wIIefCw38zfDu0w&_nc_zt=24&_nc_ht=scontent.fdad3-1.fna&_nc_gid=mkXW194MvJzdefBXmUzy3Q&oh=00_AfISo2UZW8F-jh0HpqPoA369Za9tHM7JTKIZhJCSmD4ucQ&oe=68288690',
-)
+const defaultAvatarUrl =
+  'https://png.pngtree.com/png-vector/20220709/ourmid/pngtree-businessman-user-avatar-wearing-suit-with-red-tie-png-image_5809521.png'
+const getAvatarUrl = (): string => {
+  return authStore.user?.user.avatar || defaultAvatarUrl
+}
+const avatarUrl = ref<string>(getAvatarUrl())
 
 const isZoomed = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -138,7 +143,7 @@ function onAvatarSelected(event: Event) {
 .avatar {
   width: 100px;
   height: 100px;
-  border-radius: 12px;
+  border-radius: 50%;
   margin-right: 1rem;
   object-fit: cover;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

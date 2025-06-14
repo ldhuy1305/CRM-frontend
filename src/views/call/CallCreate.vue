@@ -150,13 +150,24 @@ const toast = useToast()
 const isLoading = ref(false)
 const isSchedule = computed(() => route.query.type === 'schedule')
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
+
 const form = reactive<CallCreateEditPayload>({
   title: '',
   description: '',
   call_type: 0,
   call_purpose: null,
   call_result: null,
-  call_owner: 0,
+  call_owner: getCurrentUserId(),
   related_deal: null,
   related_account: null,
   lead: null,

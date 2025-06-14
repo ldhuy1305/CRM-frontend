@@ -103,8 +103,8 @@
             <td>{{ lead.company_name }}</td>
             <td>{{ lead.email }}</td>
             <td>{{ lead.phone }}</td>
-            <td>{{ lead.lead_source.name }}</td>
-            <td>{{ lead.lead_owner.first_name }} {{ lead.lead_owner.last_name }}</td>
+            <td>{{ lead.lead_source?.name }}</td>
+            <td>{{ lead.lead_owner?.first_name }} {{ lead.lead_owner?.last_name }}</td>
           </tr>
         </tbody>
         <tbody v-else>

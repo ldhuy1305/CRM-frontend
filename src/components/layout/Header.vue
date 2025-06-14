@@ -28,7 +28,8 @@
       </div>
 
       <div class="user-avatar" @click="toggleDropdown">
-        <img src="@/assets/default_avatar.png" alt="User Avatar" />
+        <img v-if="userAvatar" :src="userAvatar" alt="User Avatar" />
+        <img v-else src="@/assets/default_avatar.png" alt="User Avatar" />
         <div v-if="showDropdown" class="dropdown">
           <router-link to="/profile" class="dropdown-item">Profile</router-link>
           <!-- <router-link to="/settings" class="dropdown-item">Settings</router-link> -->
@@ -63,6 +64,10 @@ export default defineComponent({
     const currentPath = computed(() => route.path)
     const showDropdown = ref(false)
     const showNotificationsPanel = ref(false)
+    const userAvatar = ref<string | null>(null)
+    userAvatar.value = authStore.user?.user.avatar || null
+
+    console.log('user avatar:', userAvatar.value)
 
     const isAdmin = computed(() => {
       return authStore.user?.user.id === 1
@@ -175,6 +180,7 @@ export default defineComponent({
       navigateToHome,
       navigateToCalendar,
       isAdmin,
+      userAvatar,
     }
   },
   data() {

@@ -32,7 +32,7 @@
           <div class="form-group">
             <label>Host<span class="mandatory">*</span></label>
             <select v-model="form.host" :class="{ 'input-error': errors.host }">
-              <option value="null"></option>
+              <!-- <option value="null"></option> -->
               <option v-for="owner in meetingHosts" :key="owner.id" :value="owner.id">
                 {{ owner.first_name }} {{ owner.last_name }}
               </option>

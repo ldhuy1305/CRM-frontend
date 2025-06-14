@@ -26,13 +26,14 @@
           </div>
 
           <div class="form-group">
-            <label>Deal Owner</label>
-            <select v-model="form.owner_id">
-              <option :value="null"></option>
+            <label>Deal Owner<span class="mandatory">*</span></label>
+            <select v-model="form.owner_id" :class="{ 'input-error': errors.owner }">
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in dealOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
             </select>
+            <span v-if="errors.owner" class="error-message">{{ errors.owner }}</span>
           </div>
 
           <div class="form-group">
@@ -75,13 +76,14 @@
           </div>
 
           <div class="form-group">
-            <label>Contact Name</label>
-            <select v-model="form.contact_id">
+            <label>Contact Name<span class="mandatory">*</span></label>
+            <select v-model="form.contact_id" :class="{ 'input-error': errors.contact }">
               <option :value="null"></option>
               <option v-for="contact in contacts" :key="contact.id" :value="contact.id">
                 {{ contact.first_name }} {{ contact.last_name }}
               </option>
             </select>
+            <span v-if="errors.contact" class="error-message">{{ errors.contact }}</span>
           </div>
 
           <div class="form-group">
@@ -120,6 +122,7 @@
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   accountRepository,
+  campaignRepository,
   contactRepository,
   dealsRepository,
   stageRepository,
@@ -127,6 +130,7 @@ import {
 } from '@/services'
 import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
+import type { Campaign } from '@/types/campaigns/campaign'
 import type { SelectOption } from '@/types/common/common_types'
 import type { Contact } from '@/types/contacts/contact'
 import type { DealCreateEditPayload } from '@/types/deals/deal'
@@ -143,20 +147,30 @@ const dealOwners = ref<UserOption[]>([])
 const stages = ref<SelectOption[]>([])
 const accounts = ref<Account[]>([])
 const contacts = ref<Contact[]>([])
-const campaigns = ref<SelectOption[]>([])
+const campaigns = ref<Campaign[]>([])
+
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
 
 const form = reactive({
   name: '',
-  owner_id: 0,
+  owner_id: getCurrentUserId(),
   amount: 0,
   close_date: '',
   account_id: 0,
-  stage_id: 0,
+  stage_id: 1,
   type: '',
   probability: 10,
   next_step: '',
   expected_revenue: 0,
-  lead_source: null as number | null,
   campaign_source: null as number | null,
   contact_id: 0,
   description: '',
@@ -168,14 +182,21 @@ const errors = reactive({
   close_date: '',
   stage_id: '',
   account_id: '',
+  owner: '',
+  contact: '',
 })
 
 const validateForm = (): boolean => {
-  let isValid = true
-
   // Clear previous errors
-  // Object.keys(errors).forEach((key) => (errors[key] = ''))
-  const errors: { [key: string]: string } = {}; 
+  errors.name = ''
+  errors.amount = ''
+  errors.close_date = ''
+  errors.stage_id = ''
+  errors.account_id = ''
+  errors.owner = ''
+  errors.contact = ''
+
+  let isValid = true
 
   if (!form.name.trim()) {
     errors.name = 'Deal Name is required.'
@@ -202,23 +223,35 @@ const validateForm = (): boolean => {
     isValid = false
   }
 
+  if (!form.owner_id) {
+    errors.owner = 'Deal Owner is required.'
+    isValid = false
+  }
+
+  if (!form.contact_id) {
+    errors.contact = 'Contact is required.'
+    isValid = false
+  }
+
   return isValid
 }
 
 const fetchDropdownData = async () => {
   try {
     isLoading.value = true
-    const [ownersRes, stagesRes, accountsRes, contactRes] = await Promise.all([
+    const [ownersRes, stagesRes, accountsRes, contactRes, campaignRes] = await Promise.all([
       userRepository.show({ limit: 20 }),
       stageRepository.show({ limit: 20 }),
       accountRepository.show({ limit: 20 }),
       contactRepository.show({ limit: 20 }),
+      campaignRepository.show({ limit: 20 }),
     ])
 
     dealOwners.value = ownersRes.results || ownersRes
     stages.value = stagesRes.results || stagesRes
     accounts.value = accountsRes.results || accountsRes
     contacts.value = contactRes.results || contactRes
+    campaigns.value = campaignRes.results || campaignRes
 
     console.log('Deal Owners:', dealOwners.value)
     console.log('Stages:', stages.value)
@@ -250,7 +283,7 @@ const handleSave = async () => {
         expected_revenue: form.expected_revenue,
         is_lost: false,
         lost_reason: null,
-        campaign: null,
+        campaign: form.campaign_source,
       }
 
       const response = await dealsRepository.create(payload)
@@ -267,6 +300,8 @@ const handleSave = async () => {
     } finally {
       isLoading.value = false
     }
+  } else {
+    console.log('Validation failed.')
   }
 }
 

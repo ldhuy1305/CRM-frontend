@@ -16,7 +16,7 @@
           <div class="form-group">
             <label>Task Owner<span class="mandatory">*</span></label>
             <select v-model="form.task_owner" :class="{ 'input-error': errors.task_owner }">
-              <option :value="null">-None-</option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in taskOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
@@ -221,9 +221,19 @@ const accounts = ref<Account[]>([])
 const contacts = ref<Contact[]>([])
 const deals = ref<Deal[]>([])
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
 const form = reactive<TaskCreateEditPayload>({
   title: '',
-  task_owner: 0,
+  task_owner: getCurrentUserId(),
   due_date: '',
   status: 0,
   priority: 0,

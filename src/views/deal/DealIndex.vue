@@ -120,7 +120,18 @@ const getDealsByStage = (stageName: string) => {
 
 const getStageAmount = (stageName: string) => {
   const stageDeals = getDealsByStage(stageName)
-  const totalAmount = stageDeals.reduce((sum, deal) => sum + deal.amount, 0)
+  const totalAmount = stageDeals.reduce((sum, deal) => {
+    const dealAmount = deal?.amount || 0
+
+    const numericAmount = typeof dealAmount === 'string' ? parseFloat(dealAmount) : dealAmount
+
+    if (isNaN(numericAmount)) {
+      console.warn(`Invalid amount for deal ${deal?.id}:`, dealAmount)
+      return sum
+    }
+
+    return sum + numericAmount
+  }, 0)
   return formatVNDCurrency(totalAmount)
 }
 

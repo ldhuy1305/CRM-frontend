@@ -25,13 +25,20 @@
               :alt="user.first_name"
               class="avatar-image"
             />
-            <div v-else class="avatar-placeholder">
+            <img
+              v-else
+              src="@/assets/default_avatar.png"
+              alt="user.first_name"
+              class="avatar-image"
+            />
+            <!-- <div v-else class="avatar-placeholder">
               {{ getInitials(user.first_name, user.last_name) }}
-            </div>
+            </div> -->
           </div>
 
           <div class="user-info">
             <h3 class="user-name">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p class="user-email">{{ user.email }}</p>
           </div>
 
           <div class="user-actions">
@@ -250,9 +257,9 @@ const removeGroupFromUser = (group: Group) => {
   }
 }
 
-const getInitials = (firstName: string, lastName: string) => {
-  return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
-}
+// const getInitials = (firstName: string, lastName: string) => {
+//   return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase()
+// }
 
 const closeModal = () => {
   showCreateModal.value = false

@@ -96,13 +96,13 @@
         <div class="section-content">
           <div class="contact-card" v-if="deal?.contact">
             <div class="contact-avatar">
-              <fas-icon icon="user-circle" size="5x" />
+              <fas-icon icon="user-circle" size="4x" />
             </div>
             <div class="contact-info">
               <div class="contact-name">
-                {{ deal.contact?.first_name }}{{ deal?.contact?.last_name }}
+                {{ deal?.contact?.last_name }} {{ deal.contact?.first_name }}
               </div>
-              <div class="company-name">at {{ deal?.account?.name }}</div>
+              <div class="company-name">{{ deal?.account?.name }}</div>
               <div class="contact-details">{{ deal?.contact?.phone }}</div>
             </div>
           </div>

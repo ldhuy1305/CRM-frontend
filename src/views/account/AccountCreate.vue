@@ -16,7 +16,7 @@
           <div class="avatar-placeholder">
             <img src="@/assets/company_avatar.svg" alt="Account Avatar" />
           </div>
-          <span class="edit-avatar">Edit avatar</span>
+          <!-- <span class="edit-avatar">Edit avatar</span> -->
         </div>
 
         <div class="form-grid">
@@ -28,7 +28,7 @@
           <div class="form-group">
             <label>Account Owner</label>
             <select v-model="form.accountOwnerId">
-              <option :value="null"></option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in accountOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
@@ -157,8 +157,18 @@ const industries = ref<SelectOption[]>([])
 const accountTypes = ref<SelectOption[]>([])
 const ratingList = ref<SelectOption[]>([])
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
 const form = reactive({
-  accountOwnerId: null as number | null,
+  accountOwnerId: getCurrentUserId(),
   accountTypeId: null as number | null,
   industryId: null as number | null,
   ratingId: null as number | null,

@@ -16,7 +16,7 @@
           <div class="avatar-placeholder">
             <img src="@/assets/default_avatar.png" alt="Lead Avatar" />
           </div>
-          <span class="edit-avatar">Edit avatar</span>
+          <!-- <span class="edit-avatar">Edit avatar</span> -->
         </div>
 
         <div class="form-grid">
@@ -51,7 +51,7 @@
           <div class="form-group">
             <label>Contact Owner</label>
             <select v-model="form.contactOwnerId">
-              <option :value="null"></option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in contactOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
@@ -188,12 +188,23 @@ const accounts = ref<Account[]>([])
 const leadSources = ref<SelectOption[]>([])
 const isLoading = ref(false)
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
+
 const form = reactive({
   firstName: '',
   lastName: '',
   accountId: null as number | null,
   leadSource: null as number | null,
-  contactOwnerId: null as number | null,
+  contactOwnerId: getCurrentUserId(),
   email: '',
   phone: '',
   website: '',
@@ -326,7 +337,7 @@ const handleSave = async () => {
       contact_owner: form.contactOwnerId,
       lead_source: form.leadSource,
       account: form.accountId as number,
-      company: '', 
+      company: '',
     }
     console.log('Prepared API Payload:', payload)
     try {

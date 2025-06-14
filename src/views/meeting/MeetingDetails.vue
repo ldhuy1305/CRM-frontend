@@ -78,14 +78,6 @@
               <div class="info-value">{{ formatDateTime(meeting?.to_datetime) }}</div>
             </div>
             <div class="info-row">
-              <label class="info-label">All Day</label>
-              <div class="info-value">{{ meeting?.is_all_day ? '✓' : '' }}</div>
-            </div>
-            <div class="info-row">
-              <label class="info-label">Online Meeting</label>
-              <div class="info-value">{{ meeting?.is_online_meeting ? '✓' : '' }}</div>
-            </div>
-            <div class="info-row">
               <label class="info-label">Created By</label>
               <div class="info-value">
                 {{ meeting?.created_by?.first_name }} {{ meeting?.created_by?.last_name }}
@@ -99,6 +91,14 @@
                 <div class="timestamp">{{ formatDateTime(meeting?.updated_at) }}</div>
               </div>
               <div v-else></div>
+            </div>
+            <div class="info-row" v-if="meeting?.is_all_day">
+              <label class="info-label">All Day</label>
+              <div class="info-value">✓</div>
+            </div>
+            <div class="info-row" v-if="meeting?.is_online_meeting">
+              <label class="info-label">Online Meeting</label>
+              <div class="info-value">✓</div>
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@
           <div class="avatar-placeholder">
             <img src="@/assets/default_avatar.png" alt="Lead Avatar" />
           </div>
-          <span class="edit-avatar">Edit avatar</span>
+          <!-- <span class="edit-avatar">Edit avatar</span> -->
         </div>
 
         <div class="form-grid">
@@ -47,7 +47,7 @@
           <div class="form-group">
             <label>Lead Owner</label>
             <select v-model="form.leadOwnerId">
-              <option :value="null"></option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in leadOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
@@ -166,6 +166,7 @@ import {
   leadStatusRepository,
   userRepository,
 } from '@/services'
+
 import '@/styles/shared/index.css'
 import type { SelectOption } from '@/types/common/common_types'
 import type { LeadCreateEditPayload } from '@/types/leads/lead'
@@ -183,11 +184,22 @@ const leadStatuses = ref<SelectOption[]>([])
 const industries = ref<SelectOption[]>([])
 const isLoading = ref(false)
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
+
 const form = reactive({
   firstName: '',
   lastName: '',
   company: '',
-  leadOwnerId: null as number | null,
+  leadOwnerId: getCurrentUserId(),
   leadSourceId: null as number | null,
   leadStatusId: null as number | null,
   industryId: null as number | null,

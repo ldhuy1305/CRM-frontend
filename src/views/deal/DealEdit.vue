@@ -28,7 +28,7 @@
           <div class="form-group">
             <label>Deal Owner</label>
             <select v-model="form.owner_id">
-              <option :value="null"></option>
+              <!-- <option :value="null"></option> -->
               <option v-for="owner in dealOwners" :key="owner.id" :value="owner.id">
                 {{ owner.last_name }} {{ owner.first_name }}
               </option>
@@ -159,7 +159,7 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
 
-const amount = ref<number | null>(null)
+// const amount = ref<number | null>(null)
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
@@ -293,6 +293,7 @@ const fetchDealDetails = async () => {
     form.is_lost = deal.value.is_lost || false
     form.lost_reason = deal.value.lost_reason?.id || null
   } catch (error) {
+    console.error('Error fetching deal details:', error)
     toast.error('Failed to fetch deal details', {
       position: POSITION.BOTTOM_RIGHT,
     })

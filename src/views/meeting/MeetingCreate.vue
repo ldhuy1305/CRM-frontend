@@ -32,7 +32,7 @@
           <div class="form-group">
             <label>Host<span class="mandatory">*</span></label>
             <select v-model="form.host" :class="{ 'input-error': errors.host }">
-              <option value="null"></option>
+              <!-- <option value="null"></option> -->
               <option v-for="owner in meetingHosts" :key="owner.id" :value="owner.id">
                 {{ owner.first_name }} {{ owner.last_name }}
               </option>
@@ -217,6 +217,17 @@ interface Participant {
   name: string
 }
 
+import { useAuthStore } from '@/stores/modules/auth'
+const authStore = useAuthStore()
+const getCurrentUserId = (): number => {
+  if (authStore.user) {
+    console.log('Current User ID:', authStore.user.user.id)
+    return authStore?.user.user.id
+  } else {
+    return 0
+  }
+}
+
 const form = reactive<MeetingCreateEditPayload>({
   title: '',
   location: '',
@@ -224,7 +235,7 @@ const form = reactive<MeetingCreateEditPayload>({
   to_datetime: '',
   is_all_day: false,
   is_online_meeting: false,
-  host: 0,
+  host: getCurrentUserId(),
   participants: [],
   related_lead: null,
   related_contact: null,

@@ -7,6 +7,8 @@ import ProfilePage from '@/components/profile/ProfilePage.vue'
 import AccountCreate from '@/views/account/AccountCreate.vue'
 import AccountDetails from '@/views/account/AccountDetails.vue'
 import Account from '@/views/account/AccountIndex.vue'
+import ForgotPassword from '@/views/authen/ForgotPassword.vue'
+import ResetPassword from '@/views/authen/ResetPassword.vue'
 import CalendarView from '@/views/calendar/Calendar.vue'
 import CallCreate from '@/views/call/CallCreate.vue'
 import CallDetails from '@/views/call/CallDetails.vue'
@@ -300,6 +302,18 @@ const routes = [
     meta: {
       requiresAuth: false,
     },
+  },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPassword,
+    meta: { requiresAuth: false },
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPassword,
+    meta: { requiresAuth: false },
   },
 ]
 

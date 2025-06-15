@@ -69,8 +69,16 @@ export default defineComponent({
 
     console.log('user avatar:', userAvatar.value)
 
+    console.log('authStore.user:', authStore.user)
+
     const isAdmin = computed(() => {
-      return authStore.user?.user.id === 1
+      const userGroups = authStore.user?.user?.groups
+
+      if (userGroups && Array.isArray(userGroups)) {
+        return userGroups.some((group) => group?.id === 1)
+      } else {
+        return false
+      }
     })
 
     const toggleDropdown = () => {

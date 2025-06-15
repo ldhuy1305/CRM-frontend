@@ -28,6 +28,16 @@ export interface ChangePasswordPayload {
   confirm_password: string
 }
 
+export interface ForgotPasswordPayload {
+  email: string
+}
+
+export interface ResetPasswordPayload {
+  uuid_b64: string
+  token: string
+  password: string
+}
+
 export class AuthService {
   private resource: string
 
@@ -57,11 +67,28 @@ export class AuthService {
         confirm_password: payload.confirm_password,
       })
       return response.data
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error changing password:', error)
-      throw new Error(
-        error.response?.data?.message || error.response?.data?.error || 'Failed to change password',
-      )
+    }
+  }
+
+  async forgotPassword(payload: ForgotPasswordPayload): Promise<void> {
+    try {
+      const response = await axios.post('/auth/forgot-password/', payload)
+      return response.data
+    } catch (error) {
+      console.error('Forgot password error:', error)
+      throw error
+    }
+  }
+
+  async resetPassword(payload: ResetPasswordPayload): Promise<void> {
+    try {
+      const response = await axios.post('/auth/reset-password/', payload)
+      return response.data
+    } catch (error) {
+      console.error('Reset password error:', error)
+      throw error
     }
   }
 }

@@ -161,7 +161,7 @@ import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import { meetingRepository } from '@/services'
 import '@/styles/meeting/styles.css'
 import '@/styles/shared/index.css'
-import type { Meeting } from '@/types/meetings/meeting'
+import type { Meeting, Participant } from '@/types/meetings/meeting'
 import { formatDateTime } from '@/utils/formatter'
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -271,7 +271,6 @@ const sendEmailToParticipant = (participant: Participant) => {
       `• Date & Time: ${meetingTime}\n` +
       `• Location: ${meeting.value.location || (meeting.value.is_online_meeting ? 'Online Meeting' : 'TBD')}\n` +
       `• Meeting Type: ${meeting.value.is_online_meeting ? 'Online' : 'In Person'}\n` +
-      `${meeting.value.description ? `Description:\n${meeting.value.description}\n\n` : ''}` +
       `Please confirm your attendance and let me know if you have any questions.\n\n` +
       `Best regards,\n${userName.value} - Unibeam CRM`,
   )
@@ -313,7 +312,6 @@ const sendEmailToAll = () => {
       `• Location: ${meeting.value.location || (meeting.value.is_online_meeting ? 'Online Meeting' : 'TBD')}\n` +
       `• Meeting Type: ${meeting.value.is_online_meeting ? 'Online' : 'In Person'}\n` +
       `• Participants: ${participantNames}\n\n` +
-      `${meeting.value.description ? `Description:\n${meeting.value.description}\n\n` : ''}` +
       `Please confirm your attendance and let me know if you have any questions.\n\n` +
       `Looking forward to seeing you all at the meeting.\n\n` +
       `Best regards,\n${userName.value} - Unibeam CRM`,

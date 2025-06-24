@@ -23,8 +23,8 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="btn-primary">Send mail</button>
         <button class="btn-secondary" @click="navigateToEditAccount(account.id)">Edit</button>
+        <button class="btn-primary" @click="deleteAccount(account.id)">Delete</button>
       </div>
     </div>
 
@@ -331,6 +331,22 @@ const fetchDetailsData = async () => {
     console.error('Error fetching details:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const deleteAccount = async (accountId: number) => {
+  if (!confirm('Confirm to delete this account?')) {
+    return
+  }
+
+  try {
+    await accountRepository.destroy(accountId)
+    console.log('✅ Account deleted successfully:', accountId)
+    await fetchAccounts()
+    activeMoreOptions.value = null
+  } catch (error) {
+    console.error('❌ Error deleting account:', error)
+    alert('Failed to delete account. Please try again.')
   }
 }
 

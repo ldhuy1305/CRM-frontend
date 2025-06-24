@@ -36,7 +36,7 @@
               <div class="card-details">
                 <div class="account">
                   <fas-icon icon="fas fa-building"></fas-icon>
-                  {{ deal.account.name }}
+                  {{ deal.account?.name }}
                 </div>
                 <div class="contact">
                   <fas-icon icon="fas fa-user-tie"></fas-icon>

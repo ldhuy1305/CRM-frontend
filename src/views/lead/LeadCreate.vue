@@ -54,7 +54,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Email</label>
+            <label>Email<span class="mandatory">*</span></label>
             <input type="email" v-model="form.email" />
             <span v-if="errors.email" class="error-message">{{ errors.email }}</span>
           </div>
@@ -286,8 +286,11 @@ const validateForm = (): boolean => {
     isValid = false
   }
 
-  // Email validation for @gmail.com
-  if (form.email.trim()) {
+  // Email validation
+  if (!form.email.trim()) {
+    errors.email = 'Email is required.'
+    isValid = false
+  } else if (form.email.trim()) {
     const emailRegex = /^[a-zA-Z0-9._-]+@gmail\.com$/
     if (!emailRegex.test(form.email.trim())) {
       errors.email = 'Email must end with @gmail.com'

@@ -24,7 +24,15 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="btn-primary">Send mail</button>
+        <button
+          class="btn-primary"
+          @click="sendEmail"
+          :disabled="!lead.email"
+          :title="lead.email ? `Send email to ${lead.email}` : 'No email address available'"
+        >
+          <i class="fas fa-envelope"></i>
+          Send mail
+        </button>
         <button class="btn-tertiary" @click="navigateToConvertLead(lead.id)">Convert</button>
         <button class="btn-secondary" @click="navigateToEditLead(lead.id)">Edit</button>
       </div>
@@ -173,9 +181,11 @@ import { leadRepository } from '@/services/repositories/lead'
 import '@/styles/shared/index.css'
 import type { Lead } from '@/types/leads/lead'
 import { formatVNDCurrency } from '@/utils/formatter'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/modules/auth'
 
+const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const lead = ref<Lead>({} as Lead)
@@ -199,6 +209,34 @@ const navigateToEditLead = (leadId: number) => {
   router.push(`/leads/${leadId}/edit`)
 }
 
+const userName = computed(() => {
+  if (authStore.user) {
+    return `${authStore?.user.user.first_name} ${authStore?.user.user.last_name}`.trim()
+  }
+  return 'Unibeam CRM Leads'
+})
+
+const sendEmail = () => {
+  if (!lead.value.email) {
+    console.warn('No email address available for this lead')
+    return
+  }
+
+  // Create the mailto link with pre-filled subject and body
+  const fullName = `${lead.value.first_name} ${lead.value.last_name}`.trim()
+  const subject = encodeURIComponent(
+    `[Unibeam CRM] Regarding: ${fullName} - ${lead.value.company_name}`,
+  )
+  const body = encodeURIComponent(
+    `Dear Mr/Mrs. ${fullName},\n\nI hope this email finds you well.\n\n\nBest regards,\n\n${userName.value} - Unibeam CRM`,
+  )
+
+  const mailtoLink = `mailto:${lead.value.email}?subject=${subject}&body=${body}`
+
+  // Open the default email client
+  window.location.href = mailtoLink
+}
+
 const fetchLeadDetails = async () => {
   try {
     isLoading.value = true
@@ -218,4 +256,15 @@ onMounted(() => {
 })
 </script>
 
-<style></style>
+<style scoped>
+/* Add some styling for the disabled state */
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+</style>

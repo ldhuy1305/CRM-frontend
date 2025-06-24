@@ -23,8 +23,8 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="btn-primary">Send mail</button>
         <button class="btn-secondary" @click="navigateToEditAccount(account.id)">Edit</button>
+        <button class="btn-primary" @click="deleteAccount(account.id)">Delete</button>
       </div>
     </div>
 
@@ -296,11 +296,13 @@ import type { Account } from '@/types/accounts/account'
 import { formatVNDCurrency } from '@/utils/formatter'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
 
 const router = useRouter()
 const route = useRoute()
 const isLoading = ref(false)
 const account = ref<Account>({} as Account)
+const toast = useToast()
 
 const handleBack = () => {
   router.back()
@@ -308,6 +310,10 @@ const handleBack = () => {
 
 const navigateToEditAccount = (accountId: number) => {
   router.push(`/accounts/${accountId}/edit`)
+}
+
+const navigateToAccounts = () => {
+  router.push('/accounts')
 }
 
 const navigateToCreateContact = () => {
@@ -331,6 +337,22 @@ const fetchDetailsData = async () => {
     console.error('Error fetching details:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const deleteAccount = async (accountId: number) => {
+  if (!confirm(`Confirm to delete account with ID#${accountId}?`)) {
+    return
+  }
+
+  try {
+    await accountRepository.destroy(accountId)
+    console.log('✅ Account deleted successfully:', accountId)
+    await navigateToAccounts()
+    toast.success(`Account ID#${accountId} deleted successfully`)
+  } catch (error) {
+    console.error('❌ Error deleting account:', error)
+    alert('Failed to delete account. Please try again.')
   }
 }
 

@@ -155,7 +155,18 @@
         <div class="contact-info" v-if="task?.contact">
           <div class="task-contact-header">
             <h3>{{ task.contact.last_name }} {{ task.contact.first_name }}</h3>
-            <button class="btn-tertiary">Send Email</button>
+            <button
+              class="btn-tertiary"
+              @click="sendEmail"
+              :disabled="!task.contact.email"
+              :title="
+                task.contact.email
+                  ? `Send email to ${task.contact.email}`
+                  : 'No email address available'
+              "
+            >
+              Send Email
+            </button>
           </div>
           <div class="task-contact-details">
             <div v-if="task.contact.phone" class="detail-item">
@@ -179,7 +190,7 @@
           <div v-else>No Deals found</div>
         </div>
 
-        <div class="activities">
+        <!-- <div class="activities">
           <h3>Open Activities</h3>
           <div class="activity-section">
             <div class="activity-type">
@@ -192,7 +203,7 @@
               Calls <span>{{ openCallsCount }}</span>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -205,19 +216,18 @@ import '@/styles/shared/index.css'
 import '@/styles/tasks/styles.css'
 import type { Task } from '@/types/task/task'
 import { formatDate, formatDateTime, formatVNDCurrency } from '@/utils/formatter'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { POSITION, useToast } from 'vue-toastification'
+import { useAuthStore } from '@/stores/modules/auth'
 
+const authStore = useAuthStore()
 const route = useRoute()
 const router = useRouter()
 const id = Number(route.params.id)
 const task = ref<Task>({} as Task)
 const isLoading = ref(false)
 const toast = useToast()
-const openTasksCount = ref(0)
-const openMeetingsCount = ref(0)
-const openCallsCount = ref(0)
 
 const fetchTask = async () => {
   try {
@@ -260,6 +270,38 @@ const handleCloseTask = async () => {
   } finally {
     isLoading.value = false
   }
+}
+
+const userName = computed(() => {
+  if (authStore.user) {
+    return `${authStore?.user.user.first_name} ${authStore?.user.user.last_name}`.trim()
+  }
+  return 'Unibeam CRM Contacts'
+})
+
+const sendEmail = () => {
+  if (!task.value?.contact?.email) {
+    console.warn('No email address available for this contact')
+    toast.error('No email address available for this contact', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+    return
+  }
+
+  // Create the mailto link with pre-filled subject and body
+  const fullName = `${task.value.contact.first_name} ${task.value.contact.last_name}`.trim()
+
+  const subject = encodeURIComponent(
+    `[Unibeam CRM] Regarding: ${fullName} - ${task.value.related_account?.name}`,
+  )
+  const body = encodeURIComponent(
+    `Dear Mr/Mrs. ${fullName},\n\nI hope this email finds you well.\n\n\nBest regards,\n\n${userName.value} - Unibeam CRM`,
+  )
+
+  const mailtoLink = `mailto:${task.value.contact.email}?subject=${subject}&body=${body}`
+
+  // Open the default email client
+  window.location.href = mailtoLink
 }
 
 const navigateToEditTask = (taskId: number) => {

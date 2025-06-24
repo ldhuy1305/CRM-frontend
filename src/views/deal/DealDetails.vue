@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="action-buttons">
-        <button class="btn-tertiary">Send Email</button>
+        <!-- <button class="btn-tertiary">Send Email</button> -->
         <button class="btn-secondary" @click="navigateToEditDeal(deal.id)">Edit</button>
         <button class="btn-primary" @click="handleDelete(deal.id)">Delete</button>
       </div>
@@ -99,12 +99,19 @@
               <fas-icon icon="user-circle" size="4x" />
             </div>
             <div class="contact-info">
-              <div class="contact-name">
+              <div
+                class="contact-name clickable"
+                @click="navigateToContactDetail(deal.contact.id)"
+                :title="`View ${deal.contact.first_name} ${deal.contact.last_name}'s details`"
+              >
                 {{ deal?.contact?.last_name }} {{ deal.contact?.first_name }}
               </div>
               <div class="company-name">{{ deal?.account?.name }}</div>
               <div class="contact-details">{{ deal?.contact?.phone }}</div>
             </div>
+          </div>
+          <div v-else class="no-contact">
+            <p>No contact person assigned to this deal</p>
           </div>
         </div>
       </div>
@@ -210,6 +217,14 @@ const filteredStages = computed(() => {
 
 const navigateToEditDeal = (id: number) => {
   router.push(`/deals/${id}/edit`)
+}
+
+const navigateToContactDetail = (contactId: number) => {
+  if (contactId) {
+    router.push(`/contacts/${contactId}`)
+  } else {
+    console.warn('No contact ID provided')
+  }
 }
 
 const handleDelete = async (dealId: number) => {

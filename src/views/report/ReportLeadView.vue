@@ -2,7 +2,20 @@
   <div class="report-container">
     <CRMLoading :loading="isLoading" />
     <div class="report-header">
-      <h2 class="report-name">{{ report?.name }}</h2>
+      <div class="report-title-section">
+        <h2 class="report-name">{{ report?.name }}</h2>
+        <p class="description">{{ report?.description }}</p>
+      </div>
+      <div class="report-actions">
+        <button
+          class="btn-export"
+          @click="exportToExcel"
+          :disabled="isLoading || !groupedData || groupedData.length === 0"
+        >
+          <i class="fas fa-file-excel"></i>
+          Export Excel
+        </button>
+      </div>
     </div>
 
     <!-- Lead Reports -->
@@ -243,6 +256,7 @@ import reportsData from './data/reports.json'
 const route = useRoute()
 const reportData = ref<Lead[]>([])
 const isLoading = ref(true)
+const isExporting = ref(false)
 const toast = useToast()
 
 const report = computed(() => {
@@ -264,7 +278,92 @@ const fetchReportData = async () => {
   }
 }
 
-// Update the groupedData computed property
+// Add the export function
+const exportToExcel = async () => {
+  if (!report.value || !groupedData.value || groupedData.value.length === 0) {
+    toast.error('No data available to export', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+    return
+  }
+
+  try {
+    isExporting.value = true
+    toast.info('Preparing Excel export...', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+
+    // Create dynamic parameters based on the current report type
+    const params = new URLSearchParams()
+
+    // Always include the filename
+    params.append('filename', report.value.id)
+
+    // Add report-specific parameters based on the current report
+    switch (report.value.id) {
+      case 'leads-by-status':
+        params.append('group_by', 'status')
+        break
+
+      case 'leads-by-source':
+        params.append('group_by', 'source')
+        break
+
+      case 'leads-by-owner':
+        params.append('group_by', 'owner')
+        break
+
+      case 'leads-by-industry':
+        params.append('group_by', 'industry')
+        break
+      default:
+    }
+    console.log('Export parameters:', Object.fromEntries(params))
+    console.log('Export URL:', `/leads/export-excel/?${params.toString()}`)
+
+    // Call the export API
+    const response = await leadRepository.exportExcel(params.toString())
+
+    // Generate filename with report name and timestamp
+    const timestamp = new Date().toISOString()
+    const reportName = report.value.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
+    const filename = `${reportName}_${timestamp}.xlsx`
+
+    // Handle the file download
+    if (response instanceof Blob) {
+      downloadFile(response, filename)
+    } else if (response && typeof response === 'object' && 'url' in response) {
+      // If the API returns a download URL
+      window.open((response as any).url, '_blank')
+    } else {
+      throw new Error('Invalid response format')
+    }
+
+    toast.success('Excel file exported successfully!', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+  } catch (error) {
+    console.error('Error exporting to Excel:', error)
+    toast.error('Failed to export Excel file. Please try again.', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+  } finally {
+    isExporting.value = false
+  }
+}
+
+// Helper function to download file
+const downloadFile = (blob: Blob, filename: string) => {
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
 const groupedData = computed(() => {
   const data = reportData.value || []
   if (!data.length) return []
@@ -286,10 +385,9 @@ const groupedData = computed(() => {
   }
 })
 
-// Update the grouping functions to handle possible undefined values
 const groupByStatus = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const status = lead.lead_status?.name || ''
+    const status = lead.lead_status?.name || 'Unknown'
     if (!groups[status]) {
       groups[status] = []
     }
@@ -300,7 +398,7 @@ const groupByStatus = (data: Lead[]) => {
 
 const groupBySource = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const source = lead.lead_source?.name || ''
+    const source = lead.lead_source?.name || 'Unknown'
     if (!groups[source]) {
       groups[source] = []
     }
@@ -324,7 +422,7 @@ const groupByOwner = (data: Lead[]) => {
 
 const groupByIndustry = (data: Lead[]) => {
   return data.reduce((groups: { [key: string]: Lead[] }, lead) => {
-    const industry = lead.industry?.name || ''
+    const industry = lead.industry?.name || 'Unknown'
     if (!groups[industry]) {
       groups[industry] = []
     }
@@ -343,6 +441,18 @@ onMounted(() => {
   padding: 20px;
 }
 
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+
+.report-title-section {
+  flex: 1;
+}
+
 .report-name {
   font-size: 24px;
   color: #6c757d;
@@ -351,7 +461,47 @@ onMounted(() => {
 
 .description {
   color: #6c757d;
-  margin-top: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-export:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-export:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.btn-export i {
+  font-size: 16px;
 }
 
 .report-table {
@@ -399,5 +549,17 @@ onMounted(() => {
   background-color: #007bff !important;
   color: white !important;
   font-weight: 700 !important;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .report-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-actions {
+    justify-content: flex-end;
+  }
 }
 </style>

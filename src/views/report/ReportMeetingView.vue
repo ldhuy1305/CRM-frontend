@@ -2,7 +2,20 @@
   <div class="report-container">
     <CRMLoading :loading="isLoading" />
     <div class="report-header">
-      <h2 class="report-name">{{ report?.name }}</h2>
+      <div class="report-title-section">
+        <h2 class="report-name">{{ report?.name }}</h2>
+        <p class="description">{{ report?.description }}</p>
+      </div>
+      <div class="report-actions">
+        <button
+          class="btn-export"
+          @click="exportToExcel"
+          :disabled="isLoading || !groupedData || groupedData.length === 0"
+        >
+          <i class="fas fa-file-excel"></i>
+          Export Excel
+        </button>
+      </div>
     </div>
 
     <!-- Planned Meetings This Month -->
@@ -89,6 +102,7 @@ const route = useRoute()
 const reportData = ref<Meeting[]>([])
 const users = ref<UserInfo[]>([])
 const isLoading = ref(true)
+const isExporting = ref(false)
 const toast = useToast()
 
 const report = computed(() => {
@@ -126,6 +140,90 @@ const fetchReportData = async () => {
     })
   } finally {
     isLoading.value = false
+  }
+}
+
+// Export to Excel function
+const exportToExcel = async () => {
+  if (!report.value || !groupedData.value || groupedData.value.length === 0) {
+    toast.error('No data available to export', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+    return
+  }
+
+  try {
+    isExporting.value = true
+    toast.info('Preparing Excel export...', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+
+    // Create dynamic parameters based on the current report type
+    const params = new URLSearchParams()
+
+    // Always include the filename
+    params.append('filename', report.value.id)
+
+    console.log('Export parameters:', Object.fromEntries(params))
+    console.log('Export URL:', `/meetings/export-excel/?${params.toString()}`)
+
+    // Call the meeting export API
+    const response = await meetingRepository.exportExcel(params.toString())
+
+    // Generate filename with report name and timestamp
+    const timestamp = new Date().toISOString()
+    const reportName = report.value.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')
+    const filename = `${reportName}_${timestamp}.xlsx`
+
+    // Handle the file download
+    if (response instanceof Blob) {
+      downloadFile(response, filename)
+    } else if (response && typeof response === 'object' && 'url' in response) {
+      // If the API returns a download URL
+      window.open((response as any).url, '_blank')
+    } else {
+      throw new Error('Invalid response format')
+    }
+
+    toast.success('Excel file exported successfully!', {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+  } catch (error: any) {
+    console.error('Error exporting to Excel:', error)
+
+    let errorMessage = 'Failed to export Excel file. Please try again.'
+
+    if (error.response?.status === 406) {
+      errorMessage = 'Export format not supported. Please contact support.'
+    } else if (error.response?.status === 404) {
+      errorMessage = 'Export endpoint not found. Please check the API configuration.'
+    } else if (error.response?.status === 500) {
+      errorMessage = 'Server error occurred during export. Please try again later.'
+    }
+
+    toast.error(errorMessage, {
+      position: POSITION.BOTTOM_RIGHT,
+    })
+  } finally {
+    isExporting.value = false
+  }
+}
+
+// Helper function to download file
+const downloadFile = (blob: Blob, filename: string) => {
+  try {
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    link.style.display = 'none'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+  } catch (error) {
+    console.error('Error downloading file:', error)
+    throw new Error('Failed to download file')
   }
 }
 
@@ -168,10 +266,67 @@ onMounted(async () => {
   padding: 20px;
 }
 
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 20px;
+}
+
+.report-title-section {
+  flex: 1;
+}
+
 .report-name {
   font-size: 24px;
   color: #6c757d;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
+}
+
+.description {
+  color: #6c757d;
+  margin: 0;
+  font-size: 14px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-export:hover:not(:disabled) {
+  background: #218838;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-export:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.btn-export i {
+  font-size: 16px;
 }
 
 .report-table {
@@ -271,6 +426,14 @@ onMounted(async () => {
   font-size: 0.9em;
 }
 
+.in-person-badge {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 .participants {
   position: relative;
 }
@@ -289,5 +452,17 @@ onMounted(async () => {
 
 .participants:hover .participants-tooltip {
   display: block;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .report-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .report-actions {
+    justify-content: flex-end;
+  }
 }
 </style>

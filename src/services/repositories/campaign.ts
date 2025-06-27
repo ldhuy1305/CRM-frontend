@@ -49,6 +49,26 @@ class CampaignRepository extends BaseRepository<Campaign, CampaignCreateEditPayl
       throw error
     }
   }
+
+  // Export campaign data to Excel
+  async exportExcel(queryParams: string): Promise<Blob> {
+    try {
+      const response = await api.get(`/campaigns/export-excel/?${queryParams}`, {
+        responseType: 'blob',
+        headers: {
+          Accept:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream, */*',
+          'Content-Type': 'application/json',
+        },
+        timeout: 30000, // 30 seconds timeout for large exports
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Export Campaign Excel API error:', error)
+      throw error
+    }
+  }
 }
 
 class CampaignTypeRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {

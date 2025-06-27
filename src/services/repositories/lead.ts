@@ -17,6 +17,25 @@ class LeadRepository extends BaseRepository<Lead, LeadCreateEditPayload> {
       throw new Error(message)
     }
   }
+
+  async exportExcel(queryParams: string): Promise<Blob> {
+    try {
+      const response = await api.get(`/leads/export-excel/?${queryParams}`, {
+        responseType: 'blob', // Important: This tells axios to expect a binary response
+        headers: {
+          Accept:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/octet-stream, */*',
+          'Content-Type': 'application/json',
+        },
+        timeout: 30000, // 30 seconds timeout for large exports
+      })
+
+      return response.data
+    } catch (error) {
+      console.error('Export Excel API error:', error)
+      throw error
+    }
+  }
 }
 
 class LeadSourceRepository extends BaseRepository<NamedObject, Partial<NamedObject>> {

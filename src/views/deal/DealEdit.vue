@@ -84,15 +84,7 @@
             </select>
           </div>
 
-          <div class="form-group">
-            <label>Campaign Source</label>
-            <select v-model="form.campaign_source">
-              <option :value="null"></option>
-              <option v-for="campaign in campaigns" :key="campaign.id" :value="campaign.id">
-                {{ campaign.name }}
-              </option>
-            </select>
-          </div>
+          <div class="form-group"></div>
 
           <div class="form-group">
             <label>Probability (%)</label>
@@ -170,7 +162,6 @@ const dealOwners = ref<UserOption[]>([])
 const stages = ref<SelectOption[]>([])
 const accounts = ref<Account[]>([])
 const contacts = ref<Contact[]>([])
-const campaigns = ref<SelectOption[]>([])
 const deal = ref<Deal>({} as Deal)
 const dealLostReasons = ref<DealLostReason[]>([])
 
@@ -245,11 +236,11 @@ const fetchDropdownData = async () => {
   try {
     isLoading.value = true
     const [ownersRes, stagesRes, accountsRes, contactRes, lostRes] = await Promise.all([
-      userRepository.show({ limit: 20 }),
-      stageRepository.show({ limit: 20 }),
-      accountRepository.show({ limit: 20 }),
-      contactRepository.show({ limit: 20 }),
-      dealLostReasonRepository.show({ limit: 20 }),
+      userRepository.show(),
+      stageRepository.show(),
+      accountRepository.show(),
+      contactRepository.show(),
+      dealLostReasonRepository.show(),
     ])
 
     dealOwners.value = ownersRes.results || ownersRes

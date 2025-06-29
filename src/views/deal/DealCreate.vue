@@ -86,15 +86,7 @@
             <span v-if="errors.contact" class="error-message">{{ errors.contact }}</span>
           </div>
 
-          <div class="form-group">
-            <label>Campaign Source</label>
-            <select v-model="form.campaign_source">
-              <option :value="null"></option>
-              <option v-for="campaign in campaigns" :key="campaign.id" :value="campaign.id">
-                {{ campaign.name }}
-              </option>
-            </select>
-          </div>
+          <div class="form-group"></div>
 
           <div class="form-group">
             <label>Probability (%)</label>
@@ -122,7 +114,6 @@
 import CRMLoading from '@/components/ui/CRM-Loading.vue'
 import {
   accountRepository,
-  campaignRepository,
   contactRepository,
   dealsRepository,
   stageRepository,
@@ -130,7 +121,6 @@ import {
 } from '@/services'
 import '@/styles/shared/index.css'
 import type { Account } from '@/types/accounts/account'
-import type { Campaign } from '@/types/campaigns/campaign'
 import type { SelectOption } from '@/types/common/common_types'
 import type { Contact } from '@/types/contacts/contact'
 import type { DealCreateEditPayload } from '@/types/deals/deal'
@@ -147,7 +137,6 @@ const dealOwners = ref<UserOption[]>([])
 const stages = ref<SelectOption[]>([])
 const accounts = ref<Account[]>([])
 const contacts = ref<Contact[]>([])
-const campaigns = ref<Campaign[]>([])
 
 import { useAuthStore } from '@/stores/modules/auth'
 const authStore = useAuthStore()
@@ -239,19 +228,17 @@ const validateForm = (): boolean => {
 const fetchDropdownData = async () => {
   try {
     isLoading.value = true
-    const [ownersRes, stagesRes, accountsRes, contactRes, campaignRes] = await Promise.all([
-      userRepository.show({ limit: 20 }),
-      stageRepository.show({ limit: 20 }),
-      accountRepository.show({ limit: 20 }),
-      contactRepository.show({ limit: 20 }),
-      campaignRepository.show({ limit: 20 }),
+    const [ownersRes, stagesRes, accountsRes, contactRes] = await Promise.all([
+      userRepository.show(),
+      stageRepository.show(),
+      accountRepository.show(),
+      contactRepository.show(),
     ])
 
     dealOwners.value = ownersRes.results || ownersRes
     stages.value = stagesRes.results || stagesRes
     accounts.value = accountsRes.results || accountsRes
     contacts.value = contactRes.results || contactRes
-    campaigns.value = campaignRes.results || campaignRes
 
     console.log('Deal Owners:', dealOwners.value)
     console.log('Stages:', stages.value)

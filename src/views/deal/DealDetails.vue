@@ -131,17 +131,16 @@
                 <th>Expected Revenue</th>
                 <th>Stage Duration</th>
                 <th>Modified Time</th>
-                <!-- <th>Modified By</th> -->
               </tr>
             </thead>
             <tbody>
               <tr v-for="history in deal?.stage_histories" :key="history.id">
                 <td>{{ getStageNameById(history.stage) }}</td>
+                <td>{{ formatCurrency(history.amount.toString()) }}</td>
                 <td>{{ history.probability * 100 }}%</td>
                 <td>{{ formatCurrency(history.expected_revenue.toString()) }}</td>
                 <td>{{ history.stage_duration }} days</td>
                 <td>{{ formatDateTime(history.updated_at) }}</td>
-                <!-- <td>{{ getModifiedByName(history) }}</td> -->
               </tr>
             </tbody>
           </table>

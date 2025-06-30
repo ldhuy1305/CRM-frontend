@@ -87,7 +87,6 @@
                   <button class="more-btn" @click.stop="toggleMoreOptions(meeting.id)">⋮</button>
                   <div v-if="activeMoreOptions === meeting.id" class="options-dropdown">
                     <div @click="navigateToEditMeeting(meeting.id)">Edit</div>
-                    <div>Send Email</div>
                     <div @click="deleteMeeting(meeting.id)">Delete</div>
                   </div>
                 </div>

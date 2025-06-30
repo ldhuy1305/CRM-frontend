@@ -107,7 +107,6 @@
                   <button class="more-btn" @click.stop="toggleMoreOptions(call.id)">⋮</button>
                   <div v-if="activeMoreOptions === call.id" class="options-dropdown">
                     <div @click="navigateToEditCall(call.id)">Edit</div>
-                    <div>Create Task</div>
                     <div @click="deleteCall(call.id)">Delete</div>
                   </div>
                 </div>

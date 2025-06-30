@@ -87,7 +87,6 @@
                   <button class="more-btn" @click.stop="toggleMoreOptions(campaign.id)">⋮</button>
                   <div v-if="activeMoreOptions === campaign.id" class="options-dropdown">
                     <div @click="navigateToEditCampaign(campaign.id)">Edit</div>
-                    <div>Create Task</div>
                     <div @click="deleteCampaign(campaign.id)">Delete</div>
                   </div>
                 </div>

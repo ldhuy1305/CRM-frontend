@@ -89,8 +89,6 @@
                   <button class="more-btn" @click.stop="toggleMoreOptions(contact.id)">⋮</button>
                   <div v-if="activeMoreOptions === contact.id" class="options-dropdown">
                     <div @click="navigateToEditContact(contact.id)">Edit</div>
-                    <div>Send Email</div>
-                    <div>Create Task</div>
                     <div @click="deleteContact(contact.id)">Delete</div>
                   </div>
                 </div>

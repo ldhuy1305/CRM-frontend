@@ -24,11 +24,11 @@
         </select>
       </div>
 
-      <div class="pagination">
+      <!-- <div class="pagination">
         <button class="nav-btn">&lt;</button>
         <span class="current-page">1</span>
         <button class="nav-btn">&gt;</button>
-      </div>
+      </div> -->
     </div>
 
     <div class="module-table">

@@ -23,7 +23,7 @@
           <option value="50">50</option>
         </select>
       </div>
-      <div class="pagination">
+      <!-- <div class="pagination">
         <button class="nav-btn" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
           &lt;
         </button>
@@ -35,7 +35,7 @@
         >
           &gt;
         </button>
-      </div>
+      </div> -->
     </div>
 
     <div class="module-table">

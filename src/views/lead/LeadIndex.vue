@@ -85,8 +85,6 @@
                   <button class="more-btn" @click.stop="toggleMoreOptions(lead.id)">⋮</button>
                   <div v-if="activeMoreOptions === lead.id" class="options-dropdown">
                     <div @click="navigateToEditLead(lead.id)">Edit</div>
-                    <div>Send Email</div>
-                    <div>Create Task</div>
                     <div @click="deleteLead(lead.id)">Delete</div>
                     <div @click="navigateToConvertLead(lead.id)">Convert</div>
                   </div>
